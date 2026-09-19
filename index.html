@@ -1,0 +1,1072 @@
+<title>moroshabat — יפעת מורוביץ נסיעות — גרסה ב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
+<style>
+  /* ---------- Tokens ---------- */
+  :root{
+    --paper:#ffffff;
+    --ink:#0b2b27;
+    --ink-soft:#0e3733;
+    --teal:#0c8479;
+    --teal-dark:#0a6b62;
+    --green:#0e3d38;
+    --yellow:#ffd400;
+    --yellow-ink:#241d00;
+    --text:#12302c;
+    --muted:#5b726d;
+    --line:#e3ede9;
+    --line-on-ink:rgba(255,255,255,.18);
+    --cream:#ffffff;
+    --mint:#eef6f4;
+    --muted-on-ink:rgba(255,255,255,.72);
+    --shadow:0 24px 50px -24px rgba(10,30,27,.35);
+    --radius:10px;
+    --font-display:"Heebo","Arial Hebrew","Segoe UI",sans-serif;
+    --font-body:"Heebo","Arial Hebrew","Segoe UI",sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
+  }
+
+  body{
+    margin:0;
+    direction:rtl;
+    text-align:right;
+    background:var(--paper);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+
+  img,svg{max-width:100%; display:block;}
+  a{color:inherit;}
+  h1,h2,h3,h4{font-family:var(--font-display);margin:0;text-wrap:balance;font-weight:800;letter-spacing:-.01em;}
+  p{margin:0;}
+  ul{margin:0;padding:0;list-style:none;}
+  button,input,select,textarea{font-family:inherit;font-size:1rem;}
+
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--yellow);
+    outline-offset:3px;
+  }
+
+  .wrap{ max-width:1240px; margin:0 auto; padding-inline:24px; }
+  @media (min-width:900px){ .wrap{ padding-inline:44px; } }
+
+  .hi{ color:var(--yellow); }
+  .eyebrow{
+    display:inline-block; font-family:var(--font-body); font-size:.78rem; letter-spacing:.12em;
+    color:var(--yellow-ink); background:var(--yellow); padding:6px 14px; border-radius:100px;
+    margin-bottom:16px; font-weight:700;
+  }
+  .eyebrow.on-ink{ color:var(--ink); }
+
+  /* ---------- Buttons (bold Canva-style) ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:.7em;
+    padding:15px 30px; border:none; border-radius:6px;
+    font-size:.92rem; font-weight:700; letter-spacing:.01em;
+    text-decoration:none; cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+    background:var(--yellow); color:var(--yellow-ink);
+    box-shadow:0 14px 26px -14px rgba(255,212,0,.55);
+  }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 18px 32px -14px rgba(255,212,0,.7); }
+  .btn:disabled{ opacity:.6; cursor:default; transform:none; box-shadow:none; }
+  .btn.outline{ background:transparent; color:var(--cream); border:2px solid var(--cream); box-shadow:none; }
+  .btn.outline:hover{ background:var(--cream); color:var(--ink); }
+  .btn .btn-arrow{ font-size:1em; transition:transform .2s ease; }
+  .btn:hover .btn-arrow{ transform:translateX(-4px); }
+
+  .text-link{ text-decoration:none; border-bottom:2px solid var(--yellow); padding-bottom:2px; font-weight:700; font-size:.92rem; }
+
+  /* ---------- Header ---------- */
+  header.site-nav{
+    position:sticky; top:0; z-index:50;
+    background:transparent;
+    transition:background .35s ease, border-color .35s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.site-nav.scrolled{ background:var(--ink); border-color:var(--line-on-ink); }
+  header.site-nav:not(.scrolled) .nav-row,
+  header.site-nav:not(.scrolled) .nav-mobile-panel{ text-shadow:0 1px 6px rgba(10,12,8,.55); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; gap:24px; padding-block:20px; }
+  .wordmark{ display:flex; align-items:center; gap:13px; line-height:1.1; text-decoration:none; }
+  .logo-mark{
+    flex-shrink:0; width:42px; height:42px; border-radius:50%;
+    background:var(--yellow); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 18px -8px rgba(255,212,0,.6);
+  }
+  .logo-mark svg{ width:20px; height:20px; transform:scaleX(-1); }
+  .logo-text{ display:flex; flex-direction:column; }
+  .logo-text strong{
+    font-family:var(--font-display); font-size:1.28rem; color:var(--cream); font-weight:800;
+    letter-spacing:.03em;
+  }
+  .logo-text strong .lg-light{ font-weight:400; opacity:.82; }
+  .logo-text .logo-tag{ font-size:.66rem; letter-spacing:.14em; color:var(--yellow); margin-top:3px; font-weight:700; }
+  footer .wordmark{ margin-bottom:34px; }
+  footer .logo-mark{ background:var(--ink); color:var(--yellow); box-shadow:none; }
+  footer .logo-text strong{ color:var(--ink); }
+  footer .logo-text strong .lg-light{ color:var(--ink); }
+  footer .logo-text .logo-tag{ color:var(--ink); opacity:.65; }
+  .nav-links{ display:flex; align-items:center; gap:30px; }
+  .nav-links a{ text-decoration:none; color:var(--muted-on-ink); font-size:.88rem; font-weight:500; transition:color .2s ease; }
+  .nav-links a:hover{ color:var(--cream); }
+  .nav-phone{ display:flex; align-items:center; gap:8px; color:var(--cream); text-decoration:none; font-size:.88rem; font-weight:600; }
+  .nav-toggle{ display:none; background:none; border:1px solid var(--line-on-ink); width:40px; height:40px; align-items:center; justify-content:center; color:var(--cream); border-radius:6px; }
+  .nav-mobile-panel{ display:none; }
+
+  @media (max-width:900px){
+    .nav-links,.nav-phone{ display:none; }
+    .nav-toggle{ display:flex; }
+    header.site-nav.open{ background:var(--ink); }
+    header.site-nav.open .nav-mobile-panel{ display:flex; flex-direction:column; gap:2px; padding-bottom:18px; }
+    .nav-mobile-panel a{ color:var(--cream); text-decoration:none; padding:12px 4px; border-top:1px solid var(--line-on-ink); font-size:.98rem; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative; height:min(88vh,840px); min-height:580px; margin-top:-84px; overflow:hidden;
+    background:#0a2420 center/cover no-repeat;
+  }
+  .hero-video{
+    position:absolute; inset:0; z-index:0;
+    width:100%; height:100%; object-fit:cover;
+    filter:brightness(1.15) saturate(1.12) contrast(1.03);
+  }
+  @media (prefers-reduced-motion:reduce){ .hero-video{ display:none; } }
+  .hero-copy{
+    position:absolute; z-index:2; inset-inline:0; bottom:0; padding:0 24px 72px;
+    text-align:center; display:flex; flex-direction:column; align-items:center;
+  }
+  @media (min-width:900px){ .hero-copy{ padding:0 44px 96px; } }
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(to top, rgba(6,20,18,.72) 0%, rgba(6,20,18,.08) 42%, transparent 60%),
+      linear-gradient(to bottom, rgba(6,20,18,.5) 0%, transparent 22%);
+  }
+  .hero-copy h1{ font-size:clamp(2.3rem,4vw + 1.1rem,4.2rem); color:var(--cream); line-height:1.14; max-width:16ch; }
+  .hero-actions{ margin-top:34px; }
+
+  /* ---------- Intro / brand band (teal) ---------- */
+  .intro{ background:var(--teal); color:var(--cream); padding-block:96px; }
+  .intro-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
+  .intro h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.8rem); color:var(--cream); }
+  .intro p{ margin-top:20px; color:var(--muted-on-ink); max-width:46ch; font-size:1.02rem; }
+  .intro p + p{ margin-top:14px; }
+  .intro-photos{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:14px; aspect-ratio:1/1; }
+  .intro-photos img{ width:100%; height:100%; object-fit:cover; border-radius:var(--radius); }
+  .intro-photos .ip-main{ grid-column:1/3; }
+  @media (max-width:880px){ .intro-grid{ grid-template-columns:1fr; gap:36px; } }
+
+  /* ---------- Packages (dark green) ---------- */
+  .packages{ background:var(--green); color:var(--cream); padding-block:100px; }
+  .packages-head{ display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap; margin-bottom:48px; }
+  .packages h2{ color:var(--cream); font-size:clamp(2rem,3vw + 1rem,3rem); max-width:14ch; }
+  .packages-head p{ color:var(--muted-on-ink); max-width:40ch; margin-top:14px; }
+
+  .pkg-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  @media (max-width:960px){ .pkg-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:620px){ .pkg-grid{ grid-template-columns:1fr; } }
+
+  .pkg-card{ position:relative; display:flex; flex-direction:column; border-radius:var(--radius); overflow:hidden; background:var(--cream); box-shadow:var(--shadow); }
+  .pkg-media{ position:relative; height:190px; }
+  .pkg-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pkg-tag{ position:absolute; z-index:2; top:14px; inset-inline-start:14px; background:var(--yellow); color:var(--yellow-ink); font-size:.74rem; font-weight:700; padding:6px 12px; border-radius:100px; }
+  .pkg-body{ display:flex; flex-direction:column; gap:8px; padding:20px 22px 22px; flex:1; }
+  .pkg-body h3{ color:var(--text); font-size:1.15rem; font-weight:800; }
+  .pkg-meta{ color:var(--muted); font-size:.8rem; font-weight:700; }
+  .pkg-desc{ color:var(--muted); font-size:.86rem; line-height:1.55; }
+  .pkg-price-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:auto; padding-top:8px; }
+  .pkg-price-wrap{ display:flex; align-items:baseline; gap:6px; }
+  .pkg-price{ color:var(--teal-dark); font-size:1.2rem; font-weight:800; }
+  .pkg-price-note{ color:var(--muted); font-size:.78rem; font-weight:600; }
+  .pkg-dates{ color:var(--muted); font-size:.95rem; font-weight:600; text-align:left; }
+  .pkg-cta{ display:block; text-align:center; margin-top:14px; background:var(--teal-dark); color:var(--cream); font-weight:700; font-size:.9rem; padding:12px; border-radius:8px; text-decoration:none; transition:background .2s ease; }
+  .pkg-cta:hover{ background:var(--teal); }
+
+  /* ---------- Why (card style, honest content) ---------- */
+  .why{ background:var(--teal); color:var(--cream); padding-block:100px; }
+  .why-head{ text-align:center; max-width:640px; margin:0 auto 48px; }
+  .why-head h2{ color:var(--cream); font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
+  .why-head p{ margin-top:14px; color:var(--muted-on-ink); }
+  .why-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  @media (max-width:960px){ .why-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-card{ background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18); border-radius:var(--radius); padding:28px 24px; }
+  .why-card .num{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:8px; background:var(--yellow); color:var(--yellow-ink); font-weight:800; font-size:1rem; margin-bottom:18px; }
+  .why-card h3{ color:var(--cream); font-size:1.08rem; }
+  .why-card p{ margin-top:10px; color:var(--muted-on-ink); font-size:.9rem; }
+
+  /* ---------- Testimonials ---------- */
+  .testimonials{ background:var(--mint); padding-block:100px; }
+  .testimonials-head{ text-align:center; max-width:640px; margin:0 auto; }
+  .testimonials-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
+  .testimonials-head p{ margin-top:14px; color:var(--muted); }
+  .testimonials-rating{ display:flex; align-items:center; justify-content:center; gap:8px; margin:20px 0 10px; font-weight:800; font-size:1.05rem; }
+  .testimonials-rating .stars{ display:flex; gap:2px; color:var(--yellow-ink); background:var(--yellow); padding:4px 8px; border-radius:999px; }
+  .testimonials-rating .stars svg{ width:15px; height:15px; }
+  .testimonials-source{ text-align:center; margin-bottom:44px; font-size:.9rem; }
+  .testimonials-source a{ color:var(--teal-dark); font-weight:700; text-decoration:underline; }
+  .review-columns{ column-count:3; column-gap:24px; }
+  @media (max-width:960px){ .review-columns{ column-count:2; } }
+  @media (max-width:640px){ .review-columns{ column-count:1; } }
+  .review-card{
+    break-inside:avoid; -webkit-column-break-inside:avoid; page-break-inside:avoid;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px; margin-bottom:20px; box-shadow:var(--shadow);
+    display:inline-block; width:100%;
+  }
+  .review-stars{ display:flex; gap:2px; color:var(--yellow); margin-bottom:12px; }
+  .review-stars svg{ width:15px; height:15px; }
+  .review-text{ font-size:.93rem; line-height:1.65; margin:0 0 16px; color:var(--text); }
+  .review-meta{ display:flex; flex-direction:column; gap:2px; font-size:.82rem; }
+  .review-meta strong{ font-size:.92rem; }
+  .review-meta span{ color:var(--muted); }
+
+  /* ---------- CTA band (full-bleed photo) ---------- */
+  .cta-band{ position:relative; overflow:hidden; }
+  .cta-band img{ width:100%; height:min(56vw,460px); min-height:320px; object-fit:cover; }
+  .cta-band::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(9,27,24,.35) 0%, rgba(9,27,24,.65) 100%); }
+  .cta-band-copy{ position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:28px; padding:24px; }
+  .cta-band-copy h2{ color:var(--cream); font-size:clamp(1.9rem,3vw + 1rem,3rem); max-width:16ch; }
+
+  /* ---------- About ---------- */
+  .about{ padding-block:100px; }
+  .about-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:center; }
+  .about img{ width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:var(--radius); box-shadow:var(--shadow); }
+  .about-copy .eyebrow{ background:var(--teal); color:var(--cream); }
+  .about-copy p{ color:var(--muted); font-size:1.05rem; max-width:56ch; }
+  .about-copy p + p{ margin-top:16px; }
+  .about-copy .credentials{ margin-top:20px; color:var(--text); font-size:.95rem; font-weight:600; }
+  @media (max-width:860px){ .about-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- Contact ---------- */
+  .contact{ background:var(--ink); color:var(--cream); padding-block:100px; }
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:64px; }
+  .contact-info h2{ color:var(--cream); font-size:clamp(2rem,2.6vw + 1rem,2.7rem); }
+  .contact-info > p{ margin-top:16px; color:var(--muted-on-ink); max-width:40ch; }
+  .contact-list{ margin-top:32px; display:flex; flex-direction:column; gap:12px; }
+  .contact-list a{ text-decoration:none; color:var(--cream); font-size:1rem; border-bottom:1px solid var(--line-on-ink); display:inline-block; padding-bottom:2px; width:fit-content; }
+
+  .form-row{ margin-bottom:22px; }
+  .form-row label{ display:block; font-size:.8rem; color:var(--muted-on-ink); margin-bottom:8px; }
+  .form-row input,.form-row select,.form-row textarea{
+    background:rgba(255,255,255,.06); border:1px solid var(--line-on-ink); color:var(--cream);
+    padding:12px 14px; width:100%; border-radius:8px;
+  }
+  .form-row select option{ color:var(--ink); }
+  .form-row textarea{ resize:vertical; min-height:70px; }
+  .form-two{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  .form-note{ margin-top:16px; font-size:.8rem; color:var(--muted-on-ink); }
+  .form-success{ margin-top:14px; font-size:.88rem; color:var(--yellow); font-weight:700; }
+  .form-fallback{ margin-top:14px; font-size:.88rem; color:var(--muted-on-ink); }
+  .form-fallback a{ color:var(--yellow); font-weight:700; text-decoration:underline; }
+  @media (max-width:860px){ .contact-grid{ grid-template-columns:1fr; } .form-two{ grid-template-columns:1fr; } }
+
+  /* ---------- Sticky bottom bar ---------- */
+  .sticky-bar{
+    position:fixed; z-index:60; inset-inline:0; bottom:0;
+    background:var(--ink); border-top:1px solid var(--line-on-ink);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; gap:16px;
+  }
+  @media (min-width:900px){ .sticky-bar{ padding:14px 44px; } }
+  .sticky-bar span{ color:var(--cream); font-size:.9rem; }
+  .sticky-bar .sb-phone{ display:flex; align-items:center; gap:20px; }
+  .sticky-bar .sb-phone a{ color:var(--cream); text-decoration:none; font-weight:600; }
+  .sticky-bar .btn{ padding:9px 18px; font-size:.8rem; }
+  @media (max-width:560px){ .sticky-bar span:first-child{ display:none; } }
+
+  /* ---------- Footer (yellow band) ---------- */
+  footer{ background:var(--yellow); color:var(--yellow-ink); padding-block:56px 26px; }
+  .footer-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; text-align:center; }
+  .footer-grid h4{ font-size:.76rem; letter-spacing:.1em; opacity:.7; margin-bottom:10px; font-weight:700; }
+  .footer-grid strong{ display:block; font-size:1.12rem; font-weight:800; }
+  .footer-grid a{ text-decoration:none; color:var(--yellow-ink); }
+  .social-icons{ display:flex; gap:12px; justify-content:center; }
+  .social-icons a{
+    width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--yellow);
+    display:flex; align-items:center; justify-content:center; transition:transform .2s ease;
+  }
+  .social-icons a:hover{ transform:translateY(-3px); }
+  .social-icons svg{ width:18px; height:18px; }
+  .footer-bottom{ margin-top:44px; padding-top:20px; border-top:1px solid rgba(36,29,0,.18); display:flex; justify-content:center; flex-wrap:wrap; gap:10px; font-size:.78rem; opacity:.75; }
+  @media (max-width:700px){ .footer-grid{ grid-template-columns:1fr; gap:26px; } }
+
+  /* ---------- Deal details modal ---------- */
+  .deal-modal-overlay{
+    position:fixed; inset:0; background:rgba(8,25,22,.72);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:56px 16px; overflow-y:auto; z-index:80;
+  }
+  .deal-modal-overlay[hidden]{ display:none; }
+  .deal-modal{
+    background:var(--paper); border-radius:var(--radius); max-width:720px; width:100%;
+    box-shadow:var(--shadow); overflow:hidden; position:relative;
+  }
+  .deal-modal-img{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .deal-modal-close{
+    position:absolute; top:14px; left:14px; width:38px; height:38px; border-radius:50%;
+    background:rgba(8,25,22,.55); color:#fff; border:none; font-size:1.15rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .deal-modal-close:hover{ background:rgba(8,25,22,.82); }
+  .deal-modal-body{ padding:28px 30px 32px; }
+  .deal-modal-tag{ display:inline-block; background:var(--yellow); color:var(--yellow-ink); font-weight:700; font-size:.72rem; padding:5px 12px; border-radius:999px; margin-bottom:12px; }
+  .deal-modal-body h3{ margin:0 0 6px; font-size:1.5rem; }
+  .deal-modal-dates{ color:var(--muted); font-weight:700; margin:0 0 14px; }
+  .deal-modal-desc{ margin:0 0 16px; line-height:1.65; }
+  .deal-itinerary{ margin:0 0 16px; padding:0; list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .deal-itinerary li{ display:grid; grid-template-columns:78px 1fr; gap:12px; font-size:.92rem; align-items:baseline; }
+  .deal-itinerary .day{ font-weight:700; color:var(--teal-dark); white-space:nowrap; }
+  .deal-price-tiers{ margin:0 0 16px; padding:14px 16px; background:var(--line); border-radius:8px; display:flex; flex-direction:column; gap:6px; font-size:.9rem; font-weight:600; }
+  .deal-note{ font-size:.8rem; color:var(--muted); margin:0 0 22px; }
+  @media (max-width:560px){
+    .deal-modal-body{ padding:22px 18px 26px; }
+    .deal-itinerary li{ grid-template-columns:56px 1fr; }
+  }
+</style>
+
+<div id="publicSite">
+<header class="site-nav" id="siteNav">
+  <div class="wrap nav-row">
+    <a href="#top" class="wordmark">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11L21 3L13 21L11 13L3 11Z"/></svg>
+      </span>
+      <span class="logo-text">
+        <strong>MORO<span class="lg-light">SHABAT</span></strong>
+        <span class="logo-tag">יפעת מורוביץ · נסיעות</span>
+      </span>
+    </a>
+    <nav class="nav-links" aria-label="ניווט ראשי">
+      <a href="#packages">חבילות</a>
+      <a href="#why">למה איתי</a>
+      <a href="#about">אודות</a>
+      <a href="#contact">יצירת קשר</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:18px;">
+      <button class="nav-toggle" id="navToggle" aria-label="פתיחת תפריט" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="wrap nav-mobile-panel" id="navMobilePanel">
+    <a href="#packages">חבילות</a>
+    <a href="#why">למה איתי</a>
+    <a href="#about">אודות</a>
+    <a href="#contact">יצירת קשר</a>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ---------- HERO ---------- -->
+  <section class="hero" style="background-image:url('hero-poster.jpg');">
+    <video class="hero-video" autoplay="" muted="" loop="" playsinline="" disablepictureinpicture="" disableremoteplayback="" poster="hero-poster.jpg">
+      <source src="hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-copy">
+      <h1>בחרו את החופשה הבאה שלכם</h1>
+      <div class="hero-actions">
+        <a href="#contact" class="btn">הזמינו עכשיו <span class="btn-arrow">←</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- INTRO / BRAND (teal) ---------- -->
+  <section class="intro">
+    <div class="wrap intro-grid">
+      <div>
+        <h2>טיילו בעולם<br>עם <span class="hi">MOROSHABAT</span></h2>
+        <p>סוכנות הנסיעות MOROSHABAT מציעה את חבילות החופשה הטובות ביותר מאז 2021.</p>
+        <p>אנחנו מבטיחים שכל טיול שתזמינו איתנו יהיה ייחודי ובלתי נשכח.</p>
+      </div>
+      <div class="intro-photos">
+        <img class="ip-main" src="pkg-temple.jpg" alt="יעד תרבותי במזרח אסיה">
+        <img src="pkg-hike.jpg" alt="טרק בהרים">
+        <img src="pkg-beach.jpg" alt="חוף טרופי">
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- PACKAGES (dark green) ---------- -->
+  <section class="packages" id="packages">
+    <div class="wrap">
+      <div class="packages-head">
+        <div>
+          <span class="eyebrow">החבילות שלנו</span>
+          <h2>מסעות נבחרים לעונה הקרובה</h2>
+        </div>
+        <p>מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע — כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
+      </div>
+
+      <div class="pkg-grid">
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-beach.jpg" alt="הפלגה קסומה לאיי בהאמס">
+            <span class="pkg-tag">קרוז</span>
+          </div>
+          <div class="pkg-body">
+            <h3>הפלגה קסומה לבהאמס</h3>
+            <p class="pkg-meta">6 ימים / 5 לילות</p>
+            <p class="pkg-desc">שייט על ה-Norwegian Joy — מיאמי, האי הפרטי Great Stirrup Cay ונאסאו.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">$477</span>
+                <span class="pkg-price-note">לאדם</span>
+              </span>
+              <span class="pkg-dates">31/01/27–05/02/27</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="bahamas">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-vienna.jpg" alt="חול המועד סוכות כשר בוינה">
+            <span class="pkg-tag">כשר למהדרין</span>
+          </div>
+          <div class="pkg-body">
+            <h3>סוכות כשר בוינה</h3>
+            <p class="pkg-meta">5 ימים / 4 לילות</p>
+            <p class="pkg-desc">לינה וארוחת בוקר במלון בוטיק ברובע היהודי, טיסות ישירות.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">4,968 ₪</span>
+                <span class="pkg-price-note">לאדם</span>
+              </span>
+              <span class="pkg-dates">27/09–01/10</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="vienna-sukkot">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-cruise.jpg" alt="קרוז סוכות בים התיכון">
+            <span class="pkg-tag">קרוז</span>
+          </div>
+          <div class="pkg-body">
+            <h3>קרוז סוכות 2027 בים התיכון</h3>
+            <p class="pkg-meta">8 ימים / 7 לילות</p>
+            <p class="pkg-desc">ברצלונה, מיורקה, פרובאנס, פירנצה, רומא ונאפולי על ה-Legend of the Seas.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">$3,705</span>
+                <span class="pkg-price-note">לזוג</span>
+              </span>
+              <span class="pkg-dates">17/10/27–24/10/27</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="rccl-med">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-cruise.jpg" alt="קרוז קלאסי באירופה">
+            <span class="pkg-tag">קרוז</span>
+          </div>
+          <div class="pkg-body">
+            <h3>קרוז קלאסי באירופה</h3>
+            <p class="pkg-meta">7 ימים / 6 לילות</p>
+            <p class="pkg-desc">ברצלונה, מיורקה, ולטה, פלרמו, נאפולי ורומא על ה-Norwegian Epic.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">$1,209</span>
+                <span class="pkg-price-note">לאדם</span>
+              </span>
+              <span class="pkg-dates">02/05–08/05</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="norwegian-epic">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-baku.webp" alt="שווקי חג המולד בבאקו">
+            <span class="pkg-tag">מבצע</span>
+          </div>
+          <div class="pkg-body">
+            <h3>שווקי חג המולד בבאקו</h3>
+            <p class="pkg-meta">5 ימים / 4 לילות</p>
+            <p class="pkg-desc">לינה בלבד במלון אינטרקונטיננטל, טיסות ישירות.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">3,362 ₪</span>
+                <span class="pkg-price-note">לאדם</span>
+              </span>
+              <span class="pkg-dates">13/12–17/12</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="baku-dec13">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+        <article class="pkg-card">
+          <div class="pkg-media">
+            <img src="pkg-baku.webp" alt="סופש בבאקו">
+            <span class="pkg-tag">סופ״ש</span>
+          </div>
+          <div class="pkg-body">
+            <h3>סופש אמצע דצמבר בבאקו</h3>
+            <p class="pkg-meta">5 ימים / 4 לילות</p>
+            <p class="pkg-desc">לינה במלון אינטרקונטיננטל, טיסות ישירות.</p>
+            <div class="pkg-price-row">
+              <span class="pkg-price-wrap">
+                <span class="pkg-price">2,808 ₪</span>
+                <span class="pkg-price-note">לאדם</span>
+              </span>
+              <span class="pkg-dates">10/12–14/12</span>
+            </div>
+            <a href="#" class="pkg-cta deal-open-link" data-deal="baku-dec10">לפרטים ורכישה &gt;</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- WHY (teal, card style) ---------- -->
+  <section class="why" id="why">
+    <div class="wrap">
+      <div class="why-head">
+        <span class="eyebrow on-ink">למה איתי</span>
+        <h2>שירות שמרגישים, לא רק קוראים עליו</h2>
+        <p>ארבעה דברים שמלווים כל טיול שאני מתכננת.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <span class="num">01</span>
+          <h3>ליווי אישי צמוד</h3>
+          <p>מהרגע שאתם מזמינים ועד שאתם חוזרים הביתה, יש לכם כתובת אחת.</p>
+        </div>
+        <div class="why-card">
+          <span class="num">02</span>
+          <h3>קשרים בתעשייה</h3>
+          <p>גישה למחירים, שדרוגים וזמינות שלא תמיד נגישים בהזמנה עצמאית.</p>
+        </div>
+        <div class="why-card">
+          <span class="num">03</span>
+          <h3>התאמה מדויקת</h3>
+          <p>כל מסלול נבנה מאפס סביב הטעם, הקצב והתקציב שלכם.</p>
+        </div>
+        <div class="why-card">
+          <span class="num">04</span>
+          <h3>שקיפות מלאה</h3>
+          <p>מחיר סופי וברור מראש. בלי עמלות נסתרות ובלי הפתעות בסוף.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CTA BAND ---------- -->
+  <section class="cta-band">
+    <img src="pkg-pool.jpg" alt="יעד נופש">
+    <div class="cta-band-copy">
+      <h2>מוכנים להזמין את<br>הטיול הבא שלכם?</h2>
+      <a href="#contact" class="btn">בואו נתחיל לתכנן <span class="btn-arrow">←</span></a>
+    </div>
+  </section>
+
+  <!-- ---------- ABOUT ---------- -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <img src="pkg-temple.jpg" alt="יפעת מורוביץ">
+      <div class="about-copy">
+        <span class="eyebrow">אודות</span>
+        <h2 style="font-size:1.9rem;margin-bottom:20px;">כמה מילים עליי</h2>
+        <p>שלום, אני יפעת. מזה למעלה מעשור וחצי אני מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם — לא עוד חבילה מהמדף.</p>
+        <p>גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
+        <p class="credentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- TESTIMONIALS ---------- -->
+  <section class="testimonials" id="testimonials">
+    <div class="wrap">
+      <div class="testimonials-head">
+        <span class="eyebrow">המלצות</span>
+        <h2>מה אומרים עלינו</h2>
+        <p>חוות דעת אמיתיות מלקוחות, כפי שנכתבו על ידם.</p>
+        <p class="testimonials-source"><a href="https://www.bizreviews.co.il/provider/ifat-morovitz" target="_blank" rel="noopener">לכל חוות הדעת ב-bizreviews ←</a></p>
+      </div>
+
+      <div class="review-columns">
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"ווואו, איך מתחילים ? יפעת כזאת מדהימה, מצאה לנו בשיא עליית המחירים דיל שהתאים לנו כמו כפפה ליד אחרי המון נסיונות, לא ויתרה והיתה בקשר צמוד עד שמצאנו את הדיל שהתאים לנו פיקס. עדכנה על שינויים באיזה. שדרגה טיפ שרק אפשר קיבלנו חדר מטורף ומשודרג יותר ממה שהזמנו. עשית לנו טיול של השמחות. את גם ככ מקצועית ונעימה. אין ספק שאשוב לטוס בהמלצתך ובעזרתך. אין כמוך !!!"</p>
+          <div class="review-meta"><strong>מלי</strong><span>דביר שפיר · 22.01.2026</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"אני ממליצה בחום על יפעת כסוכנת נסיעות מעולה! יפעת ליוותה אותנו בארגון הנסיעה שלנו לאלבניה, והיא פשוט הייתה מושלמת! היא מצאה לנו מלונות מעולים שהתאימו בדיוק לצרכים ולתקציב שלנו, והפגינה ידע רחב על היעד. מה שבלט במיוחד היה הליווי הצמוד לאורך כל הדרך יפעת הייתה זמינה לכל שאלה ובקשה, מרגע התכנון ועד סיום הנסיעה. המקצועיות שלה באה לידי ביטוי ביכולת להקשיב לצרכים שלנו, להציע פתרונות מדויקים, ולדאוג שכל פרט במסלול יהיה מסודר בצורה הטובה ביותר. אפילו במהלך השהות באלבניה עצמה, יפעת הייתה זמינה לכל עזרה ותמיכה. אם אתם מחפשים סוכנת נסיעות שבאמת אכפת לה ושתדאג לכם לחוויית נסיעה מושלמת יפעת היא הבחירה המושלמת!"</p>
+          <div class="review-meta"><strong>מירב</strong><span>הוד השרון · 17.10.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"שירות מקצועי עם לב ונשמה. זמינות אפילו בשבת וחג. הרכיבה לנו דיל מעולה של מלון פנטסטי עם טיסות זולות ונוחות. בהחלט אבחר ביפעת גם בגיחה הבאה לחו"ל. ממליץ מכל הלב!"</p>
+          <div class="review-meta"><strong>עמית גרוס</strong><span>פתח תקווה · 28.09.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"יפעת אשה עם שרות שהרבה מקומות צריכים ללמוד ממנה אחראית עונה בכל שעה מידעת על כל תרחיש."</p>
+          <div class="review-meta"><strong>חיים בנבנישתי</strong><span>יהוד · 13.08.2026</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"אחותי ןאני קבלנו שירות מיפעת שירות מסור ואמין לכל אורך שהותינו בחופשה האכפתיות,המסירות,ההקשבה,הדאגה כל זה מה שהפך את הטיול למושלם אחותי ואני ממליצות בחום ואהבה"</p>
+          <div class="review-meta"><strong>שירה נעמי פנחס</strong><span>נתניה · 11.08.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"יפעת תמיד היתה זמינה לכל מענה, נתנה טיפים למקומות בבודפשט, היה טיול מצוין. תודה יפעת"</p>
+          <div class="review-meta"><strong>אתי אסרס</strong><span>אשדוד · 03.06.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"ממש נעימה טובה, שירות טוב מההתחלה ועד הרגע שחוזרים אלופה!"</p>
+          <div class="review-meta"><strong>זיוה</strong><span>ירושלים · 04.06.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"אחלה שירות סבלנית מאוד ומהממת אין עליך!! תודה רבה!!"</p>
+          <div class="review-meta"><strong>לאה</strong><span>ירושלים · 04.06.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"יעיל ומהיר אדיב ומקצועי תודה"</p>
+          <div class="review-meta"><strong>ארמוזה עופר שרגא</strong><span>14.04.2025</span></div>
+        </article>
+
+        <article class="review-card">
+          <div class="review-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
+          </div>
+          <p class="review-text">"מקצועיות ופניות רבה בכל שעה 🩷 תודה!"</p>
+          <div class="review-meta"><strong>ניצן קהת דניאלה</strong><span>10.04.2025</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CONTACT ---------- -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-info">
+        <span class="eyebrow on-ink">בואו נתחיל</span>
+        <h2>מוכנים לתכנן<br>את הטיול הבא?</h2>
+        <p>השאירו פרטים ואחזור אליכם תוך יום עסקים אחד עם כמה רעיונות ראשוניים למסלול.</p>
+        <div class="contact-list">
+          <a href="tel:0528403104">052-8403104</a>
+          <a href="https://wa.me/+972528403104?text=%D7%90%D7%94%D7%9C%D7%9F" target="_blank" rel="noopener">וואטסאפ ישיר לסגירת דיל</a>
+          <a href="https://bit.ly/3YL9hh5" target="_blank" rel="noopener">קבוצת הדילים בוואטסאפ</a>
+          <a href="https://bit.ly/41uxARE" target="_blank" rel="noopener">עקבו בפייסבוק</a>
+          <a href="https://www.instagram.com/moroshabat_tours" target="_blank" rel="noopener">עקבו באינסטגרם</a>
+        </div>
+      </div>
+      <form id="contactForm">
+        <div class="form-two">
+          <div class="form-row">
+            <label for="name-input">שם מלא</label>
+            <input id="name-input" name="name" type="text" placeholder="השם שלך" required="">
+          </div>
+          <div class="form-row">
+            <label for="phone-input">טלפון</label>
+            <input id="phone-input" name="phone" type="tel" placeholder="050-0000000" required="">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="destination-select">יעד חלומות</label>
+          <select id="destination-select" name="destination">
+            <option>עדיין לא בטוח/ה</option>
+            <option>אירופה</option>
+            <option>איים טרופיים</option>
+            <option>ספארי ואפריקה</option>
+            <option>עיר גדולה</option>
+            <option>ירח דבש</option>
+            <option>אחר</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="message-input">כמה מילים על הטיול שבראש שלכם</label>
+          <textarea id="message-input" name="message" placeholder="תאריכים, מספר נוסעים, תקציב משוער..."></textarea>
+        </div>
+        <a href="#" class="btn" id="sendInquiryBtn">שליחת פנייה בוואטסאפ <span class="btn-arrow">←</span></a>
+        <p class="form-note">בלחיצה על הכפתור ייפתח וואטסאפ עם כל הפרטים שמילאתם, מוכן לשליחה אליי.</p>
+        <p class="form-fallback" id="formFallback">וואטסאפ לא נפתח? אפשר לפנות ישירות ב<a href="https://wa.me/+972528403104?text=%D7%90%D7%94%D7%9C%D7%9F" target="_blank" rel="noopener">קישור הזה</a>.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;justify-content:center;">
+      <a href="#top" class="wordmark">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11L21 3L13 21L11 13L3 11Z"/></svg>
+        </span>
+        <span class="logo-text">
+          <strong>MORO<span class="lg-light">SHABAT</span></strong>
+          <span class="logo-tag">יפעת מורוביץ · נסיעות</span>
+        </span>
+      </a>
+    </div>
+    <div class="social-icons">
+      <a href="https://bit.ly/41uxARE" target="_blank" rel="noopener" aria-label="פייסבוק">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.4c0-.87.24-1.46 1.5-1.46H16.6V4.35C16.3 4.31 15.3 4.22 14.1 4.22c-2.4 0-4.05 1.47-4.05 4.17V10.5H7.5v3h2.55V21h3.45z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/moroshabat_tours" target="_blank" rel="noopener" aria-label="אינסטגרם">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="https://wa.me/+972528403104?text=%D7%90%D7%94%D7%9C%D7%9F" target="_blank" rel="noopener" aria-label="וואטסאפ">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5a8.4 8.4 0 0 0-7.2 12.7L3.5 20.5l4.4-1.3A8.4 8.4 0 1 0 12 3.5zm4.9 11.9c-.2.6-1.2 1.1-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.5-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.7 1.7.8 1.8.1.2.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.4.2.5.3.1.2.1.6-.1 1.2z"/></svg>
+      </a>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות</span>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-bar">
+  <span>לתכנון אישי של הטיול הבא שלכם</span>
+  <div class="sb-phone">
+    <a href="tel:0528403104">052-8403104</a>
+    <a href="#contact" class="btn">יצירת קשר</a>
+  </div>
+</div>
+
+<div class="deal-modal-overlay" id="dealModalOverlay" hidden="" role="dialog" aria-modal="true">
+  <div class="deal-modal">
+    <button type="button" class="deal-modal-close" id="dealModalClose" aria-label="סגירה">✕</button>
+    <img class="deal-modal-img" id="dealModalImg" src="" alt="">
+    <div class="deal-modal-body" id="dealModalBody"></div>
+  </div>
+</div>
+</div>
+
+<script>
+  (function(){
+    var nav = document.getElementById('siteNav');
+    function onScroll(){
+      if (window.scrollY > 40) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+
+    var toggle = document.getElementById('navToggle');
+    if (toggle && nav) {
+      toggle.addEventListener('click', function(){
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+      document.querySelectorAll('#navMobilePanel a').forEach(function(a){
+        a.addEventListener('click', function(){ nav.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); });
+      });
+    }
+
+    var form = document.getElementById('contactForm');
+    var sendBtn = document.getElementById('sendInquiryBtn');
+    if (form && sendBtn) {
+      sendBtn.addEventListener('click', function(e){
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          form.reportValidity();
+          return;
+        }
+
+        var name = (form.name.value || '').trim();
+        var phone = (form.phone.value || '').trim();
+        var destination = form.destination.value;
+        var message = (form.message.value || '').trim();
+
+        // Build the WhatsApp message and set the href synchronously, right
+        // here inside the click handler, so the browser treats this as a
+        // genuine user-gesture navigation. Setting it async (e.g. after an
+        // await) or using window.open() gets silently blocked in some
+        // viewers — this is why we don't do either.
+        var lines = [
+          'היי יפעת! אשמח לקבל הצעה לטיול 🙂',
+          'שם: ' + name,
+          'טלפון: ' + phone,
+          'יעד חלומות: ' + destination
+        ];
+        if (message) lines.push('עוד פרטים: ' + message);
+        sendBtn.href = 'https://wa.me/+972528403104?text=' + encodeURIComponent(lines.join('\n'));
+
+        form.reset();
+      });
+    }
+
+    // ---------- Deal details modal ----------
+    var DEALS = {
+      'bahamas': {
+        tag: 'קרוז',
+        title: 'הפלגה קסומה לבהאמס',
+        image: 'pkg-beach.jpg',
+        dates: '31/01/27–05/02/27',
+        desc: 'בורחים מהחורף אל השמש, חופי הטורקיז והאווירה הקאריבית! שיט מפנק על האונייה Norwegian Joy מבית Norwegian Cruise Line.',
+        itinerary: [
+          { day:'31.01', text:'יציאה ממיאמי, פלורידה' },
+          { day:'01.02', text:'יום כיף בים — מתקנים, מופעים וקולינריה משובחת' },
+          { day:'02.02', text:'עגינה באי הפרטי Great Stirrup Cay' },
+          { day:'03.02', text:'יום כיף בים נוסף — Relax & Recharge' },
+          { day:'04.02', text:'נאסאו, בהאמס — קניות, חופים ותרבות מקומית' },
+          { day:'05.02', text:'חזרה למיאמי' }
+        ],
+        priceTiers: [
+          'חדר פנימי — החל מ-$477 לאדם',
+          'חדר עם חלון לים — החל מ-$507 לאדם',
+          'חדר עם מרפסת — החל מ-$577 לאדם',
+          'סוויטה מפנקת — החל מ-$619 לאדם'
+        ],
+        note: 'המחירים לאדם בחדר זוגי. המלאי במחירים אלו מוגבל ביותר והחדרים נתפסים מהר.'
+      },
+      'vienna-sukkot': {
+        tag: 'כשר למהדרין',
+        title: 'סוכות כשר בוינה',
+        image: 'pkg-vienna.jpg',
+        dates: '27/09–01/10 (ראשון עד חמישי)',
+        desc: 'חוגגים את סוכות בלב האזור היהודי בוינה — חופשה כשרה, מפנקת ומושלמת לכל המשפחה. טיסות ישירות ונוחות: הלוך 06:00, חזור 00:30.',
+        facts: [
+          'מלון Vayalen Boutique Hotel, חדר QUEEN, לינה + ארוחת בוקר',
+          'שופץ ב-2024, בעיצוב מודרני וחם; כשרות מהדרין ומתאים לשומרי שבת',
+          'ברובע ה-2, דקת הליכה מהמטרו U2 Taborstraße, קרוב לפראטר, לאוגרטן ולעיר העתיקה',
+          'כולל כבודה: תיק גב עד 8 ק״ג + מזוודה לבטן המטוס עד 23 ק״ג'
+        ],
+        priceTiers: [ 'לינה + ארוחת בוקר — החל מ-4,968 ₪ לאדם בחדר זוגי' ],
+        note: 'המקומות מוגבלים. עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
+      },
+      'rccl-med': {
+        tag: 'קרוז',
+        title: 'קרוז סוכות 2027 בים התיכון',
+        image: 'pkg-cruise.jpg',
+        dates: '17/10/27–24/10/27 (סוכות)',
+        desc: 'חג ברמה אחרת על ה-Legend of the Seas מבית Royal Caribbean — פינוק ללא פשרות, קולינריה משובחת, מופעים בינלאומיים והיעדים היפים באירופה, הכל בכרטיס אחד. יציאה וחזרה מברצלונה.',
+        itinerary: [
+          { day:'יום 1', text:'ברצלונה, ספרד — עלייה לספינה ויציאה לדרך' },
+          { day:'יום 2', text:'פלמה דה מיורקה, ספרד' },
+          { day:'יום 3', text:'פרובאנס (מרסיי), צרפת' },
+          { day:'יום 4', text:'פירנצה / פיזה (לה ספציה), איטליה' },
+          { day:'יום 5', text:'רומא (צ׳יוויטווקיה), איטליה' },
+          { day:'יום 6', text:'נאפולי, איטליה' },
+          { day:'יום 7', text:'יום שייט ופינוק בים' },
+          { day:'יום 8', text:'חזרה לברצלונה' }
+        ],
+        priceTiers: [
+          'חדר פנימי — החל מ-$3,705 לזוג',
+          'מרפסת אינפיניטי לסנטרל פארק — החל מ-$4,984 לזוג',
+          'מרפסת לים (מובטח) — החל מ-$4,600 לזוג'
+        ],
+        note: 'המחירים לזוג, הכל כלול. המקומות מוגבלים — סגרו מראש.'
+      },
+      'norwegian-epic': {
+        tag: 'קרוז',
+        title: 'קרוז קלאסי באירופה',
+        image: 'pkg-cruise.jpg',
+        dates: '02/05–08/05 (מאי)',
+        desc: 'שייט קלאסי בים התיכון על ה-Norwegian Epic המפוארת — ערי נמל מדהימות, היסטוריה, קולינריה משובחת ופינוק ללא הפסקה בים.',
+        route: ['ברצלונה','פלמה דה מיורקה','יום כיף בים','ולטה','לה גולט','פלרמו','נאפולי','צ׳יוויטווקיה (רומא)'],
+        priceTiers: [
+          'חדר פנימי — החל מ-$1,209 לאדם',
+          'חדר עם מרפסת — החל מ-$1,579 לאדם'
+        ],
+        note: 'המקומות מוגבלים — סגרו את החופשה שלכם מראש.'
+      },
+      'baku-dec13': {
+        tag: 'מבצע',
+        title: 'שווקי חג המולד בבאקו',
+        image: 'pkg-baku.webp',
+        dates: '13/12–17/12 (ראשון עד חמישי)',
+        desc: 'חופשת לינה בלבד בבאקו. טיסות ישירות ונוחות: הלוך 13:30, חזור 21:25.',
+        facts: [
+          'המחיר כולל תיק גב עד 5 ק״ג + טרולי עד 10 ק״ג',
+          'מלון Intercontinental, חדר King with Lounge Access — מזנון פתוח כל היום ועוד הטבות, לינה בלבד',
+          'מלון נוסף לבחירה: JW Marriott, חדר King City View, לינה + ארוחת בוקר'
+        ],
+        priceTiers: [
+          'מלון Intercontinental · King with Lounge Access — החל מ-3,362 ₪ לאדם בחדר זוגי'
+        ],
+        note: 'עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
+      },
+      'baku-dec10': {
+        tag: 'סופ״ש',
+        title: 'סופש אמצע דצמבר בבאקו',
+        image: 'pkg-baku.webp',
+        dates: '10/12–14/12 (חמישי עד שני)',
+        desc: 'סופש קצר ומושלם בבאקו. טיסות ישירות ונוחות: הלוך 13:30, חזור 21:25.',
+        facts: [
+          'המחיר כולל תיק גב עד 5 ק״ג + טרולי עד 10 ק״ג',
+          'מלון Intercontinental, חדר King with Lounge Access — מזנון פתוח כל היום ועוד הטבות, לינה בלבד',
+          'מלון נוסף לבחירה: JW Marriott, חדר King City View, לינה + ארוחת בוקר'
+        ],
+        priceTiers: [
+          'מלון Intercontinental · King with Lounge Access — החל מ-2,808 ₪ לאדם בחדר זוגי',
+          'מלון JW Marriott · King City View, לינה + ארוחת בוקר — החל מ-3,682 ₪ לאדם בחדר זוגי'
+        ],
+        note: 'עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
+      }
+    };
+
+    var dealModalOverlay = document.getElementById('dealModalOverlay');
+    var dealModalImg = document.getElementById('dealModalImg');
+    var dealModalBody = document.getElementById('dealModalBody');
+    var dealModalCloseBtn = document.getElementById('dealModalClose');
+
+    function renderDealModal(id){
+      var d = DEALS[id];
+      if (!d) return;
+
+      var body = '';
+      body += '<span class="deal-modal-tag">' + escapeHtml(d.tag) + '</span>';
+      body += '<h3>' + escapeHtml(d.title) + '</h3>';
+      body += '<p class="deal-modal-dates">' + escapeHtml(d.dates) + '</p>';
+      body += '<p class="deal-modal-desc">' + escapeHtml(d.desc) + '</p>';
+
+      if (d.itinerary) {
+        body += '<ul class="deal-itinerary">' + d.itinerary.map(function(it){
+          return '<li><span class="day">' + escapeHtml(it.day) + '</span><span>' + escapeHtml(it.text) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      if (d.route) {
+        body += '<p class="deal-modal-desc"><strong>מסלול: </strong>' + d.route.map(escapeHtml).join(' · ') + '</p>';
+      }
+      if (d.facts) {
+        body += '<ul class="deal-itinerary">' + d.facts.map(function(f){
+          return '<li><span class="day">•</span><span>' + escapeHtml(f) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      if (d.priceTiers) {
+        body += '<div class="deal-price-tiers">' + d.priceTiers.map(function(p){
+          return '<div>' + escapeHtml(p) + '</div>';
+        }).join('') + '</div>';
+      }
+      if (d.note) body += '<p class="deal-note">' + escapeHtml(d.note) + '</p>';
+      body += '<a href="#contact" class="btn" id="dealCtaLink">יצירת קשר לרכישה <span class="btn-arrow">←</span></a>';
+
+      dealModalImg.src = d.image;
+      dealModalImg.alt = d.title;
+      dealModalBody.innerHTML = body;
+    }
+
+    function openDealModal(id){
+      renderDealModal(id);
+      if (dealModalOverlay) {
+        dealModalOverlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeDealModal(){
+      if (dealModalOverlay) {
+        dealModalOverlay.hidden = true;
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.querySelectorAll('.deal-open-link').forEach(function(a){
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        openDealModal(a.getAttribute('data-deal'));
+      });
+    });
+    if (dealModalCloseBtn) dealModalCloseBtn.addEventListener('click', closeDealModal);
+    if (dealModalOverlay) {
+      dealModalOverlay.addEventListener('click', function(e){
+        if (e.target === dealModalOverlay) closeDealModal();
+      });
+    }
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && dealModalOverlay && !dealModalOverlay.hidden) closeDealModal();
+    });
+    document.addEventListener('click', function(e){
+      var cta = e.target.closest && e.target.closest('#dealCtaLink');
+      if (cta) closeDealModal();
+    });
+
+    function escapeHtml(str){
+      return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+      });
+    }
+  })();
+</script>
