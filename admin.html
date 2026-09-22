@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול חבילות — moroshabat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
+<style>
+  :root{
+    --paper:#ffffff;
+    --ink:#0b2b27;
+    --ink-soft:#0e3733;
+    --teal:#0c8479;
+    --teal-dark:#0a6b62;
+    --green:#0e3d38;
+    --yellow:#ffd400;
+    --yellow-ink:#241d00;
+    --muted:#5b6f6c;
+    --line:#e3e9e7;
+    --danger:#c0392b;
+    --radius:14px;
+    --shadow:0 10px 30px rgba(10,40,35,.08);
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Heebo',system-ui,sans-serif; background:#f4f7f6; color:var(--ink); }
+  a{ color:inherit; }
+  .topbar{ background:var(--green); color:#fff; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+  .topbar .brand{ font-weight:800; }
+  .topbar .brand b{ color:var(--yellow); }
+  .wrap{ max-width:980px; margin:0 auto; padding:28px 20px 80px; }
+  .card{ background:var(--paper); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; margin-bottom:20px; }
+  h1{ font-size:1.4rem; margin:0 0 6px; }
+  h2{ font-size:1.15rem; margin:0 0 16px; }
+  p.hint{ color:var(--muted); font-size:.88rem; line-height:1.6; margin:4px 0 18px; }
+  label{ display:block; font-weight:700; font-size:.85rem; margin:14px 0 6px; }
+  input[type=text], input[type=password], input[type=number], textarea, select{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:.92rem; background:#fff;
+  }
+  textarea{ resize:vertical; min-height:70px; }
+  .row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .row > *{ flex:1; min-width:160px; }
+  .btn{ display:inline-flex; align-items:center; gap:6px; background:var(--teal-dark); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-weight:700; font-size:.9rem; cursor:pointer; text-decoration:none; }
+  .btn:hover{ background:var(--teal); }
+  .btn.secondary{ background:#eef2f1; color:var(--ink); }
+  .btn.secondary:hover{ background:#e2e8e6; }
+  .btn.danger{ background:var(--danger); }
+  .btn.danger:hover{ background:#a5311f; }
+  .btn.small{ padding:6px 12px; font-size:.8rem; }
+  .btn[disabled]{ opacity:.55; cursor:not-allowed; }
+  .toolbar{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+  .deal-row{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); }
+  .deal-row:last-child{ border-bottom:none; }
+  .deal-row img{ width:64px; height:64px; object-fit:cover; border-radius:8px; flex-shrink:0; background:#eee; }
+  .deal-row .info{ flex:1; min-width:0; }
+  .deal-row .info .title{ font-weight:700; }
+  .deal-row .info .meta{ color:var(--muted); font-size:.82rem; }
+  .deal-row.inactive{ opacity:.5; }
+  .tag-pill{ display:inline-block; background:var(--yellow); color:var(--yellow-ink); font-size:.68rem; font-weight:700; padding:3px 9px; border-radius:100px; margin-inline-start:8px; }
+  .list-editor .item{ display:flex; gap:8px; margin-bottom:8px; align-items:center; }
+  .list-editor .item input{ flex:1; }
+  .list-editor .item.itinerary input.day{ flex:0 0 90px; }
+  .remove-btn{ background:none; border:none; color:var(--danger); font-size:1.1rem; cursor:pointer; padding:4px 8px; flex-shrink:0; }
+  .add-row-btn{ background:none; border:1px dashed var(--line); color:var(--teal-dark); font-weight:700; font-size:.82rem; padding:8px; border-radius:8px; width:100%; cursor:pointer; margin-top:4px; }
+  .add-row-btn:hover{ background:#f2f8f7; }
+  .status{ font-size:.85rem; padding:10px 14px; border-radius:8px; margin-bottom:16px; }
+  .status.error{ background:#fdecea; color:var(--danger); }
+  .status.ok{ background:#e9f7ef; color:#1e7e42; }
+  .status.info{ background:#eef4f8; color:#2b5a7a; }
+  fieldset{ border:1px solid var(--line); border-radius:10px; padding:14px 16px 16px; margin-top:18px; }
+  legend{ font-weight:700; font-size:.88rem; padding:0 6px; }
+  .img-preview{ width:100%; max-width:260px; border-radius:10px; margin-top:8px; display:block; }
+  .checkbox-row{ display:flex; align-items:center; gap:8px; margin-top:16px; }
+  .checkbox-row input{ width:auto; }
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><b>MORO</b>SHABAT · ניהול חבילות</div>
+  <button class="btn secondary small" id="logoutBtn" hidden>התנתקות</button>
+</div>
+
+<div class="wrap">
+
+  <!-- ---------- Login ---------- -->
+  <div class="card" id="loginCard">
+    <h1>התחברות לניהול</h1>
+    <div id="loginStatus"></div>
+
+    <!-- Returning admin: username + password only -->
+    <div id="loginMode" hidden>
+      <p class="hint">מזינים שם משתמש וסיסמה כדי להיכנס לניהול החבילות.</p>
+      <label for="loginUsername">שם משתמש</label>
+      <input type="text" id="loginUsername" autocomplete="username">
+      <label for="loginPassword">סיסמה</label>
+      <input type="password" id="loginPassword" autocomplete="current-password">
+      <div style="margin-top:18px; display:flex; gap:10px;">
+        <button class="btn" id="loginBtn">התחברות</button>
+      </div>
+      <p class="hint" style="margin-top:22px;">
+        <button type="button" class="btn secondary small" id="resetVaultBtn">הגדרות מפתחים</button>
+        — רק להגדרה ראשונית או להחלפת הטוקן, לא לשימוש שוטף.
+      </p>
+    </div>
+
+    <!-- One-time developer setup: creates/rotates the shared login for all devices -->
+    <div id="setupMode" hidden>
+      <p class="hint">
+        הגדרה ראשונית (למפתח/ת בלבד, פעם אחת). בוחרים שם משתמש וסיסמה לחשבון הניהול, ומדביקים GitHub Personal Access Token (מסוג Fine-grained) עם הרשאת Contents: Read and write, מוגבל רק לריפו <b>moroshabat</b>.
+        אפשר ליצור טוקן כזה ב-
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
+        — תחת Repository access בחר "Only select repositories" ובחר moroshabat, ותחת Permissions בחר Contents: Read and write.
+        הסיסמה מצפינה את הטוקן ולא נשמרת בשום מקום כטקסט גלוי; הגרסה המוצפנת נשמרת בריפו עצמו, כך שמכאן והלאה אפשר להתחבר מכל מחשב או טלפון רק עם שם משתמש וסיסמה — בלי טוקן ובלי GitHub בכלל. לכן כדאי לבחור סיסמה חזקה וייחודית.
+      </p>
+      <label for="setupUsername">שם משתמש</label>
+      <input type="text" id="setupUsername" autocomplete="username">
+      <label for="setupPassword">סיסמה</label>
+      <input type="password" id="setupPassword" autocomplete="new-password">
+      <label for="setupOwner">בעלים / ארגון</label>
+      <input type="text" id="setupOwner" value="ifamorovitz-hue">
+      <label for="setupRepo">שם הריפו</label>
+      <input type="text" id="setupRepo" value="moroshabat">
+      <label for="setupBranch">Branch</label>
+      <input type="text" id="setupBranch" value="main">
+      <label for="setupToken">GitHub Token</label>
+      <input type="password" id="setupToken" placeholder="github_pat_...">
+      <div style="margin-top:18px;">
+        <button class="btn" id="setupBtn">יצירת חשבון ניהול</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- Dashboard ---------- -->
+  <div id="dashboard" hidden>
+    <div class="card">
+      <div class="toolbar">
+        <h1 style="margin:0;">החבילות שלי</h1>
+        <button class="btn" id="addDealBtn">+ הוספת חבילה</button>
+      </div>
+      <div id="dashStatus"></div>
+      <div id="dealsList"></div>
+    </div>
+  </div>
+
+  <!-- ---------- Editor ---------- -->
+  <div class="card" id="editorCard" hidden>
+    <h2 id="editorTitle">עריכת חבילה</h2>
+    <div id="editorStatus"></div>
+
+    <div class="row">
+      <div>
+        <label>כותרת</label>
+        <input type="text" id="f_title">
+      </div>
+      <div>
+        <label>תגית (למשל: קרוז / מבצע / כשר למהדרין)</label>
+        <input type="text" id="f_tag">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>משך (למשל: 5 ימים / 4 לילות)</label>
+        <input type="text" id="f_meta">
+      </div>
+      <div>
+        <label>תאריכים</label>
+        <input type="text" id="f_dates">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>מחיר (למשל: $477 או 4,968 ₪)</label>
+        <input type="text" id="f_price">
+      </div>
+      <div>
+        <label>הערת מחיר (למשל: לאדם / לזוג)</label>
+        <input type="text" id="f_priceNote">
+      </div>
+    </div>
+
+    <label>תיאור קצר (מוצג בכרטיס)</label>
+    <textarea id="f_cardDesc"></textarea>
+
+    <label>תיאור מלא (מוצג בחלון הפרטים)</label>
+    <textarea id="f_desc"></textarea>
+
+    <label>הערה (קטן, בתחתית חלון הפרטים)</label>
+    <textarea id="f_note"></textarea>
+
+    <label>תמונה</label>
+    <img id="f_imagePreview" class="img-preview" hidden>
+    <input type="file" id="f_imageFile" accept="image/*">
+
+    <div class="row">
+      <div>
+        <label>סדר תצוגה (מספר קטן = מוצג ראשון)</label>
+        <input type="number" id="f_order" value="1">
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="f_active" checked>
+      <label style="margin:0;" for="f_active">פעיל (מוצג באתר)</label>
+    </div>
+
+    <fieldset>
+      <legend>מסלול יום-יום (אופציונלי)</legend>
+      <div class="list-editor" id="itineraryEditor"></div>
+      <button type="button" class="add-row-btn" id="addItineraryRow">+ הוספת יום</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>עובדות / פרטים (אופציונלי — רשימת נקודות)</legend>
+      <div class="list-editor" id="factsEditor"></div>
+      <button type="button" class="add-row-btn" id="addFactRow">+ הוספת שורה</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>מסלול נמלים / יעדים (אופציונלי — רשימה קצרה)</legend>
+      <div class="list-editor" id="routeEditor"></div>
+      <button type="button" class="add-row-btn" id="addRouteRow">+ הוספת יעד</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>מדרגות מחיר (אופציונלי)</legend>
+      <div class="list-editor" id="tiersEditor"></div>
+      <button type="button" class="add-row-btn" id="addTierRow">+ הוספת שורה</button>
+    </fieldset>
+
+    <div style="margin-top:24px; display:flex; gap:10px;">
+      <button class="btn" id="saveDealBtn">שמירה</button>
+      <button class="btn secondary" id="cancelEditBtn">ביטול</button>
+      <button class="btn danger" id="deleteDealBtn" style="margin-inline-start:auto;">מחיקת חבילה</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var GH_API = 'https://api.github.com';
+  var DEALS_PATH = 'data/deals.json';
+  var VAULT_PATH = 'data/admin-auth.json';
+
+  var conn = null; // { owner, repo, branch, token }
+  var deals = [];
+  var dealsSha = null;
+  var editingIndex = -1; // -1 = new deal
+  var pendingImageFile = null;
+
+  var loginCard = document.getElementById('loginCard');
+  var dashboard = document.getElementById('dashboard');
+  var editorCard = document.getElementById('editorCard');
+  var logoutBtn = document.getElementById('logoutBtn');
+
+  function el(id){ return document.getElementById(id); }
+  function showStatus(containerId, type, msg){
+    var c = el(containerId);
+    if (!msg) { c.innerHTML = ''; return; }
+    c.innerHTML = '<div class="status ' + type + '">' + escapeHtml(msg) + '</div>';
+  }
+  function escapeHtml(str){
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  // ---------- base64 helpers (unicode-safe for JSON, raw for images) ----------
+  function b64EncodeUnicode(str){
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(_, p1){
+      return String.fromCharCode('0x' + p1);
+    }));
+  }
+  function b64DecodeUnicode(str){
+    return decodeURIComponent(atob(str).split('').map(function(c){
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  }
+  function fileToBase64(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  function safeFileName(name){
+    var parts = name.split('.');
+    var ext = parts.length > 1 ? parts.pop().toLowerCase() : '';
+    var base = parts.join('.').toLowerCase().replace(/[^a-z0-9-_]+/g,'-').replace(/^-+|-+$/g,'') || 'img';
+    return base + (ext ? '.' + ext : '');
+  }
+  function genId(){ return 'deal-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+  // ---------- GitHub API ----------
+  function ghHeaders(){
+    return { 'Authorization': 'token ' + conn.token, 'Accept': 'application/vnd.github+json' };
+  }
+  function ghGetFile(path){
+    return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path + '?ref=' + encodeURIComponent(conn.branch), {
+      headers: ghHeaders()
+    }).then(function(res){
+      if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+      return res.json();
+    });
+  }
+  function ghPutFile(path, base64Content, message, sha){
+    var body = { message: message, content: base64Content, branch: conn.branch };
+    if (sha) body.sha = sha;
+    return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path, {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+      body: JSON.stringify(body)
+    }).then(function(res){
+      if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+      return res.json();
+    });
+  }
+
+  // ---------- Local encryption (password protects the GitHub token) ----------
+  // The GitHub token is never written anywhere in plain text. The chosen password
+  // derives an AES-GCM key (via PBKDF2) that encrypts it; a wrong password simply
+  // fails to decrypt, so there's nothing to "check" in cleartext. The encrypted
+  // vault is committed into the repo (data/admin-auth.json) so ANY device can log
+  // in with just username+password — no GitHub token needed except during the
+  // one-time developer setup that creates/rotates it. Because the ciphertext is
+  // publicly fetchable, the iteration count is high and the password should be strong.
+  function bufToB64(buf){
+    var bytes = new Uint8Array(buf), binary = '';
+    for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+  function b64ToBuf(b64){
+    var binary = atob(b64), bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes.buffer;
+  }
+  function deriveKey(password, saltBuf){
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']).then(function(keyMaterial){
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: saltBuf, iterations: 300000, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    });
+  }
+  function encryptVaultPayload(password, payloadObj){
+    var salt = crypto.getRandomValues(new Uint8Array(16));
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    return deriveKey(password, salt).then(function(key){
+      var enc = new TextEncoder();
+      return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, enc.encode(JSON.stringify(payloadObj)));
+    }).then(function(cipherBuf){
+      return { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipherBuf) };
+    });
+  }
+  function decryptVaultPayload(password, vault){
+    var salt = b64ToBuf(vault.salt);
+    var iv = b64ToBuf(vault.iv);
+    return deriveKey(password, salt).then(function(key){
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, b64ToBuf(vault.data));
+    }).then(function(plainBuf){
+      return JSON.parse(new TextDecoder().decode(plainBuf));
+    });
+  }
+
+  // ---------- Vault storage: lives in the repo itself (data/admin-auth.json) ----------
+  // so the real admin (non-technical) only ever needs username+password, from any device.
+  var repoVault = null;
+
+  function fetchRepoVault(){
+    return fetch(VAULT_PATH, { cache: 'no-store' }).then(function(res){
+      return res.ok ? res.json() : null;
+    }).catch(function(){ return null; });
+  }
+  function saveVaultToRepo(vaultObj){
+    return ghGetFile(VAULT_PATH).then(function(existing){ return existing.sha; }, function(){ return null; })
+      .then(function(sha){
+        var content = b64EncodeUnicode(JSON.stringify(vaultObj, null, 2));
+        return ghPutFile(VAULT_PATH, content, 'עדכון פרטי התחברות ניהול', sha);
+      });
+  }
+
+  function showLoginUi(){
+    return fetchRepoVault().then(function(v){
+      repoVault = v;
+      if (v) {
+        el('setupMode').hidden = true;
+        el('loginMode').hidden = false;
+        el('loginUsername').value = v.username || '';
+      } else {
+        el('loginMode').hidden = true;
+        el('setupMode').hidden = false;
+      }
+    });
+  }
+
+  el('setupBtn').addEventListener('click', function(){
+    var username = el('setupUsername').value.trim();
+    var password = el('setupPassword').value;
+    var c = {
+      owner: el('setupOwner').value.trim(),
+      repo: el('setupRepo').value.trim(),
+      branch: el('setupBranch').value.trim() || 'main',
+      token: el('setupToken').value.trim()
+    };
+    if (!username || !password || !c.owner || !c.repo || !c.token) {
+      showStatus('loginStatus', 'error', 'יש למלא שם משתמש, סיסמה, בעלים, ריפו וטוקן.');
+      return;
+    }
+    if (password.length < 8) {
+      showStatus('loginStatus', 'error', 'הסיסמה הזו תגן על הגישה לאתר — כדאי לבחור סיסמה חזקה של 8 תווים לפחות.');
+      return;
+    }
+    showStatus('loginStatus', 'info', 'בודק את הטוקן…');
+    conn = c;
+    fetchDeals().then(function(){
+      return encryptVaultPayload(password, c);
+    }).then(function(encrypted){
+      encrypted.username = username;
+      return saveVaultToRepo(encrypted).then(function(){ return encrypted; });
+    }).then(function(encrypted){
+      repoVault = encrypted;
+      showStatus('loginStatus', '', '');
+      enterDashboard();
+    }).catch(function(err){
+      conn = null;
+      showStatus('loginStatus', 'error', 'ההתחברות נכשלה (בדקו את הטוקן/הריפו): ' + err.message);
+    });
+  });
+
+  el('loginBtn').addEventListener('click', function(){
+    var username = el('loginUsername').value.trim();
+    var password = el('loginPassword').value;
+    if (!repoVault || !username || !password || username.toLowerCase() !== String(repoVault.username || '').toLowerCase()) {
+      showStatus('loginStatus', 'error', 'שם משתמש או סיסמה שגויים.');
+      return;
+    }
+    showStatus('loginStatus', 'info', 'מתחבר…');
+    decryptVaultPayload(password, repoVault).then(function(c){
+      conn = c;
+      return fetchDeals();
+    }).then(function(){
+      showStatus('loginStatus', '', '');
+      el('loginPassword').value = '';
+      enterDashboard();
+    }).catch(function(err){
+      conn = null;
+      showStatus('loginStatus', 'error', 'שם משתמש או סיסמה שגויים, או שהטוקן השמור כבר לא תקף.');
+    });
+  });
+
+  el('resetVaultBtn').addEventListener('click', function(){
+    el('loginMode').hidden = true;
+    el('setupMode').hidden = false;
+    if (repoVault && repoVault.username) el('setupUsername').value = repoVault.username;
+    showStatus('loginStatus', '', '');
+  });
+
+  logoutBtn.addEventListener('click', function(){
+    conn = null;
+    deals = [];
+    dealsSha = null;
+    logoutBtn.hidden = true;
+    dashboard.hidden = true;
+    editorCard.hidden = true;
+    loginCard.hidden = false;
+    el('loginPassword').value = '';
+    el('setupMode').hidden = true;
+    el('loginMode').hidden = false;
+  });
+
+  function enterDashboard(){
+    loginCard.hidden = true;
+    editorCard.hidden = true;
+    dashboard.hidden = false;
+    logoutBtn.hidden = false;
+    renderDealsList();
+  }
+
+  function fetchDeals(){
+    return ghGetFile(DEALS_PATH).then(function(data){
+      dealsSha = data.sha;
+      deals = JSON.parse(b64DecodeUnicode(data.content));
+    });
+  }
+
+  function saveDeals(message){
+    var content = b64EncodeUnicode(JSON.stringify(deals, null, 2));
+    return ghPutFile(DEALS_PATH, content, message, dealsSha).then(function(res){
+      dealsSha = res.content.sha;
+    });
+  }
+
+  // ---------- Dashboard list ----------
+  function renderDealsList(){
+    var list = el('dealsList');
+    list.innerHTML = '';
+    var sorted = deals.map(function(d, i){ return { d: d, i: i }; })
+      .sort(function(a,b){ return (a.d.order||0) - (b.d.order||0); });
+
+    if (!sorted.length) {
+      list.innerHTML = '<p class="hint">אין עדיין חבילות. לחצו "הוספת חבילה" כדי להתחיל.</p>';
+      return;
+    }
+
+    sorted.forEach(function(item){
+      var d = item.d, i = item.i;
+      var row = document.createElement('div');
+      row.className = 'deal-row' + (d.active === false ? ' inactive' : '');
+      row.innerHTML =
+        '<img src="' + escapeHtml(d.image || '') + '" alt="">' +
+        '<div class="info">' +
+          '<div class="title">' + escapeHtml(d.title || '(ללא כותרת)') + '<span class="tag-pill">' + escapeHtml(d.tag || '') + '</span></div>' +
+          '<div class="meta">' + escapeHtml(d.price || '') + ' · ' + escapeHtml(d.dates || '') + (d.active === false ? ' · לא פעיל' : '') + '</div>' +
+        '</div>' +
+        '<button class="btn secondary small" data-edit="' + i + '">עריכה</button>';
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll('[data-edit]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openEditor(parseInt(btn.getAttribute('data-edit'), 10));
+      });
+    });
+  }
+
+  el('addDealBtn').addEventListener('click', function(){ openEditor(-1); });
+  el('cancelEditBtn').addEventListener('click', function(){
+    editorCard.hidden = true;
+    dashboard.hidden = false;
+  });
+
+  // ---------- List editors (itinerary / facts / route / tiers) ----------
+  function renderTextListEditor(containerId, arr){
+    var c = el(containerId);
+    c.innerHTML = '';
+    arr.forEach(function(val, idx){
+      var row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = '<input type="text" value="' + escapeHtml(val) + '"><button type="button" class="remove-btn">✕</button>';
+      row.querySelector('button').addEventListener('click', function(){ arr.splice(idx,1); renderTextListEditor(containerId, arr); });
+      row.querySelector('input').addEventListener('input', function(e){ arr[idx] = e.target.value; });
+      c.appendChild(row);
+    });
+  }
+  function renderItineraryEditor(arr){
+    var c = el('itineraryEditor');
+    c.innerHTML = '';
+    arr.forEach(function(item, idx){
+      var row = document.createElement('div');
+      row.className = 'item itinerary';
+      row.innerHTML =
+        '<input type="text" class="day" placeholder="יום / תאריך" value="' + escapeHtml(item.day) + '">' +
+        '<input type="text" placeholder="תיאור" value="' + escapeHtml(item.text) + '">' +
+        '<button type="button" class="remove-btn">✕</button>';
+      var inputs = row.querySelectorAll('input');
+      inputs[0].addEventListener('input', function(e){ arr[idx].day = e.target.value; });
+      inputs[1].addEventListener('input', function(e){ arr[idx].text = e.target.value; });
+      row.querySelector('button').addEventListener('click', function(){ arr.splice(idx,1); renderItineraryEditor(arr); });
+      c.appendChild(row);
+    });
+  }
+
+  var currentLists = { itinerary: [], facts: [], route: [], priceTiers: [] };
+
+  el('addItineraryRow').addEventListener('click', function(){ currentLists.itinerary.push({ day:'', text:'' }); renderItineraryEditor(currentLists.itinerary); });
+  el('addFactRow').addEventListener('click', function(){ currentLists.facts.push(''); renderTextListEditor('factsEditor', currentLists.facts); });
+  el('addRouteRow').addEventListener('click', function(){ currentLists.route.push(''); renderTextListEditor('routeEditor', currentLists.route); });
+  el('addTierRow').addEventListener('click', function(){ currentLists.priceTiers.push(''); renderTextListEditor('tiersEditor', currentLists.priceTiers); });
+
+  // ---------- Editor open/save/delete ----------
+  function openEditor(index){
+    editingIndex = index;
+    pendingImageFile = null;
+    showStatus('editorStatus', '', '');
+    var d = index >= 0 ? deals[index] : {
+      id: null, active: true, order: (deals.reduce(function(m,x){ return Math.max(m, x.order||0); }, 0) + 1),
+      tag:'', title:'', image:'', imageAlt:'', meta:'', cardDesc:'', price:'', priceNote:'', dates:'', desc:'', note:'',
+      itinerary: [], facts: [], route: [], priceTiers: []
+    };
+
+    el('editorTitle').textContent = index >= 0 ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
+    el('f_title').value = d.title || '';
+    el('f_tag').value = d.tag || '';
+    el('f_meta').value = d.meta || '';
+    el('f_dates').value = d.dates || '';
+    el('f_price').value = d.price || '';
+    el('f_priceNote').value = d.priceNote || '';
+    el('f_cardDesc').value = d.cardDesc || '';
+    el('f_desc').value = d.desc || '';
+    el('f_note').value = d.note || '';
+    el('f_order').value = d.order || 1;
+    el('f_active').checked = d.active !== false;
+    el('f_imageFile').value = '';
+    if (d.image) {
+      el('f_imagePreview').src = d.image;
+      el('f_imagePreview').hidden = false;
+    } else {
+      el('f_imagePreview').hidden = true;
+    }
+
+    currentLists = {
+      itinerary: (d.itinerary || []).map(function(x){ return { day:x.day, text:x.text }; }),
+      facts: (d.facts || []).slice(),
+      route: (d.route || []).slice(),
+      priceTiers: (d.priceTiers || []).slice()
+    };
+    renderItineraryEditor(currentLists.itinerary);
+    renderTextListEditor('factsEditor', currentLists.facts);
+    renderTextListEditor('routeEditor', currentLists.route);
+    renderTextListEditor('tiersEditor', currentLists.priceTiers);
+
+    el('deleteDealBtn').style.display = index >= 0 ? '' : 'none';
+
+    dashboard.hidden = true;
+    editorCard.hidden = false;
+    window.scrollTo(0,0);
+  }
+
+  el('f_imageFile').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    pendingImageFile = file || null;
+    if (file) {
+      var reader = new FileReader();
+      reader.onload = function(){ el('f_imagePreview').src = reader.result; el('f_imagePreview').hidden = false; };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  el('saveDealBtn').addEventListener('click', function(){
+    var title = el('f_title').value.trim();
+    if (!title) { showStatus('editorStatus', 'error', 'חייבים כותרת.'); return; }
+
+    var d = editingIndex >= 0 ? deals[editingIndex] : { id: genId() };
+    d.title = title;
+    d.tag = el('f_tag').value.trim();
+    d.meta = el('f_meta').value.trim();
+    d.dates = el('f_dates').value.trim();
+    d.price = el('f_price').value.trim();
+    d.priceNote = el('f_priceNote').value.trim();
+    d.cardDesc = el('f_cardDesc').value.trim();
+    d.desc = el('f_desc').value.trim();
+    d.note = el('f_note').value.trim();
+    d.order = parseInt(el('f_order').value, 10) || 1;
+    d.active = el('f_active').checked;
+    d.imageAlt = title;
+    d.itinerary = currentLists.itinerary.filter(function(x){ return x.day || x.text; });
+    d.facts = currentLists.facts.filter(Boolean);
+    d.route = currentLists.route.filter(Boolean);
+    d.priceTiers = currentLists.priceTiers.filter(Boolean);
+
+    var saveBtn = el('saveDealBtn');
+    saveBtn.disabled = true;
+    showStatus('editorStatus', 'info', 'שומר…');
+
+    var imageStep = pendingImageFile
+      ? uploadImage(pendingImageFile).then(function(path){ d.image = path; })
+      : Promise.resolve();
+
+    imageStep.then(function(){
+      if (editingIndex >= 0) {
+        deals[editingIndex] = d;
+      } else {
+        deals.push(d);
+        editingIndex = deals.length - 1;
+      }
+      return saveDeals((editingIndex >= 0 && d.id ? 'עדכון חבילה: ' : 'חבילה חדשה: ') + d.title);
+    }).then(function(){
+      showStatus('editorStatus', 'ok', 'נשמר! השינוי יעלה לאתר תוך דקה.');
+      renderDealsList();
+      setTimeout(function(){
+        editorCard.hidden = true;
+        dashboard.hidden = false;
+      }, 900);
+    }).catch(function(err){
+      showStatus('editorStatus', 'error', 'שמירה נכשלה: ' + err.message);
+    }).finally(function(){
+      saveBtn.disabled = false;
+    });
+  });
+
+  el('deleteDealBtn').addEventListener('click', function(){
+    if (editingIndex < 0) return;
+    if (!confirm('למחוק את החבילה הזו לצמיתות?')) return;
+    var d = deals[editingIndex];
+    deals.splice(editingIndex, 1);
+    showStatus('editorStatus', 'info', 'מוחק…');
+    saveDeals('מחיקת חבילה: ' + (d.title || '')).then(function(){
+      renderDealsList();
+      editorCard.hidden = true;
+      dashboard.hidden = false;
+    }).catch(function(err){
+      deals.splice(editingIndex, 0, d);
+      showStatus('editorStatus', 'error', 'מחיקה נכשלה: ' + err.message);
+    });
+  });
+
+  function uploadImage(file){
+    var path = 'uploads/' + Date.now() + '-' + safeFileName(file.name);
+    return fileToBase64(file).then(function(base64){
+      return ghPutFile(path, base64, 'העלאת תמונה: ' + file.name, null);
+    }).then(function(){ return path; });
+  }
+
+  // ---------- Boot ----------
+  showLoginUi();
+})();
+</script>
+</body>
+</html>

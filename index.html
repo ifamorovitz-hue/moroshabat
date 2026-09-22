@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>moroshabat — יפעת מורוביץ נסיעות — גרסה ב</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -177,6 +182,7 @@
   .packages-head p{ color:var(--muted-on-ink); max-width:40ch; margin-top:14px; }
 
   .pkg-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .pkg-loading{ grid-column:1/-1; text-align:center; color:var(--muted-on-ink); padding:24px 0; }
   @media (max-width:960px){ .pkg-grid{ grid-template-columns:1fr 1fr; } }
   @media (max-width:620px){ .pkg-grid{ grid-template-columns:1fr; } }
 
@@ -338,6 +344,8 @@
     .deal-itinerary li{ grid-template-columns:56px 1fr; }
   }
 </style>
+</head>
+<body>
 
 <div id="publicSite">
 <header class="site-nav" id="siteNav">
@@ -412,127 +420,8 @@
         <p>מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע — כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
       </div>
 
-      <div class="pkg-grid">
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-beach.jpg" alt="הפלגה קסומה לאיי בהאמס">
-            <span class="pkg-tag">קרוז</span>
-          </div>
-          <div class="pkg-body">
-            <h3>הפלגה קסומה לבהאמס</h3>
-            <p class="pkg-meta">6 ימים / 5 לילות</p>
-            <p class="pkg-desc">שייט על ה-Norwegian Joy — מיאמי, האי הפרטי Great Stirrup Cay ונאסאו.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">$477</span>
-                <span class="pkg-price-note">לאדם</span>
-              </span>
-              <span class="pkg-dates">31/01/27–05/02/27</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="bahamas">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-vienna.jpg" alt="חול המועד סוכות כשר בוינה">
-            <span class="pkg-tag">כשר למהדרין</span>
-          </div>
-          <div class="pkg-body">
-            <h3>סוכות כשר בוינה</h3>
-            <p class="pkg-meta">5 ימים / 4 לילות</p>
-            <p class="pkg-desc">לינה וארוחת בוקר במלון בוטיק ברובע היהודי, טיסות ישירות.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">4,968 ₪</span>
-                <span class="pkg-price-note">לאדם</span>
-              </span>
-              <span class="pkg-dates">27/09–01/10</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="vienna-sukkot">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-cruise.jpg" alt="קרוז סוכות בים התיכון">
-            <span class="pkg-tag">קרוז</span>
-          </div>
-          <div class="pkg-body">
-            <h3>קרוז סוכות 2027 בים התיכון</h3>
-            <p class="pkg-meta">8 ימים / 7 לילות</p>
-            <p class="pkg-desc">ברצלונה, מיורקה, פרובאנס, פירנצה, רומא ונאפולי על ה-Legend of the Seas.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">$3,705</span>
-                <span class="pkg-price-note">לזוג</span>
-              </span>
-              <span class="pkg-dates">17/10/27–24/10/27</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="rccl-med">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-cruise.jpg" alt="קרוז קלאסי באירופה">
-            <span class="pkg-tag">קרוז</span>
-          </div>
-          <div class="pkg-body">
-            <h3>קרוז קלאסי באירופה</h3>
-            <p class="pkg-meta">7 ימים / 6 לילות</p>
-            <p class="pkg-desc">ברצלונה, מיורקה, ולטה, פלרמו, נאפולי ורומא על ה-Norwegian Epic.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">$1,209</span>
-                <span class="pkg-price-note">לאדם</span>
-              </span>
-              <span class="pkg-dates">02/05–08/05</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="norwegian-epic">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-baku.webp" alt="שווקי חג המולד בבאקו">
-            <span class="pkg-tag">מבצע</span>
-          </div>
-          <div class="pkg-body">
-            <h3>שווקי חג המולד בבאקו</h3>
-            <p class="pkg-meta">5 ימים / 4 לילות</p>
-            <p class="pkg-desc">לינה בלבד במלון אינטרקונטיננטל, טיסות ישירות.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">3,362 ₪</span>
-                <span class="pkg-price-note">לאדם</span>
-              </span>
-              <span class="pkg-dates">13/12–17/12</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="baku-dec13">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
-        <article class="pkg-card">
-          <div class="pkg-media">
-            <img src="pkg-baku.webp" alt="סופש בבאקו">
-            <span class="pkg-tag">סופ״ש</span>
-          </div>
-          <div class="pkg-body">
-            <h3>סופש אמצע דצמבר בבאקו</h3>
-            <p class="pkg-meta">5 ימים / 4 לילות</p>
-            <p class="pkg-desc">לינה במלון אינטרקונטיננטל, טיסות ישירות.</p>
-            <div class="pkg-price-row">
-              <span class="pkg-price-wrap">
-                <span class="pkg-price">2,808 ₪</span>
-                <span class="pkg-price-note">לאדם</span>
-              </span>
-              <span class="pkg-dates">10/12–14/12</span>
-            </div>
-            <a href="#" class="pkg-cta deal-open-link" data-deal="baku-dec10">לפרטים ורכישה &gt;</a>
-          </div>
-        </article>
-
+      <div class="pkg-grid" id="pkgGrid">
+        <p class="pkg-loading" id="pkgLoading">טוען חבילות…</p>
       </div>
     </div>
   </section>
@@ -802,7 +691,7 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות</span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="admin.html" style="color:inherit;">ניהול</a></span>
     </div>
   </div>
 </footer>
@@ -878,115 +767,52 @@
       });
     }
 
-    // ---------- Deal details modal ----------
-    var DEALS = {
-      'bahamas': {
-        tag: 'קרוז',
-        title: 'הפלגה קסומה לבהאמס',
-        image: 'pkg-beach.jpg',
-        dates: '31/01/27–05/02/27',
-        desc: 'בורחים מהחורף אל השמש, חופי הטורקיז והאווירה הקאריבית! שיט מפנק על האונייה Norwegian Joy מבית Norwegian Cruise Line.',
-        itinerary: [
-          { day:'31.01', text:'יציאה ממיאמי, פלורידה' },
-          { day:'01.02', text:'יום כיף בים — מתקנים, מופעים וקולינריה משובחת' },
-          { day:'02.02', text:'עגינה באי הפרטי Great Stirrup Cay' },
-          { day:'03.02', text:'יום כיף בים נוסף — Relax & Recharge' },
-          { day:'04.02', text:'נאסאו, בהאמס — קניות, חופים ותרבות מקומית' },
-          { day:'05.02', text:'חזרה למיאמי' }
-        ],
-        priceTiers: [
-          'חדר פנימי — החל מ-$477 לאדם',
-          'חדר עם חלון לים — החל מ-$507 לאדם',
-          'חדר עם מרפסת — החל מ-$577 לאדם',
-          'סוויטה מפנקת — החל מ-$619 לאדם'
-        ],
-        note: 'המחירים לאדם בחדר זוגי. המלאי במחירים אלו מוגבל ביותר והחדרים נתפסים מהר.'
-      },
-      'vienna-sukkot': {
-        tag: 'כשר למהדרין',
-        title: 'סוכות כשר בוינה',
-        image: 'pkg-vienna.jpg',
-        dates: '27/09–01/10 (ראשון עד חמישי)',
-        desc: 'חוגגים את סוכות בלב האזור היהודי בוינה — חופשה כשרה, מפנקת ומושלמת לכל המשפחה. טיסות ישירות ונוחות: הלוך 06:00, חזור 00:30.',
-        facts: [
-          'מלון Vayalen Boutique Hotel, חדר QUEEN, לינה + ארוחת בוקר',
-          'שופץ ב-2024, בעיצוב מודרני וחם; כשרות מהדרין ומתאים לשומרי שבת',
-          'ברובע ה-2, דקת הליכה מהמטרו U2 Taborstraße, קרוב לפראטר, לאוגרטן ולעיר העתיקה',
-          'כולל כבודה: תיק גב עד 8 ק״ג + מזוודה לבטן המטוס עד 23 ק״ג'
-        ],
-        priceTiers: [ 'לינה + ארוחת בוקר — החל מ-4,968 ₪ לאדם בחדר זוגי' ],
-        note: 'המקומות מוגבלים. עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
-      },
-      'rccl-med': {
-        tag: 'קרוז',
-        title: 'קרוז סוכות 2027 בים התיכון',
-        image: 'pkg-cruise.jpg',
-        dates: '17/10/27–24/10/27 (סוכות)',
-        desc: 'חג ברמה אחרת על ה-Legend of the Seas מבית Royal Caribbean — פינוק ללא פשרות, קולינריה משובחת, מופעים בינלאומיים והיעדים היפים באירופה, הכל בכרטיס אחד. יציאה וחזרה מברצלונה.',
-        itinerary: [
-          { day:'יום 1', text:'ברצלונה, ספרד — עלייה לספינה ויציאה לדרך' },
-          { day:'יום 2', text:'פלמה דה מיורקה, ספרד' },
-          { day:'יום 3', text:'פרובאנס (מרסיי), צרפת' },
-          { day:'יום 4', text:'פירנצה / פיזה (לה ספציה), איטליה' },
-          { day:'יום 5', text:'רומא (צ׳יוויטווקיה), איטליה' },
-          { day:'יום 6', text:'נאפולי, איטליה' },
-          { day:'יום 7', text:'יום שייט ופינוק בים' },
-          { day:'יום 8', text:'חזרה לברצלונה' }
-        ],
-        priceTiers: [
-          'חדר פנימי — החל מ-$3,705 לזוג',
-          'מרפסת אינפיניטי לסנטרל פארק — החל מ-$4,984 לזוג',
-          'מרפסת לים (מובטח) — החל מ-$4,600 לזוג'
-        ],
-        note: 'המחירים לזוג, הכל כלול. המקומות מוגבלים — סגרו מראש.'
-      },
-      'norwegian-epic': {
-        tag: 'קרוז',
-        title: 'קרוז קלאסי באירופה',
-        image: 'pkg-cruise.jpg',
-        dates: '02/05–08/05 (מאי)',
-        desc: 'שייט קלאסי בים התיכון על ה-Norwegian Epic המפוארת — ערי נמל מדהימות, היסטוריה, קולינריה משובחת ופינוק ללא הפסקה בים.',
-        route: ['ברצלונה','פלמה דה מיורקה','יום כיף בים','ולטה','לה גולט','פלרמו','נאפולי','צ׳יוויטווקיה (רומא)'],
-        priceTiers: [
-          'חדר פנימי — החל מ-$1,209 לאדם',
-          'חדר עם מרפסת — החל מ-$1,579 לאדם'
-        ],
-        note: 'המקומות מוגבלים — סגרו את החופשה שלכם מראש.'
-      },
-      'baku-dec13': {
-        tag: 'מבצע',
-        title: 'שווקי חג המולד בבאקו',
-        image: 'pkg-baku.webp',
-        dates: '13/12–17/12 (ראשון עד חמישי)',
-        desc: 'חופשת לינה בלבד בבאקו. טיסות ישירות ונוחות: הלוך 13:30, חזור 21:25.',
-        facts: [
-          'המחיר כולל תיק גב עד 5 ק״ג + טרולי עד 10 ק״ג',
-          'מלון Intercontinental, חדר King with Lounge Access — מזנון פתוח כל היום ועוד הטבות, לינה בלבד',
-          'מלון נוסף לבחירה: JW Marriott, חדר King City View, לינה + ארוחת בוקר'
-        ],
-        priceTiers: [
-          'מלון Intercontinental · King with Lounge Access — החל מ-3,362 ₪ לאדם בחדר זוגי'
-        ],
-        note: 'עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
-      },
-      'baku-dec10': {
-        tag: 'סופ״ש',
-        title: 'סופש אמצע דצמבר בבאקו',
-        image: 'pkg-baku.webp',
-        dates: '10/12–14/12 (חמישי עד שני)',
-        desc: 'סופש קצר ומושלם בבאקו. טיסות ישירות ונוחות: הלוך 13:30, חזור 21:25.',
-        facts: [
-          'המחיר כולל תיק גב עד 5 ק״ג + טרולי עד 10 ק״ג',
-          'מלון Intercontinental, חדר King with Lounge Access — מזנון פתוח כל היום ועוד הטבות, לינה בלבד',
-          'מלון נוסף לבחירה: JW Marriott, חדר King City View, לינה + ארוחת בוקר'
-        ],
-        priceTiers: [
-          'מלון Intercontinental · King with Lounge Access — החל מ-2,808 ₪ לאדם בחדר זוגי',
-          'מלון JW Marriott · King City View, לינה + ארוחת בוקר — החל מ-3,682 ₪ לאדם בחדר זוגי'
-        ],
-        note: 'עיכובים בטיסה באחריות חברת התעופה בלבד. ט.ל.ח.'
-      }
-    };
+    // ---------- Deals: loaded from data/deals.json ----------
+    var DEALS = {};
+    var pkgGrid = document.getElementById('pkgGrid');
+    var pkgLoading = document.getElementById('pkgLoading');
+
+    function renderPkgCard(d){
+      var article = document.createElement('article');
+      article.className = 'pkg-card';
+      article.innerHTML =
+        '<div class="pkg-media">' +
+          '<img src="' + escapeHtml(d.image) + '" alt="' + escapeHtml(d.imageAlt || d.title) + '">' +
+          '<span class="pkg-tag">' + escapeHtml(d.tag) + '</span>' +
+        '</div>' +
+        '<div class="pkg-body">' +
+          '<h3>' + escapeHtml(d.title) + '</h3>' +
+          '<p class="pkg-meta">' + escapeHtml(d.meta) + '</p>' +
+          '<p class="pkg-desc">' + escapeHtml(d.cardDesc) + '</p>' +
+          '<div class="pkg-price-row">' +
+            '<span class="pkg-price-wrap">' +
+              '<span class="pkg-price">' + escapeHtml(d.price) + '</span>' +
+              '<span class="pkg-price-note">' + escapeHtml(d.priceNote) + '</span>' +
+            '</span>' +
+            '<span class="pkg-dates">' + escapeHtml(d.dates) + '</span>' +
+          '</div>' +
+          '<a href="#" class="pkg-cta deal-open-link" data-deal="' + escapeHtml(d.id) + '">לפרטים ורכישה &gt;</a>' +
+        '</div>';
+      return article;
+    }
+
+    function loadDeals(){
+      fetch('data/deals.json', { cache: 'no-store' })
+        .then(function(r){ return r.json(); })
+        .then(function(list){
+          var active = list.filter(function(d){ return d.active !== false; });
+          active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
+          DEALS = {};
+          pkgGrid.innerHTML = '';
+          active.forEach(function(d){
+            DEALS[d.id] = d;
+            pkgGrid.appendChild(renderPkgCard(d));
+          });
+        })
+        .catch(function(){
+          if (pkgLoading) pkgLoading.textContent = 'לא ניתן לטעון את החבילות כרגע.';
+        });
+    }
 
     var dealModalOverlay = document.getElementById('dealModalOverlay');
     var dealModalImg = document.getElementById('dealModalImg');
@@ -1043,11 +869,12 @@
       }
     }
 
-    document.querySelectorAll('.deal-open-link').forEach(function(a){
-      a.addEventListener('click', function(e){
+    document.addEventListener('click', function(e){
+      var link = e.target.closest && e.target.closest('.deal-open-link');
+      if (link) {
         e.preventDefault();
-        openDealModal(a.getAttribute('data-deal'));
-      });
+        openDealModal(link.getAttribute('data-deal'));
+      }
     });
     if (dealModalCloseBtn) dealModalCloseBtn.addEventListener('click', closeDealModal);
     if (dealModalOverlay) {
@@ -1068,5 +895,9 @@
         return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
       });
     }
+
+    loadDeals();
   })();
 </script>
+</body>
+</html>
