@@ -616,7 +616,7 @@
   // derives an AES-GCM key (via PBKDF2) that encrypts it; a wrong password simply
   // fails to decrypt, so there's nothing to "check" in cleartext. The encrypted
   // vault is committed into the repo (data/admin-auth.json) so ANY device can log
-  // in with just username+password — no GitHub token needed except during the
+  // in with just username+password no GitHub token needed except during the
   // one-time developer setup that creates/rotates it. Because the ciphertext is
   // publicly fetchable, the iteration count is high and the password should be strong.
   function bufToB64(buf){
@@ -926,7 +926,7 @@
     selDateTo = d.dateTo || null;
     updateDateRangeButtonLabel();
     // Legacy deals only have the old free-text `dates` string with no
-    // structured dateFrom/dateTo — carry it into the note field so nothing
+    // structured dateFrom/dateTo carry it into the note field so nothing
     // is lost, rather than guessing a parse of it.
     el('f_dateNote').value = d.dateNote || (!d.dateFrom && d.dates ? d.dates : '');
     updateDatesPreview();

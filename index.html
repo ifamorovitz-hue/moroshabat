@@ -977,7 +977,7 @@
         // here inside the click handler, so the browser treats this as a
         // genuine user-gesture navigation. Setting it async (e.g. after an
         // await) or using window.open() gets silently blocked in some
-        // viewers — this is why we don't do either.
+        // viewers this is why we don't do either.
         var lines = [
           'היי יפעת! אשמח לקבל הצעה לטיול 🙂',
           'שם: ' + name,
@@ -1037,7 +1037,7 @@
       active.forEach(function(d){
         // Deals saved with structured dates get their display string
         // recomputed on every visit, so "this year" always reflects
-        // today — not the year the admin happened to save it in.
+        // today not the year the admin happened to save it in.
         if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
         DEALS[d.id] = d;
         pkgGrid.appendChild(renderPkgCard(d));
@@ -1456,7 +1456,7 @@
     });
 
     // ---------- Contact link pencils ----------
-    // Only the visible-text links in the "בואו נתחיל" section get pencils —
+    // Only the visible-text links in the "בואו נתחיל" section get pencils 
     // the icon-only duplicates (footer, sticky bar) have nowhere natural to
     // anchor one, and already update automatically via applySiteContent().
     var LINK_FIELD_MAP = [
