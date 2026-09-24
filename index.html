@@ -474,8 +474,10 @@
     <div class="wrap intro-grid">
       <div>
         <h2 id="c-introTitle">טיילו בעולם<br>עם <span class="hi">MOROSHABAT</span></h2>
-        <p id="c-introText1">סוכנות הנסיעות MOROSHABAT מציעה את חבילות החופשה הטובות ביותר מאז 2021.</p>
-        <p id="c-introText2">אנחנו מבטיחים שכל טיול שתזמינו איתנו יהיה ייחודי ובלתי נשכח.</p>
+        <div id="c-introText">
+          <p id="c-introText1">סוכנות הנסיעות MOROSHABAT מציעה את חבילות החופשה הטובות ביותר מאז 2021.</p>
+          <p id="c-introText2">אנחנו מבטיחים שכל טיול שתזמינו איתנו יהיה ייחודי ובלתי נשכח.</p>
+        </div>
       </div>
       <div class="intro-photos">
         <img class="ip-main" src="pkg-temple.jpg" alt="יעד תרבותי במזרח אסיה">
@@ -829,6 +831,21 @@
   </div>
 </div>
 
+<!-- ---------- Contact link edit popup ---------- -->
+<div class="ie-overlay" id="ieLinkOverlay" hidden>
+  <div class="ie-modal">
+    <h3 id="ieLinkTitle">עריכת קישור</h3>
+    <div id="ieLinkStatus"></div>
+    <label id="ieLinkFieldLabel">מספר טלפון</label>
+    <input type="text" id="ieLinkValue">
+    <p class="ie-hint" id="ieLinkHint"></p>
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieLinkSaveBtn">שמירה</button>
+      <button type="button" class="ie-btn secondary" id="ieLinkCancelBtn">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <!-- ---------- Deal editor popup ---------- -->
 <div class="ie-overlay" id="ieDealOverlay" hidden>
   <div class="ie-modal ie-modal-wide">
@@ -1147,12 +1164,17 @@
     function setText(id, val){ var el = document.getElementById(id); if (el && val != null) el.textContent = val; }
     function setHtmlNl(id, val){ var el = document.getElementById(id); if (el && val != null) el.innerHTML = escapeHtmlNl(val); }
     function setHref(id, val){ var el = document.getElementById(id); if (el && val) el.setAttribute('href', val); }
+    function setIntroText(val){
+      if (val == null) return;
+      var parts = val.split('\n');
+      setText('c-introText1', parts[0] || '');
+      setText('c-introText2', parts.slice(1).join('\n') || '');
+    }
 
     function applySiteContent(c){
       setHtmlNl('c-heroTitle', c.heroTitle);
       setHtmlNl('c-introTitle', c.introTitle);
-      setText('c-introText1', c.introText1);
-      setText('c-introText2', c.introText2);
+      setIntroText(c.introText);
       setText('c-packagesTitle', c.packagesTitle);
       setText('c-packagesSubtitle', c.packagesSubtitle);
       setText('c-whyTitle', c.whyTitle);
@@ -1351,6 +1373,7 @@
       document.body.classList.add('edit-mode');
       editModeActive = true;
       attachContentPencils();
+      attachLinkPencils();
       renderDealsGrid(dealsCache.data);
     }
 
@@ -1364,8 +1387,7 @@
     var CONTENT_FIELD_MAP = [
       { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
       { id: 'c-introTitle', key: 'introTitle', label: 'כותרת "טיילו בעולם עם MOROSHABAT"' },
-      { id: 'c-introText1', key: 'introText1', label: 'טיילו בעולם — שורת טקסט ראשונה' },
-      { id: 'c-introText2', key: 'introText2', label: 'טיילו בעולם — שורת טקסט שנייה' },
+      { id: 'c-introText', key: 'introText', label: 'טיילו בעולם — טקסט' },
       { id: 'c-packagesTitle', key: 'packagesTitle', label: 'כותרת מדור החבילות' },
       { id: 'c-packagesSubtitle', key: 'packagesSubtitle', label: 'תיאור מדור החבילות' },
       { id: 'c-whyTitle', key: 'whyTitle', label: 'כותרת מדור "למה איתי"' },
@@ -1426,9 +1448,81 @@
         contentCache.sha = res.content.sha;
         applySiteContent(contentCache.data);
         attachContentPencils();
+        attachLinkPencils();
         ieEl('ieTextOverlay').hidden = true;
       }).catch(function(err){
         ieShowStatus('ieTextStatus', 'error', 'שמירה נכשלה: ' + err.message);
+      }).finally(function(){ btn.disabled = false; });
+    });
+
+    // ---------- Contact link pencils ----------
+    // Only the visible-text links in the "בואו נתחיל" section get pencils —
+    // the icon-only duplicates (footer, sticky bar) have nowhere natural to
+    // anchor one, and already update automatically via applySiteContent().
+    var LINK_FIELD_MAP = [
+      { id: 'c-linkPhone', label: 'מספר טלפון', kind: 'phone' },
+      { id: 'c-linkWaDirect', label: 'קישור וואטסאפ ישיר', kind: 'url', key: 'linkWaDirectHref' },
+      { id: 'c-linkWaGroup', label: 'קישור לקבוצת הדילים בוואטסאפ', kind: 'url', key: 'linkWaGroupHref' },
+      { id: 'c-linkFb', label: 'קישור לפייסבוק', kind: 'url', key: 'linkFbHref' },
+      { id: 'c-linkIg', label: 'קישור לאינסטגרם', kind: 'url', key: 'linkIgHref' }
+    ];
+    var currentLinkField = null;
+
+    function attachLinkPencils(){
+      LINK_FIELD_MAP.forEach(function(f){
+        var el = ieEl(f.id);
+        if (!el) return;
+        el.setAttribute('data-editable', '');
+        var old = el.querySelector('.edit-pencil');
+        if (old) old.remove();
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'edit-pencil';
+        btn.setAttribute('aria-label', 'עריכה');
+        btn.innerHTML = pencilSvg();
+        btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openLinkEditor(f); });
+        el.appendChild(btn);
+      });
+    }
+    function openLinkEditor(f){
+      currentLinkField = f;
+      ieEl('ieLinkTitle').textContent = 'עריכת ' + f.label;
+      ieEl('ieLinkFieldLabel').textContent = f.label;
+      if (f.kind === 'phone') {
+        ieEl('ieLinkValue').value = (contentCache && contentCache.data.linkPhoneText) || '';
+        ieEl('ieLinkHint').textContent = 'מקלידים את המספר כמו שרוצים שיוצג (למשל 052-8403104) — קישור החיוג נבנה אוטומטית.';
+      } else {
+        ieEl('ieLinkValue').value = (contentCache && contentCache.data[f.key]) || '';
+        ieEl('ieLinkHint').textContent = 'הקישור המלא (https://...).';
+      }
+      ieShowStatus('ieLinkStatus', '', '');
+      ieEl('ieLinkOverlay').hidden = false;
+    }
+    ieEl('ieLinkCancelBtn').addEventListener('click', function(){ ieEl('ieLinkOverlay').hidden = true; });
+    ieEl('ieLinkSaveBtn').addEventListener('click', function(){
+      if (!currentLinkField) return;
+      var val = ieEl('ieLinkValue').value.trim();
+      if (!val) { ieShowStatus('ieLinkStatus', 'error', 'יש למלא ערך.'); return; }
+      var btn = ieEl('ieLinkSaveBtn');
+      btn.disabled = true;
+      ieShowStatus('ieLinkStatus', 'info', 'שומר…');
+      var updated = Object.assign({}, contentCache.data);
+      if (currentLinkField.kind === 'phone') {
+        updated.linkPhoneText = val;
+        updated.linkPhoneHref = 'tel:' + val.replace(/\D/g, '');
+      } else {
+        updated[currentLinkField.key] = val;
+      }
+      var body = b64EncodeUnicode(JSON.stringify(updated, null, 2));
+      ghPutFile(CONTENT_PATH, body, 'עדכון קישור: ' + currentLinkField.label, contentCache.sha).then(function(res){
+        contentCache.data = updated;
+        contentCache.sha = res.content.sha;
+        applySiteContent(contentCache.data);
+        attachContentPencils();
+        attachLinkPencils();
+        ieEl('ieLinkOverlay').hidden = true;
+      }).catch(function(err){
+        ieShowStatus('ieLinkStatus', 'error', 'שמירה נכשלה: ' + err.message);
       }).finally(function(){ btn.disabled = false; });
     });
 
