@@ -164,7 +164,10 @@
     <div class="card">
       <div class="toolbar">
         <h1 style="margin:0;">החבילות שלי</h1>
-        <button class="btn" id="addDealBtn">+ הוספת חבילה</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn secondary" id="editContentBtn">עריכת תוכן האתר</button>
+          <button class="btn" id="addDealBtn">+ הוספת חבילה</button>
+        </div>
       </div>
       <div id="dashStatus"></div>
       <div id="dealsList"></div>
@@ -270,6 +273,112 @@
     </div>
   </div>
 
+  <!-- ---------- Site content editor ---------- -->
+  <div class="card" id="contentCard" hidden>
+    <h2>עריכת תוכן האתר</h2>
+    <p class="hint">הטקסטים הקבועים באתר — הכותרת הראשית, טקסט ההיכרות, כותרות המדורים, ואודות. חבילות נערכות בנפרד.</p>
+    <div id="contentStatus"></div>
+
+    <fieldset>
+      <legend>כותרת ראשית (הבאנר העליון)</legend>
+      <label>הכותרת</label>
+      <textarea id="ct_heroTitle"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>טיילו בעולם עם MOROSHABAT</legend>
+      <label>כותרת (אפשר כמה שורות)</label>
+      <textarea id="ct_introTitle"></textarea>
+      <label>שורת טקסט ראשונה</label>
+      <input type="text" id="ct_introText1">
+      <label>שורת טקסט שנייה</label>
+      <input type="text" id="ct_introText2">
+    </fieldset>
+
+    <fieldset>
+      <legend>כותרת מדור החבילות</legend>
+      <label>כותרת</label>
+      <input type="text" id="ct_packagesTitle">
+      <label>תיאור</label>
+      <textarea id="ct_packagesSubtitle"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>מדור "למה איתי"</legend>
+      <label>כותרת</label>
+      <input type="text" id="ct_whyTitle">
+      <label>תיאור</label>
+      <input type="text" id="ct_whySubtitle">
+      <div class="row" style="margin-top:14px;">
+        <div>
+          <label>כרטיס 1 — כותרת</label>
+          <input type="text" id="ct_why1Title">
+          <label>כרטיס 1 — טקסט</label>
+          <textarea id="ct_why1Text"></textarea>
+        </div>
+        <div>
+          <label>כרטיס 2 — כותרת</label>
+          <input type="text" id="ct_why2Title">
+          <label>כרטיס 2 — טקסט</label>
+          <textarea id="ct_why2Text"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>כרטיס 3 — כותרת</label>
+          <input type="text" id="ct_why3Title">
+          <label>כרטיס 3 — טקסט</label>
+          <textarea id="ct_why3Text"></textarea>
+        </div>
+        <div>
+          <label>כרטיס 4 — כותרת</label>
+          <input type="text" id="ct_why4Title">
+          <label>כרטיס 4 — טקסט</label>
+          <textarea id="ct_why4Text"></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>מדור אודות</legend>
+      <label>כותרת</label>
+      <input type="text" id="ct_aboutTitle">
+      <label>פסקה ראשונה</label>
+      <textarea id="ct_aboutText1"></textarea>
+      <label>פסקה שנייה</label>
+      <textarea id="ct_aboutText2"></textarea>
+      <label>שורת הסמכה (הטקסט הקטן בסוף)</label>
+      <textarea id="ct_aboutCredentials"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>פרטי יצירת קשר וקישורים</legend>
+      <div class="row">
+        <div>
+          <label>מספר טלפון (טקסט מוצג)</label>
+          <input type="text" id="ct_linkPhoneText" placeholder="052-8403104">
+        </div>
+        <div>
+          <label>קישור טלפון (tel:)</label>
+          <input type="text" id="ct_linkPhoneHref" placeholder="tel:0528403104">
+        </div>
+      </div>
+      <label>וואטסאפ ישיר (קישור מלא)</label>
+      <input type="text" id="ct_linkWaDirectHref" placeholder="https://wa.me/+972...">
+      <label>קבוצת הדילים בוואטסאפ (קישור)</label>
+      <input type="text" id="ct_linkWaGroupHref" placeholder="https://bit.ly/...">
+      <label>פייסבוק (קישור)</label>
+      <input type="text" id="ct_linkFbHref" placeholder="https://bit.ly/...">
+      <label>אינסטגרם (קישור)</label>
+      <input type="text" id="ct_linkIgHref" placeholder="https://instagram.com/...">
+    </fieldset>
+
+    <div style="margin-top:24px; display:flex; gap:10px;">
+      <button class="btn" id="saveContentBtn">שמירה</button>
+      <button class="btn secondary" id="cancelContentBtn">ביטול</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -277,6 +386,7 @@
   var GH_API = 'https://api.github.com';
   var DEALS_PATH = 'data/deals.json';
   var VAULT_PATH = 'data/admin-auth.json';
+  var CONTENT_PATH = 'data/site-content.json';
   // Absolute (not relative) raw-content URL: works even if this page is opened
   // as a local file, where relative fetch() calls are blocked by the browser.
   var RAW_BASE = 'https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/';
@@ -290,6 +400,7 @@
   var loginCard = document.getElementById('loginCard');
   var dashboard = document.getElementById('dashboard');
   var editorCard = document.getElementById('editorCard');
+  var contentCard = document.getElementById('contentCard');
   var logoutBtn = document.getElementById('logoutBtn');
 
   function el(id){ return document.getElementById(id); }
@@ -652,6 +763,7 @@
     logoutBtn.hidden = true;
     dashboard.hidden = true;
     editorCard.hidden = true;
+    contentCard.hidden = true;
     loginCard.hidden = false;
     el('loginPassword').value = '';
     el('setupMode').hidden = true;
@@ -661,6 +773,7 @@
   function enterDashboard(){
     loginCard.hidden = true;
     editorCard.hidden = true;
+    contentCard.hidden = true;
     dashboard.hidden = false;
     logoutBtn.hidden = false;
     renderDealsList();
@@ -717,6 +830,65 @@
   el('cancelEditBtn').addEventListener('click', function(){
     editorCard.hidden = true;
     dashboard.hidden = false;
+  });
+
+  // ---------- Site content editor ----------
+  var CONTENT_FIELDS = [
+    'heroTitle', 'introTitle', 'introText1', 'introText2',
+    'packagesTitle', 'packagesSubtitle',
+    'whyTitle', 'whySubtitle',
+    'why1Title', 'why1Text', 'why2Title', 'why2Text',
+    'why3Title', 'why3Text', 'why4Title', 'why4Text',
+    'aboutTitle', 'aboutText1', 'aboutText2', 'aboutCredentials',
+    'linkPhoneText', 'linkPhoneHref', 'linkWaDirectHref', 'linkWaGroupHref', 'linkFbHref', 'linkIgHref'
+  ];
+  var contentSha = null;
+
+  el('editContentBtn').addEventListener('click', function(){
+    showStatus('contentStatus', 'info', 'טוען…');
+    dashboard.hidden = true;
+    contentCard.hidden = false;
+    window.scrollTo(0, 0);
+    ghGetFile(CONTENT_PATH).then(function(data){
+      contentSha = data.sha;
+      var content = JSON.parse(b64DecodeUnicode(data.content));
+      CONTENT_FIELDS.forEach(function(key){
+        var field = el('ct_' + key);
+        if (field) field.value = content[key] || '';
+      });
+      showStatus('contentStatus', '', '');
+    }).catch(function(err){
+      showStatus('contentStatus', 'error', 'טעינה נכשלה: ' + err.message);
+    });
+  });
+
+  el('cancelContentBtn').addEventListener('click', function(){
+    contentCard.hidden = true;
+    dashboard.hidden = false;
+  });
+
+  el('saveContentBtn').addEventListener('click', function(){
+    var content = {};
+    CONTENT_FIELDS.forEach(function(key){
+      var field = el('ct_' + key);
+      content[key] = field ? field.value.trim() : '';
+    });
+    var saveBtn = el('saveContentBtn');
+    saveBtn.disabled = true;
+    showStatus('contentStatus', 'info', 'שומר…');
+    var body = b64EncodeUnicode(JSON.stringify(content, null, 2));
+    ghPutFile(CONTENT_PATH, body, 'עדכון תוכן האתר', contentSha).then(function(res){
+      contentSha = res.content.sha;
+      showStatus('contentStatus', 'ok', 'נשמר! השינוי יעלה לאתר תוך דקה.');
+      setTimeout(function(){
+        contentCard.hidden = true;
+        dashboard.hidden = false;
+      }, 900);
+    }).catch(function(err){
+      showStatus('contentStatus', 'error', 'שמירה נכשלה: ' + err.message);
+    }).finally(function(){
+      saveBtn.disabled = false;
+    });
   });
 
   // ---------- List editors (itinerary / facts / route / tiers) ----------
