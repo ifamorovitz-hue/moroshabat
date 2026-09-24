@@ -75,6 +75,31 @@
   .checkbox-row{ display:flex; align-items:center; gap:8px; margin-top:16px; }
   .checkbox-row input{ width:auto; }
   [hidden]{ display:none !important; }
+
+  .toggle-group{ display:flex; gap:8px; }
+  .toggle-btn{ flex:1; text-align:center; padding:10px 12px; border:1.5px solid var(--line); border-radius:8px; cursor:pointer; font-weight:700; font-size:.9rem; color:var(--ink-soft); user-select:none; }
+  .toggle-btn input{ position:absolute; opacity:0; pointer-events:none; }
+  .toggle-btn:has(input:checked){ border-color:var(--teal); background:var(--chip-bg); color:var(--teal-dark); }
+
+  .date-range-field{ position:relative; }
+  .date-range-display{ width:100%; text-align:right; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font-family:inherit; font-size:.92rem; cursor:pointer; color:var(--ink); }
+  .date-range-display.placeholder{ color:var(--muted); }
+  .date-range-popover{ position:absolute; z-index:20; top:calc(100% + 6px); right:0; width:300px; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:14px; }
+  .cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-weight:700; }
+  .cal-nav{ background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--teal-dark); padding:2px 10px; border-radius:6px; }
+  .cal-nav:hover{ background:var(--chip-bg); }
+  .cal-nav[disabled]{ opacity:.3; cursor:not-allowed; }
+  .cal-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:.74rem; color:var(--muted); margin-bottom:4px; direction:rtl; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:2px; direction:rtl; }
+  .cal-day{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:.82rem; border-radius:6px; cursor:pointer; border:none; background:none; color:var(--ink); }
+  .cal-day:hover:not(:disabled):not(.cal-day-empty){ background:var(--chip-bg); }
+  .cal-day:disabled{ color:var(--line); cursor:not-allowed; }
+  .cal-day-empty{ visibility:hidden; }
+  .cal-day-inrange{ background:var(--chip-bg); border-radius:0; }
+  .cal-day-start{ background:var(--teal-dark); color:#fff; border-radius:6px 0 0 6px; }
+  .cal-day-end{ background:var(--teal-dark); color:#fff; border-radius:0 6px 6px 0; }
+  .cal-day-single{ background:var(--teal-dark); color:#fff; }
+  .cal-footer{ display:flex; justify-content:space-between; margin-top:12px; }
 </style>
 </head>
 <body>
@@ -170,14 +195,23 @@
       </div>
     </div>
 
-    <div class="row">
-      <div>
-        <label>מתאריך *</label>
-        <input type="date" id="f_dateFrom">
-      </div>
-      <div>
-        <label>עד תאריך *</label>
-        <input type="date" id="f_dateTo">
+    <label>תאריכים *</label>
+    <div class="date-range-field">
+      <button type="button" class="date-range-display" id="dateRangeBtn">בחירת טווח תאריכים</button>
+      <div class="date-range-popover" id="dateRangePopover" hidden>
+        <div class="cal-header">
+          <button type="button" class="cal-nav" id="calPrev">‹</button>
+          <span id="calMonthLabel"></span>
+          <button type="button" class="cal-nav" id="calNext">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>א</span><span>ב</span><span>ג</span><span>ד</span><span>ה</span><span>ו</span><span>ש</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-footer">
+          <button type="button" class="btn secondary small" id="calClear">ניקוי</button>
+          <button type="button" class="btn small" id="calApply">אישור</button>
+        </div>
       </div>
     </div>
     <label>הערת תאריך נוספת (אופציונלי — למשל "סוכות" או "ראשון עד חמישי")</label>
@@ -190,8 +224,11 @@
         <input type="text" id="f_price">
       </div>
       <div>
-        <label>הערת מחיר (למשל: לאדם / לזוג) *</label>
-        <input type="text" id="f_priceNote">
+        <label>הערת מחיר *</label>
+        <div class="toggle-group" id="priceNoteToggle">
+          <label class="toggle-btn"><input type="radio" name="priceNote" value="לאדם"><span>לאדם</span></label>
+          <label class="toggle-btn"><input type="radio" name="priceNote" value="לזוג"><span>לזוג</span></label>
+        </div>
       </div>
     </div>
 
@@ -302,9 +339,121 @@
     return range;
   }
   function updateDatesPreview(){
-    var text = formatDateRange(el('f_dateFrom').value, el('f_dateTo').value, el('f_dateNote').value.trim());
+    var text = formatDateRange(selDateFrom, selDateTo, el('f_dateNote').value.trim());
     el('f_datesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
   }
+
+  // ---------- Date-range calendar picker (future dates only) ----------
+  var selDateFrom = null, selDateTo = null;
+  var calToday = new Date(); calToday.setHours(0, 0, 0, 0);
+  var calViewYear = calToday.getFullYear(), calViewMonth = calToday.getMonth();
+  var HEBREW_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+  function pad2(n){ return String(n).length < 2 ? '0' + n : String(n); }
+  function isoDate(y, m, d){ return y + '-' + pad2(m + 1) + '-' + pad2(d); }
+  function parseIsoDate(iso){
+    var b = iso.split('-');
+    return new Date(parseInt(b[0], 10), parseInt(b[1], 10) - 1, parseInt(b[2], 10));
+  }
+  function fullDateLabel(iso){
+    var d = parseIsoDate(iso);
+    return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+  }
+
+  function renderCalendar(){
+    el('calMonthLabel').textContent = HEBREW_MONTHS[calViewMonth] + ' ' + calViewYear;
+    var grid = el('calGrid');
+    grid.innerHTML = '';
+    var startWeekday = new Date(calViewYear, calViewMonth, 1).getDay();
+    var daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+
+    for (var i = 0; i < startWeekday; i++){
+      var empty = document.createElement('span');
+      empty.className = 'cal-day cal-day-empty';
+      grid.appendChild(empty);
+    }
+    for (var day = 1; day <= daysInMonth; day++){
+      var iso = isoDate(calViewYear, calViewMonth, day);
+      var thisDate = new Date(calViewYear, calViewMonth, day);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day';
+      btn.textContent = day;
+      if (thisDate < calToday) {
+        btn.disabled = true;
+      } else {
+        btn.addEventListener('click', (function(clickedIso){
+          return function(e){ e.stopPropagation(); onCalDayClick(clickedIso); };
+        })(iso));
+      }
+      if (selDateFrom === iso && selDateTo === iso) btn.classList.add('cal-day-single');
+      else if (selDateFrom === iso) btn.classList.add('cal-day-start');
+      else if (selDateTo === iso) btn.classList.add('cal-day-end');
+      else if (selDateFrom && selDateTo && iso > selDateFrom && iso < selDateTo) btn.classList.add('cal-day-inrange');
+      grid.appendChild(btn);
+    }
+    el('calPrev').disabled = (calViewYear === calToday.getFullYear() && calViewMonth === calToday.getMonth());
+  }
+
+  function onCalDayClick(iso){
+    if (!selDateFrom || (selDateFrom && selDateTo)) {
+      selDateFrom = iso; selDateTo = null;
+    } else if (iso < selDateFrom) {
+      selDateFrom = iso; selDateTo = null;
+    } else {
+      selDateTo = iso;
+    }
+    renderCalendar();
+  }
+
+  function updateDateRangeButtonLabel(){
+    var btn = el('dateRangeBtn');
+    if (selDateFrom && selDateTo) {
+      btn.textContent = fullDateLabel(selDateFrom) + '  –  ' + fullDateLabel(selDateTo);
+      btn.classList.remove('placeholder');
+    } else if (selDateFrom) {
+      btn.textContent = fullDateLabel(selDateFrom) + '  –  …';
+      btn.classList.remove('placeholder');
+    } else {
+      btn.textContent = 'בחירת טווח תאריכים';
+      btn.classList.add('placeholder');
+    }
+  }
+
+  function openDatePopover(){
+    el('dateRangePopover').hidden = false;
+    var base = selDateFrom ? parseIsoDate(selDateFrom) : calToday;
+    calViewYear = base.getFullYear();
+    calViewMonth = base.getMonth();
+    renderCalendar();
+  }
+  function closeDatePopover(){ el('dateRangePopover').hidden = true; }
+
+  el('dateRangeBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    if (el('dateRangePopover').hidden) openDatePopover(); else closeDatePopover();
+  });
+  document.addEventListener('click', function(e){
+    var pop = el('dateRangePopover');
+    if (!pop.hidden && !pop.contains(e.target) && e.target !== el('dateRangeBtn')) closeDatePopover();
+  });
+  el('calPrev').addEventListener('click', function(){
+    calViewMonth--; if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+    renderCalendar();
+  });
+  el('calNext').addEventListener('click', function(){
+    calViewMonth++; if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+    renderCalendar();
+  });
+  el('calClear').addEventListener('click', function(){
+    selDateFrom = null; selDateTo = null;
+    renderCalendar();
+  });
+  el('calApply').addEventListener('click', function(){
+    closeDatePopover();
+    updateDateRangeButtonLabel();
+    updateDatesPreview();
+  });
 
   // ---------- base64 helpers (unicode-safe for JSON, raw for images) ----------
   function b64EncodeUnicode(str){
@@ -642,15 +791,16 @@
     el('f_title').value = d.title || '';
     el('f_tag').value = d.tag || '';
     el('f_meta').value = d.meta || '';
-    el('f_dateFrom').value = d.dateFrom || '';
-    el('f_dateTo').value = d.dateTo || '';
+    selDateFrom = d.dateFrom || null;
+    selDateTo = d.dateTo || null;
+    updateDateRangeButtonLabel();
     // Legacy deals only have the old free-text `dates` string with no
     // structured dateFrom/dateTo — carry it into the note field so nothing
     // is lost, rather than guessing a parse of it.
     el('f_dateNote').value = d.dateNote || (!d.dateFrom && d.dates ? d.dates : '');
     updateDatesPreview();
     el('f_price').value = d.price || '';
-    el('f_priceNote').value = d.priceNote || '';
+    document.querySelectorAll('input[name="priceNote"]').forEach(function(r){ r.checked = (r.value === d.priceNote); });
     el('f_cardDesc').value = d.cardDesc || '';
     el('f_desc').value = d.desc || '';
     el('f_note').value = d.note || '';
@@ -692,18 +842,17 @@
     }
   });
 
-  ['f_dateFrom', 'f_dateTo', 'f_dateNote'].forEach(function(id){
-    el(id).addEventListener('input', updateDatesPreview);
-  });
+  el('f_dateNote').addEventListener('input', updateDatesPreview);
 
   el('saveDealBtn').addEventListener('click', function(){
     var title = el('f_title').value.trim();
     var tag = el('f_tag').value.trim();
     var meta = el('f_meta').value.trim();
-    var dateFrom = el('f_dateFrom').value;
-    var dateTo = el('f_dateTo').value;
+    var dateFrom = selDateFrom;
+    var dateTo = selDateTo;
     var price = el('f_price').value.trim();
-    var priceNote = el('f_priceNote').value.trim();
+    var priceNoteEl = document.querySelector('input[name="priceNote"]:checked');
+    var priceNote = priceNoteEl ? priceNoteEl.value : '';
     var cardDesc = el('f_cardDesc').value.trim();
     var hasImage = !!(pendingImageFile || (editingIndex >= 0 && deals[editingIndex].image));
 
@@ -711,9 +860,9 @@
     if (!title) missing.push('כותרת');
     if (!tag) missing.push('תגית');
     if (!meta) missing.push('משך');
-    if (!dateFrom || !dateTo) missing.push('תאריכים (מתאריך ועד תאריך)');
+    if (!dateFrom || !dateTo) missing.push('תאריכים (בחירת טווח בלוח השנה)');
     if (!price) missing.push('מחיר');
-    if (!priceNote) missing.push('הערת מחיר');
+    if (!priceNote) missing.push('הערת מחיר (לאדם / לזוג)');
     if (!cardDesc) missing.push('תיאור קצר');
     if (!hasImage) missing.push('תמונה');
     if (missing.length) {
