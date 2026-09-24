@@ -343,6 +343,82 @@
     .deal-modal-body{ padding:22px 18px 26px; }
     .deal-itinerary li{ grid-template-columns:56px 1fr; }
   }
+
+  /* ---------- Inline admin editing (only visible after admin login) ---------- */
+  body.edit-mode [data-editable]{ position:relative; outline:1px dashed transparent; transition:outline-color .15s ease; }
+  body.edit-mode [data-editable]:hover{ outline-color:#0c8479; }
+  .edit-pencil{
+    position:absolute; top:-10px; inset-inline-end:-10px; z-index:5;
+    width:26px; height:26px; border-radius:50%; border:1.5px solid #0c8479; background:#fff;
+    color:#0a6b62; display:flex; align-items:center; justify-content:center; cursor:pointer;
+    box-shadow:0 4px 10px rgba(10,40,35,.18); opacity:0; transition:opacity .15s ease;
+  }
+  .edit-pencil svg{ width:13px; height:13px; }
+  body.edit-mode [data-editable]:hover .edit-pencil,
+  body.edit-mode .pkg-media:hover .pkg-admin-actions{ opacity:1; }
+  .pkg-admin-actions{ position:absolute; top:12px; inset-inline-end:12px; z-index:5; display:flex; gap:6px; opacity:0; transition:opacity .15s ease; }
+  .pkg-admin-actions button{ width:28px; height:28px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.25); }
+  .pkg-admin-actions button svg{ width:14px; height:14px; }
+  .pkg-edit-btn{ background:#fff; color:#0a6b62; }
+  .pkg-del-btn{ background:#c0392b; color:#fff; }
+  .add-deal-btn{ display:none; }
+  body.edit-mode .add-deal-btn{ display:inline-flex; }
+
+  .admin-bar{ position:fixed; bottom:0; inset-inline:0; z-index:200; background:#0e3d38; color:#fff; padding:12px 20px; display:none; align-items:center; justify-content:space-between; gap:16px; font-size:.86rem; box-shadow:0 -6px 20px rgba(0,0,0,.2); }
+  body.edit-mode .admin-bar{ display:flex; }
+  .admin-bar b{ color:#ffd400; }
+  .admin-bar .admin-bar-actions{ display:flex; gap:10px; align-items:center; }
+  .admin-bar a{ color:#fff; opacity:.8; text-decoration:none; font-size:.8rem; }
+  .admin-bar a:hover{ opacity:1; }
+  .admin-bar button{ background:#c0392b; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-weight:700; font-size:.82rem; cursor:pointer; }
+
+  .ie-overlay{ position:fixed; inset:0; background:rgba(10,25,20,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .ie-overlay[hidden]{ display:none; }
+  .ie-modal{ background:#fff; border-radius:16px; width:100%; max-width:480px; max-height:88vh; overflow-y:auto; padding:26px 28px; }
+  .ie-modal.ie-modal-wide{ max-width:640px; }
+  .ie-modal h3{ margin:0 0 16px; font-size:1.15rem; }
+  .ie-modal label{ display:block; font-weight:700; font-size:.85rem; margin:14px 0 6px; }
+  .ie-modal input[type=text], .ie-modal input[type=password], .ie-modal input[type=number], .ie-modal textarea, .ie-modal select{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:.92rem;
+  }
+  .ie-modal textarea{ min-height:90px; resize:vertical; }
+  .ie-row{ display:flex; gap:14px; }
+  .ie-row > *{ flex:1; min-width:0; }
+  .ie-actions{ margin-top:22px; display:flex; gap:10px; }
+  .ie-btn{ background:#0a6b62; color:#fff; border:none; padding:11px 20px; border-radius:8px; font-weight:700; font-size:.9rem; cursor:pointer; }
+  .ie-btn:hover{ background:#0c8479; }
+  .ie-btn.secondary{ background:#eef2f1; color:#12302c; }
+  .ie-btn.danger{ background:#c0392b; color:#fff; margin-inline-start:auto; }
+  .ie-status{ font-size:.85rem; padding:10px 14px; border-radius:8px; margin-bottom:12px; }
+  .ie-status.error{ background:#fdecea; color:#c0392b; }
+  .ie-status.ok{ background:#e9f7ef; color:#1e7e42; }
+  .ie-status.info{ background:#eef4f8; color:#2b5a7a; }
+  .ie-toggle-group{ display:flex; gap:8px; }
+  .ie-toggle-btn{ flex:1; text-align:center; padding:10px 12px; border:1.5px solid var(--line); border-radius:8px; cursor:pointer; font-weight:700; font-size:.9rem; position:relative; }
+  .ie-toggle-btn input{ position:absolute; opacity:0; }
+  .ie-toggle-btn:has(input:checked){ border-color:#0c8479; background:#eef3f1; color:#0a6b62; }
+  .ie-hint{ font-size:.8rem; color:var(--muted); margin-top:4px; }
+  .ie-img-preview{ width:100%; max-width:220px; border-radius:10px; margin-top:8px; display:block; }
+  .ie-date-btn{ width:100%; text-align:right; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font-family:inherit; font-size:.92rem; cursor:pointer; }
+  .ie-cal-popover{ margin-top:8px; border:1px solid var(--line); border-radius:12px; padding:14px; background:#fbfaf7; }
+  .ie-cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-weight:700; }
+  .ie-cal-nav{ background:none; border:none; font-size:1.2rem; cursor:pointer; color:#0a6b62; padding:2px 10px; border-radius:6px; }
+  .ie-cal-nav[disabled]{ opacity:.3; cursor:not-allowed; }
+  .ie-cal-weekdays, .ie-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); direction:rtl; }
+  .ie-cal-weekdays{ text-align:center; font-size:.74rem; color:var(--muted); margin-bottom:4px; }
+  .ie-cal-grid{ gap:2px; }
+  .ie-cal-day{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:.82rem; border-radius:6px; cursor:pointer; border:none; background:none; }
+  .ie-cal-day:disabled{ color:var(--line); cursor:not-allowed; }
+  .ie-cal-day-empty{ visibility:hidden; }
+  .ie-cal-day-inrange{ background:#eef3f1; border-radius:0; }
+  .ie-cal-day-start{ background:#0a6b62; color:#fff; border-radius:6px 0 0 6px; }
+  .ie-cal-day-end{ background:#0a6b62; color:#fff; border-radius:0 6px 6px 0; }
+  .ie-cal-day-single{ background:#0a6b62; color:#fff; }
+  .ie-cal-footer{ display:flex; justify-content:space-between; margin-top:10px; }
+  .ie-list-item{ display:flex; gap:8px; margin-bottom:8px; }
+  .ie-list-item input{ flex:1; }
+  .ie-list-remove{ background:none; border:none; color:#c0392b; font-size:1.1rem; cursor:pointer; }
+  .ie-add-row{ background:none; border:1px dashed var(--line); color:#0a6b62; font-weight:700; font-size:.82rem; padding:8px; border-radius:8px; width:100%; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -418,6 +494,7 @@
           <h2 id="c-packagesTitle">מסעות נבחרים לעונה הקרובה</h2>
         </div>
         <p id="c-packagesSubtitle">מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע — כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
+        <button type="button" class="btn add-deal-btn" id="ieAddDealBtn">+ הוספת חבילה</button>
       </div>
 
       <div class="pkg-grid" id="pkgGrid">
@@ -691,7 +768,7 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="admin.html" style="color:inherit;">ניהול</a></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a></span>
     </div>
   </div>
 </footer>
@@ -711,6 +788,136 @@
     <div class="deal-modal-body" id="dealModalBody"></div>
   </div>
 </div>
+</div>
+
+<!-- ---------- Admin bar (visible only after login) ---------- -->
+<div class="admin-bar">
+  <span><b>מצב עריכה פעיל</b> — לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
+  <div class="admin-bar-actions">
+    <a href="admin.html">לוח ניהול מלא</a>
+    <button type="button" id="ieLogoutBtn">יציאה</button>
+  </div>
+</div>
+
+<!-- ---------- Login popup ---------- -->
+<div class="ie-overlay" id="ieLoginOverlay" hidden>
+  <div class="ie-modal">
+    <h3>התחברות לעריכה</h3>
+    <div id="ieLoginStatus"></div>
+    <label for="ieUsername">שם משתמש</label>
+    <input type="text" id="ieUsername" autocomplete="username">
+    <label for="iePassword">סיסמה</label>
+    <input type="password" id="iePassword" autocomplete="current-password">
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieLoginBtn">התחברות</button>
+      <button type="button" class="ie-btn secondary" id="ieLoginCancelBtn">ביטול</button>
+    </div>
+    <p class="ie-hint">להגדרה ראשונית או להחלפת טוקן, יש להשתמש ב<a href="admin.html">לוח הניהול המלא</a>.</p>
+  </div>
+</div>
+
+<!-- ---------- Text field edit popup ---------- -->
+<div class="ie-overlay" id="ieTextOverlay" hidden>
+  <div class="ie-modal">
+    <h3 id="ieTextTitle">עריכת טקסט</h3>
+    <div id="ieTextStatus"></div>
+    <textarea id="ieTextValue"></textarea>
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieTextSaveBtn">שמירה</button>
+      <button type="button" class="ie-btn secondary" id="ieTextCancelBtn">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Deal editor popup ---------- -->
+<div class="ie-overlay" id="ieDealOverlay" hidden>
+  <div class="ie-modal ie-modal-wide">
+    <h3 id="ieDealTitle">עריכת חבילה</h3>
+    <p class="ie-hint">שדות עם * הם שדות חובה — הם מוצגים בכרטיס הקטן באתר.</p>
+    <div id="ieDealStatus"></div>
+
+    <div class="ie-row">
+      <div>
+        <label>כותרת *</label>
+        <input type="text" id="ie_title">
+      </div>
+      <div>
+        <label>תגית *</label>
+        <input type="text" id="ie_tag">
+      </div>
+    </div>
+    <div class="ie-row">
+      <div>
+        <label>משך *</label>
+        <input type="text" id="ie_meta">
+      </div>
+    </div>
+
+    <label>תאריכים *</label>
+    <button type="button" class="ie-date-btn" id="ieDateRangeBtn">בחירת טווח תאריכים</button>
+    <div class="ie-cal-popover" id="ieCalPopover" hidden>
+      <div class="ie-cal-header">
+        <button type="button" class="ie-cal-nav" id="ieCalPrev">‹</button>
+        <span id="ieCalMonthLabel"></span>
+        <button type="button" class="ie-cal-nav" id="ieCalNext">›</button>
+      </div>
+      <div class="ie-cal-weekdays"><span>א</span><span>ב</span><span>ג</span><span>ד</span><span>ה</span><span>ו</span><span>ש</span></div>
+      <div class="ie-cal-grid" id="ieCalGrid"></div>
+      <div class="ie-cal-footer">
+        <button type="button" class="ie-btn secondary" id="ieCalClear">ניקוי</button>
+        <button type="button" class="ie-btn" id="ieCalApply">אישור</button>
+      </div>
+    </div>
+    <label>הערת תאריך נוספת (אופציונלי)</label>
+    <input type="text" id="ie_dateNote">
+    <p class="ie-hint" id="ieDatesPreview"></p>
+
+    <div class="ie-row">
+      <div>
+        <label>מחיר *</label>
+        <input type="text" id="ie_price">
+      </div>
+      <div>
+        <label>הערת מחיר *</label>
+        <div class="ie-toggle-group">
+          <label class="ie-toggle-btn"><input type="radio" name="iePriceNote" value="לאדם"><span>לאדם</span></label>
+          <label class="ie-toggle-btn"><input type="radio" name="iePriceNote" value="לזוג"><span>לזוג</span></label>
+        </div>
+      </div>
+    </div>
+
+    <label>תיאור קצר (בכרטיס) *</label>
+    <textarea id="ie_cardDesc"></textarea>
+    <label>תיאור מלא (בחלון הפרטים)</label>
+    <textarea id="ie_desc"></textarea>
+    <label>הערה קטנה</label>
+    <textarea id="ie_note"></textarea>
+
+    <label>תמונה *</label>
+    <img id="ie_imagePreview" class="ie-img-preview" hidden>
+    <input type="file" id="ie_imageFile" accept="image/*">
+
+    <div class="ie-row" style="margin-top:14px;">
+      <div>
+        <label>סדר תצוגה</label>
+        <input type="number" id="ie_order" value="1">
+      </div>
+      <div style="display:flex; align-items:flex-end; padding-bottom:10px; gap:8px;">
+        <input type="checkbox" id="ie_active" checked style="width:auto;">
+        <label style="margin:0;" for="ie_active">פעיל (מוצג באתר)</label>
+      </div>
+    </div>
+
+    <label>מדרגות מחיר (אופציונלי)</label>
+    <div class="ie-list-editor" id="ieTiersEditor"></div>
+    <button type="button" class="ie-add-row" id="ieAddTierRow">+ הוספת שורה</button>
+
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieDealSaveBtn">שמירה</button>
+      <button type="button" class="ie-btn secondary" id="ieDealCancelBtn">ביטול</button>
+      <button type="button" class="ie-btn danger" id="ieDealDeleteBtn">מחיקת חבילה</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -793,7 +1000,31 @@
           '</div>' +
           '<a href="#" class="pkg-cta deal-open-link" data-deal="' + escapeHtml(d.id) + '">לפרטים ורכישה &gt;</a>' +
         '</div>';
+      if (editModeActive) {
+        var media = article.querySelector('.pkg-media');
+        var actions = document.createElement('div');
+        actions.className = 'pkg-admin-actions';
+        actions.innerHTML =
+          '<button type="button" class="pkg-edit-btn" data-edit-deal="' + escapeHtml(d.id) + '" aria-label="עריכה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>' +
+          '<button type="button" class="pkg-del-btn" data-del-deal="' + escapeHtml(d.id) + '" aria-label="מחיקה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg></button>';
+        media.appendChild(actions);
+      }
       return article;
+    }
+
+    function renderDealsGrid(list){
+      var active = list.filter(function(d){ return d.active !== false; });
+      active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
+      DEALS = {};
+      pkgGrid.innerHTML = '';
+      active.forEach(function(d){
+        // Deals saved with structured dates get their display string
+        // recomputed on every visit, so "this year" always reflects
+        // today — not the year the admin happened to save it in.
+        if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
+        DEALS[d.id] = d;
+        pkgGrid.appendChild(renderPkgCard(d));
+      });
     }
 
     function loadDeals(){
@@ -805,20 +1036,7 @@
           return fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/data/deals.json?t=' + Date.now(), { cache: 'no-store' });
         })
         .then(function(r){ return r.json(); })
-        .then(function(list){
-          var active = list.filter(function(d){ return d.active !== false; });
-          active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
-          DEALS = {};
-          pkgGrid.innerHTML = '';
-          active.forEach(function(d){
-            // Deals saved with structured dates get their display string
-            // recomputed on every visit, so "this year" always reflects
-            // today — not the year the admin happened to save it in.
-            if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
-            DEALS[d.id] = d;
-            pkgGrid.appendChild(renderPkgCard(d));
-          });
-        })
+        .then(renderDealsGrid)
         .catch(function(){
           if (pkgLoading) pkgLoading.textContent = 'לא ניתן לטעון את החבילות כרגע.';
         });
@@ -964,6 +1182,489 @@
         .then(applySiteContent)
         .catch(function(){ /* keep the page's built-in default text */ });
     }
+
+    // ================= INLINE ADMIN EDITING (visible only after login) =================
+    var GH_API = 'https://api.github.com';
+    var DEALS_PATH = 'data/deals.json';
+    var CONTENT_PATH = 'data/site-content.json';
+    var VAULT_PATH = 'data/admin-auth.json';
+    var conn = null;
+    var contentCache = null; // {data, sha}
+    var dealsCache = null;   // {data, sha}
+    var editModeActive = false;
+    var pendingImageFile = null;
+    var editingDealId = null; // null = new deal
+    var selDateFrom = null, selDateTo = null;
+    var calViewYear, calViewMonth;
+    var calToday = new Date(); calToday.setHours(0, 0, 0, 0);
+    var HEBREW_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    var ieTiersList = [];
+
+    function ieEl(id){ return document.getElementById(id); }
+    function ieShowStatus(id, type, msg){
+      var c = ieEl(id);
+      if (!msg) { c.innerHTML = ''; return; }
+      c.innerHTML = '<div class="ie-status ' + type + '">' + escapeHtml(msg) + '</div>';
+    }
+    function pad2(n){ return String(n).length < 2 ? '0' + n : String(n); }
+    function isoDate(y, m, d){ return y + '-' + pad2(m + 1) + '-' + pad2(d); }
+    function parseIsoDate(iso){
+      var b = iso.split('-');
+      return new Date(parseInt(b[0], 10), parseInt(b[1], 10) - 1, parseInt(b[2], 10));
+    }
+    function fullDateLabel(iso){
+      var d = parseIsoDate(iso);
+      return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    // ---------- base64 + crypto (matches admin.html's vault format) ----------
+    function b64EncodeUnicode(str){
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(_, p1){
+        return String.fromCharCode('0x' + p1);
+      }));
+    }
+    function b64DecodeUnicode(str){
+      return decodeURIComponent(atob(str).split('').map(function(c){
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    }
+    function bufToB64(buf){
+      var bytes = new Uint8Array(buf), binary = '';
+      for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
+    function b64ToBuf(b64){
+      var binary = atob(b64), bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes.buffer;
+    }
+    function ieDeriveKey(password, saltBuf){
+      var enc = new TextEncoder();
+      return crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']).then(function(km){
+        return crypto.subtle.deriveKey({ name:'PBKDF2', salt:saltBuf, iterations:300000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['decrypt']);
+      });
+    }
+    function ieDecryptVault(password, vault){
+      var salt = b64ToBuf(vault.salt), iv = b64ToBuf(vault.iv);
+      return ieDeriveKey(password, salt).then(function(key){
+        return crypto.subtle.decrypt({ name:'AES-GCM', iv: iv }, key, b64ToBuf(vault.data));
+      }).then(function(plainBuf){
+        return JSON.parse(new TextDecoder().decode(plainBuf));
+      });
+    }
+
+    // ---------- GitHub API ----------
+    function ghHeaders(){ return { 'Authorization': 'token ' + conn.token, 'Accept': 'application/vnd.github+json' }; }
+    function ghGetFile(path){
+      return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path + '?ref=' + encodeURIComponent(conn.branch), { headers: ghHeaders() })
+        .then(function(res){
+          if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+          return res.json();
+        });
+    }
+    function ghPutFile(path, base64Content, message, sha){
+      var body = { message: message, content: base64Content, branch: conn.branch };
+      if (sha) body.sha = sha;
+      return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path, {
+        method: 'PUT',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+        body: JSON.stringify(body)
+      }).then(function(res){
+        if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+        return res.json();
+      });
+    }
+    function ghDeleteFile(path, message){
+      return ghGetFile(path).then(function(existing){
+        return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path, {
+          method: 'DELETE',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+          body: JSON.stringify({ message: message, sha: existing.sha, branch: conn.branch })
+        }).then(function(res){
+          if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+          return res.json();
+        });
+      });
+    }
+    function fileToBase64(file){
+      return new Promise(function(resolve, reject){
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    function safeFileName(name){
+      var parts = name.split('.');
+      var ext = parts.length > 1 ? parts.pop().toLowerCase() : '';
+      var base = parts.join('.').toLowerCase().replace(/[^a-z0-9-_]+/g,'-').replace(/^-+|-+$/g,'') || 'img';
+      return base + (ext ? '.' + ext : '');
+    }
+    function uploadImage(file){
+      var path = 'uploads/' + Date.now() + '-' + safeFileName(file.name);
+      return fileToBase64(file).then(function(base64){
+        return ghPutFile(path, base64, 'העלאת תמונה: ' + file.name, null);
+      }).then(function(){ return path; });
+    }
+    function genDealId(){ return 'deal-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+    // ---------- Login ----------
+    var footerAdminLink = document.getElementById('footerAdminLink');
+    if (footerAdminLink) footerAdminLink.addEventListener('click', function(e){
+      e.preventDefault();
+      ieShowStatus('ieLoginStatus', '', '');
+      ieEl('ieLoginOverlay').hidden = false;
+    });
+    ieEl('ieLoginCancelBtn').addEventListener('click', function(){ ieEl('ieLoginOverlay').hidden = true; });
+
+    ieEl('ieLoginBtn').addEventListener('click', function(){
+      var username = ieEl('ieUsername').value.trim();
+      var password = ieEl('iePassword').value;
+      if (!username || !password) { ieShowStatus('ieLoginStatus', 'error', 'יש למלא שם משתמש וסיסמה.'); return; }
+      ieShowStatus('ieLoginStatus', 'info', 'מתחבר…');
+      fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/' + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(vault){
+          if (!vault || username.toLowerCase() !== String(vault.username || '').toLowerCase()) {
+            throw new Error('שם משתמש או סיסמה שגויים.');
+          }
+          return ieDecryptVault(password, vault);
+        })
+        .then(function(c){
+          conn = c;
+          return Promise.all([ghGetFile(DEALS_PATH), ghGetFile(CONTENT_PATH)]);
+        })
+        .then(function(results){
+          dealsCache = { data: JSON.parse(b64DecodeUnicode(results[0].content)), sha: results[0].sha };
+          contentCache = { data: JSON.parse(b64DecodeUnicode(results[1].content)), sha: results[1].sha };
+          enterEditMode();
+        })
+        .catch(function(err){
+          conn = null;
+          ieShowStatus('ieLoginStatus', 'error', 'שם משתמש או סיסמה שגויים, או שהטוקן השמור כבר לא תקף.');
+        });
+    });
+
+    function enterEditMode(){
+      ieEl('ieLoginOverlay').hidden = true;
+      ieEl('iePassword').value = '';
+      document.body.classList.add('edit-mode');
+      editModeActive = true;
+      attachContentPencils();
+      renderDealsGrid(dealsCache.data);
+    }
+
+    ieEl('ieLogoutBtn').addEventListener('click', function(){
+      conn = null; contentCache = null; dealsCache = null; editModeActive = false;
+      document.body.classList.remove('edit-mode');
+      loadDeals();
+    });
+
+    // ---------- Content text pencils ----------
+    var CONTENT_FIELD_MAP = [
+      { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
+      { id: 'c-introTitle', key: 'introTitle', label: 'כותרת "טיילו בעולם עם MOROSHABAT"' },
+      { id: 'c-introText1', key: 'introText1', label: 'טיילו בעולם — שורת טקסט ראשונה' },
+      { id: 'c-introText2', key: 'introText2', label: 'טיילו בעולם — שורת טקסט שנייה' },
+      { id: 'c-packagesTitle', key: 'packagesTitle', label: 'כותרת מדור החבילות' },
+      { id: 'c-packagesSubtitle', key: 'packagesSubtitle', label: 'תיאור מדור החבילות' },
+      { id: 'c-whyTitle', key: 'whyTitle', label: 'כותרת מדור "למה איתי"' },
+      { id: 'c-whySubtitle', key: 'whySubtitle', label: 'תיאור מדור "למה איתי"' },
+      { id: 'c-why1Title', key: 'why1Title', label: 'כרטיס 1 — כותרת' },
+      { id: 'c-why1Text', key: 'why1Text', label: 'כרטיס 1 — טקסט' },
+      { id: 'c-why2Title', key: 'why2Title', label: 'כרטיס 2 — כותרת' },
+      { id: 'c-why2Text', key: 'why2Text', label: 'כרטיס 2 — טקסט' },
+      { id: 'c-why3Title', key: 'why3Title', label: 'כרטיס 3 — כותרת' },
+      { id: 'c-why3Text', key: 'why3Text', label: 'כרטיס 3 — טקסט' },
+      { id: 'c-why4Title', key: 'why4Title', label: 'כרטיס 4 — כותרת' },
+      { id: 'c-why4Text', key: 'why4Text', label: 'כרטיס 4 — טקסט' },
+      { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
+      { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות — פסקה ראשונה' },
+      { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות — פסקה שנייה' },
+      { id: 'c-aboutCredentials', key: 'aboutCredentials', label: 'אודות — שורת הסמכה' }
+    ];
+    var currentTextField = null;
+
+    function pencilSvg(){
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>';
+    }
+    function attachContentPencils(){
+      CONTENT_FIELD_MAP.forEach(function(f){
+        var el = ieEl(f.id);
+        if (!el) return;
+        el.setAttribute('data-editable', '');
+        var old = el.querySelector('.edit-pencil');
+        if (old) old.remove();
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'edit-pencil';
+        btn.setAttribute('aria-label', 'עריכה');
+        btn.innerHTML = pencilSvg();
+        btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openTextEditor(f); });
+        el.appendChild(btn);
+      });
+    }
+    function openTextEditor(f){
+      currentTextField = f;
+      ieEl('ieTextTitle').textContent = f.label;
+      ieEl('ieTextValue').value = (contentCache && contentCache.data[f.key]) || '';
+      ieShowStatus('ieTextStatus', '', '');
+      ieEl('ieTextOverlay').hidden = false;
+    }
+    ieEl('ieTextCancelBtn').addEventListener('click', function(){ ieEl('ieTextOverlay').hidden = true; });
+    ieEl('ieTextSaveBtn').addEventListener('click', function(){
+      if (!currentTextField) return;
+      var val = ieEl('ieTextValue').value;
+      var btn = ieEl('ieTextSaveBtn');
+      btn.disabled = true;
+      ieShowStatus('ieTextStatus', 'info', 'שומר…');
+      var updated = Object.assign({}, contentCache.data);
+      updated[currentTextField.key] = val;
+      var body = b64EncodeUnicode(JSON.stringify(updated, null, 2));
+      ghPutFile(CONTENT_PATH, body, 'עדכון תוכן: ' + currentTextField.label, contentCache.sha).then(function(res){
+        contentCache.data = updated;
+        contentCache.sha = res.content.sha;
+        applySiteContent(contentCache.data);
+        attachContentPencils();
+        ieEl('ieTextOverlay').hidden = true;
+      }).catch(function(err){
+        ieShowStatus('ieTextStatus', 'error', 'שמירה נכשלה: ' + err.message);
+      }).finally(function(){ btn.disabled = false; });
+    });
+
+    // ---------- Date-range calendar (deal editor) ----------
+    function renderIeCalendar(){
+      ieEl('ieCalMonthLabel').textContent = HEBREW_MONTHS[calViewMonth] + ' ' + calViewYear;
+      var grid = ieEl('ieCalGrid');
+      grid.innerHTML = '';
+      var startWeekday = new Date(calViewYear, calViewMonth, 1).getDay();
+      var daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+      for (var i = 0; i < startWeekday; i++) {
+        var empty = document.createElement('span');
+        empty.className = 'ie-cal-day ie-cal-day-empty';
+        grid.appendChild(empty);
+      }
+      for (var day = 1; day <= daysInMonth; day++) {
+        var iso = isoDate(calViewYear, calViewMonth, day);
+        var thisDate = new Date(calViewYear, calViewMonth, day);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ie-cal-day';
+        btn.textContent = day;
+        if (thisDate < calToday) {
+          btn.disabled = true;
+        } else {
+          btn.addEventListener('click', (function(clickedIso){
+            return function(e){ e.stopPropagation(); onIeCalDayClick(clickedIso); };
+          })(iso));
+        }
+        if (selDateFrom === iso && selDateTo === iso) btn.classList.add('ie-cal-day-single');
+        else if (selDateFrom === iso) btn.classList.add('ie-cal-day-start');
+        else if (selDateTo === iso) btn.classList.add('ie-cal-day-end');
+        else if (selDateFrom && selDateTo && iso > selDateFrom && iso < selDateTo) btn.classList.add('ie-cal-day-inrange');
+        grid.appendChild(btn);
+      }
+      ieEl('ieCalPrev').disabled = (calViewYear === calToday.getFullYear() && calViewMonth === calToday.getMonth());
+    }
+    function onIeCalDayClick(iso){
+      if (!selDateFrom || (selDateFrom && selDateTo)) { selDateFrom = iso; selDateTo = null; }
+      else if (iso < selDateFrom) { selDateFrom = iso; selDateTo = null; }
+      else { selDateTo = iso; }
+      renderIeCalendar();
+    }
+    function updateIeDateRangeLabel(){
+      var btn = ieEl('ieDateRangeBtn');
+      if (selDateFrom && selDateTo) btn.textContent = fullDateLabel(selDateFrom) + '  –  ' + fullDateLabel(selDateTo);
+      else if (selDateFrom) btn.textContent = fullDateLabel(selDateFrom) + '  –  …';
+      else btn.textContent = 'בחירת טווח תאריכים';
+    }
+    function updateIeDatesPreview(){
+      var text = formatDateRange(selDateFrom, selDateTo, ieEl('ie_dateNote').value.trim());
+      ieEl('ieDatesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
+    }
+    ieEl('ieDateRangeBtn').addEventListener('click', function(e){
+      e.stopPropagation();
+      var pop = ieEl('ieCalPopover');
+      if (pop.hidden) {
+        var base = selDateFrom ? parseIsoDate(selDateFrom) : calToday;
+        calViewYear = base.getFullYear(); calViewMonth = base.getMonth();
+        renderIeCalendar();
+        pop.hidden = false;
+      } else pop.hidden = true;
+    });
+    ieEl('ieCalPrev').addEventListener('click', function(){ calViewMonth--; if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; } renderIeCalendar(); });
+    ieEl('ieCalNext').addEventListener('click', function(){ calViewMonth++; if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; } renderIeCalendar(); });
+    ieEl('ieCalClear').addEventListener('click', function(){ selDateFrom = null; selDateTo = null; renderIeCalendar(); });
+    ieEl('ieCalApply').addEventListener('click', function(){ ieEl('ieCalPopover').hidden = true; updateIeDateRangeLabel(); updateIeDatesPreview(); });
+    ieEl('ie_dateNote').addEventListener('input', updateIeDatesPreview);
+
+    // ---------- Price-tier list editor ----------
+    function renderIeTiers(){
+      var c = ieEl('ieTiersEditor');
+      c.innerHTML = '';
+      ieTiersList.forEach(function(val, idx){
+        var row = document.createElement('div');
+        row.className = 'ie-list-item';
+        row.innerHTML = '<input type="text" value="' + escapeHtml(val) + '"><button type="button" class="ie-list-remove">✕</button>';
+        row.querySelector('input').addEventListener('input', function(e){ ieTiersList[idx] = e.target.value; });
+        row.querySelector('button').addEventListener('click', function(){ ieTiersList.splice(idx, 1); renderIeTiers(); });
+        c.appendChild(row);
+      });
+    }
+    ieEl('ieAddTierRow').addEventListener('click', function(){ ieTiersList.push(''); renderIeTiers(); });
+
+    // ---------- Deal editor open/save/delete ----------
+    function openDealEditor(dealId){
+      editingDealId = dealId;
+      pendingImageFile = null;
+      ieShowStatus('ieDealStatus', '', '');
+      var d = dealId ? dealsCache.data.find(function(x){ return x.id === dealId; }) : {
+        id: null, active: true,
+        order: (dealsCache.data.reduce(function(m, x){ return Math.max(m, x.order || 0); }, 0) + 1),
+        tag: '', title: '', image: '', imageAlt: '', meta: '', cardDesc: '', price: '', priceNote: '',
+        dates: '', dateFrom: '', dateTo: '', dateNote: '', desc: '', note: '', priceTiers: []
+      };
+      ieEl('ieDealTitle').textContent = dealId ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
+      ieEl('ie_title').value = d.title || '';
+      ieEl('ie_tag').value = d.tag || '';
+      ieEl('ie_meta').value = d.meta || '';
+      selDateFrom = d.dateFrom || null;
+      selDateTo = d.dateTo || null;
+      updateIeDateRangeLabel();
+      ieEl('ie_dateNote').value = d.dateNote || (!d.dateFrom && d.dates ? d.dates : '');
+      updateIeDatesPreview();
+      ieEl('ie_price').value = d.price || '';
+      document.querySelectorAll('input[name="iePriceNote"]').forEach(function(r){ r.checked = (r.value === d.priceNote); });
+      ieEl('ie_cardDesc').value = d.cardDesc || '';
+      ieEl('ie_desc').value = d.desc || '';
+      ieEl('ie_note').value = d.note || '';
+      ieEl('ie_order').value = d.order || 1;
+      ieEl('ie_active').checked = d.active !== false;
+      ieEl('ie_imageFile').value = '';
+      if (d.image) { ieEl('ie_imagePreview').src = d.image; ieEl('ie_imagePreview').hidden = false; }
+      else ieEl('ie_imagePreview').hidden = true;
+      ieTiersList = (d.priceTiers || []).slice();
+      renderIeTiers();
+      ieEl('ieDealDeleteBtn').style.display = dealId ? '' : 'none';
+      ieEl('ieDealOverlay').hidden = false;
+    }
+    ieEl('ieAddDealBtn').addEventListener('click', function(){ openDealEditor(null); });
+    document.addEventListener('click', function(e){
+      var editBtn = e.target.closest && e.target.closest('[data-edit-deal]');
+      if (editBtn) { e.preventDefault(); openDealEditor(editBtn.getAttribute('data-edit-deal')); }
+    });
+    ieEl('ieDealCancelBtn').addEventListener('click', function(){ ieEl('ieDealOverlay').hidden = true; });
+    ieEl('ie_imageFile').addEventListener('change', function(e){
+      var file = e.target.files[0];
+      pendingImageFile = file || null;
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(){ ieEl('ie_imagePreview').src = reader.result; ieEl('ie_imagePreview').hidden = false; };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function saveDealsToRepo(list, message){
+      var body = b64EncodeUnicode(JSON.stringify(list, null, 2));
+      return ghPutFile(DEALS_PATH, body, message, dealsCache.sha).then(function(res){
+        dealsCache.data = list;
+        dealsCache.sha = res.content.sha;
+      });
+    }
+
+    ieEl('ieDealSaveBtn').addEventListener('click', function(){
+      var title = ieEl('ie_title').value.trim();
+      var tag = ieEl('ie_tag').value.trim();
+      var meta = ieEl('ie_meta').value.trim();
+      var dateFrom = selDateFrom, dateTo = selDateTo;
+      var price = ieEl('ie_price').value.trim();
+      var priceNoteEl = document.querySelector('input[name="iePriceNote"]:checked');
+      var priceNote = priceNoteEl ? priceNoteEl.value : '';
+      var cardDesc = ieEl('ie_cardDesc').value.trim();
+      var existing = editingDealId ? dealsCache.data.find(function(x){ return x.id === editingDealId; }) : null;
+      var hasImage = !!(pendingImageFile || (existing && existing.image));
+
+      var missing = [];
+      if (!title) missing.push('כותרת');
+      if (!tag) missing.push('תגית');
+      if (!meta) missing.push('משך');
+      if (!dateFrom || !dateTo) missing.push('תאריכים');
+      if (!price) missing.push('מחיר');
+      if (!priceNote) missing.push('הערת מחיר');
+      if (!cardDesc) missing.push('תיאור קצר');
+      if (!hasImage) missing.push('תמונה');
+      if (missing.length) { ieShowStatus('ieDealStatus', 'error', 'חסרים שדות חובה: ' + missing.join(', ')); return; }
+
+      var d = existing || { id: genDealId() };
+      d.title = title; d.tag = tag; d.meta = meta;
+      d.dateFrom = dateFrom; d.dateTo = dateTo;
+      d.dateNote = ieEl('ie_dateNote').value.trim();
+      d.dates = formatDateRange(dateFrom, dateTo, d.dateNote);
+      d.price = price; d.priceNote = priceNote; d.cardDesc = cardDesc;
+      d.desc = ieEl('ie_desc').value.trim();
+      d.note = ieEl('ie_note').value.trim();
+      d.order = parseInt(ieEl('ie_order').value, 10) || 1;
+      d.active = ieEl('ie_active').checked;
+      d.imageAlt = title;
+      d.priceTiers = ieTiersList.filter(Boolean);
+
+      var saveBtn = ieEl('ieDealSaveBtn');
+      saveBtn.disabled = true;
+      ieShowStatus('ieDealStatus', 'info', 'שומר…');
+
+      var imageStep = pendingImageFile ? uploadImage(pendingImageFile).then(function(path){ d.image = path; }) : Promise.resolve();
+
+      imageStep.then(function(){
+        var list = dealsCache.data.slice();
+        if (existing) {
+          var idx = list.findIndex(function(x){ return x.id === existing.id; });
+          list[idx] = d;
+        } else {
+          list.push(d);
+        }
+        return saveDealsToRepo(list, (existing ? 'עדכון חבילה: ' : 'חבילה חדשה: ') + d.title);
+      }).then(function(){
+        ieShowStatus('ieDealStatus', 'ok', 'נשמר!');
+        renderDealsGrid(dealsCache.data);
+        setTimeout(function(){ ieEl('ieDealOverlay').hidden = true; }, 700);
+      }).catch(function(err){
+        ieShowStatus('ieDealStatus', 'error', 'שמירה נכשלה: ' + err.message);
+      }).finally(function(){ saveBtn.disabled = false; });
+    });
+
+    ieEl('ieDealDeleteBtn').addEventListener('click', function(){
+      if (!editingDealId) return;
+      if (!confirm('למחוק את החבילה הזו לצמיתות? גם התמונה שלה תימחק מהריפו.')) return;
+      var existing = dealsCache.data.find(function(x){ return x.id === editingDealId; });
+      var list = dealsCache.data.filter(function(x){ return x.id !== editingDealId; });
+      ieShowStatus('ieDealStatus', 'info', 'מוחק…');
+      saveDealsToRepo(list, 'מחיקת חבילה: ' + (existing.title || '')).then(function(){
+        if (existing.image && existing.image.indexOf('uploads/') === 0) {
+          return ghDeleteFile(existing.image, 'מחיקת תמונה: ' + (existing.title || '')).catch(function(){});
+        }
+      }).then(function(){
+        renderDealsGrid(dealsCache.data);
+        ieEl('ieDealOverlay').hidden = true;
+      }).catch(function(err){
+        ieShowStatus('ieDealStatus', 'error', 'מחיקה נכשלה: ' + err.message);
+      });
+    });
+
+    document.addEventListener('click', function(e){
+      var delBtn = e.target.closest && e.target.closest('[data-del-deal]');
+      if (!delBtn) return;
+      e.preventDefault();
+      var id = delBtn.getAttribute('data-del-deal');
+      var existing = dealsCache.data.find(function(x){ return x.id === id; });
+      if (!existing) return;
+      if (!confirm('למחוק את "' + existing.title + '" לצמיתות?')) return;
+      var list = dealsCache.data.filter(function(x){ return x.id !== id; });
+      saveDealsToRepo(list, 'מחיקת חבילה: ' + existing.title).then(function(){
+        if (existing.image && existing.image.indexOf('uploads/') === 0) {
+          return ghDeleteFile(existing.image, 'מחיקת תמונה: ' + existing.title).catch(function(){});
+        }
+      }).then(function(){ renderDealsGrid(dealsCache.data); });
+    });
 
     loadSiteContent();
     loadDeals();
