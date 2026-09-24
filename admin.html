@@ -258,24 +258,6 @@
     </div>
 
     <fieldset>
-      <legend>מסלול יום-יום (אופציונלי)</legend>
-      <div class="list-editor" id="itineraryEditor"></div>
-      <button type="button" class="add-row-btn" id="addItineraryRow">+ הוספת יום</button>
-    </fieldset>
-
-    <fieldset>
-      <legend>עובדות / פרטים (אופציונלי — רשימת נקודות)</legend>
-      <div class="list-editor" id="factsEditor"></div>
-      <button type="button" class="add-row-btn" id="addFactRow">+ הוספת שורה</button>
-    </fieldset>
-
-    <fieldset>
-      <legend>מסלול נמלים / יעדים (אופציונלי — רשימה קצרה)</legend>
-      <div class="list-editor" id="routeEditor"></div>
-      <button type="button" class="add-row-btn" id="addRouteRow">+ הוספת יעד</button>
-    </fieldset>
-
-    <fieldset>
       <legend>מדרגות מחיר (אופציונלי)</legend>
       <div class="list-editor" id="tiersEditor"></div>
       <button type="button" class="add-row-btn" id="addTierRow">+ הוספת שורה</button>
@@ -750,29 +732,8 @@
       c.appendChild(row);
     });
   }
-  function renderItineraryEditor(arr){
-    var c = el('itineraryEditor');
-    c.innerHTML = '';
-    arr.forEach(function(item, idx){
-      var row = document.createElement('div');
-      row.className = 'item itinerary';
-      row.innerHTML =
-        '<input type="text" class="day" placeholder="יום / תאריך" value="' + escapeHtml(item.day) + '">' +
-        '<input type="text" placeholder="תיאור" value="' + escapeHtml(item.text) + '">' +
-        '<button type="button" class="remove-btn">✕</button>';
-      var inputs = row.querySelectorAll('input');
-      inputs[0].addEventListener('input', function(e){ arr[idx].day = e.target.value; });
-      inputs[1].addEventListener('input', function(e){ arr[idx].text = e.target.value; });
-      row.querySelector('button').addEventListener('click', function(){ arr.splice(idx,1); renderItineraryEditor(arr); });
-      c.appendChild(row);
-    });
-  }
+  var currentLists = { priceTiers: [] };
 
-  var currentLists = { itinerary: [], facts: [], route: [], priceTiers: [] };
-
-  el('addItineraryRow').addEventListener('click', function(){ currentLists.itinerary.push({ day:'', text:'' }); renderItineraryEditor(currentLists.itinerary); });
-  el('addFactRow').addEventListener('click', function(){ currentLists.facts.push(''); renderTextListEditor('factsEditor', currentLists.facts); });
-  el('addRouteRow').addEventListener('click', function(){ currentLists.route.push(''); renderTextListEditor('routeEditor', currentLists.route); });
   el('addTierRow').addEventListener('click', function(){ currentLists.priceTiers.push(''); renderTextListEditor('tiersEditor', currentLists.priceTiers); });
 
   // ---------- Editor open/save/delete ----------
@@ -815,14 +776,8 @@
     }
 
     currentLists = {
-      itinerary: (d.itinerary || []).map(function(x){ return { day:x.day, text:x.text }; }),
-      facts: (d.facts || []).slice(),
-      route: (d.route || []).slice(),
       priceTiers: (d.priceTiers || []).slice()
     };
-    renderItineraryEditor(currentLists.itinerary);
-    renderTextListEditor('factsEditor', currentLists.facts);
-    renderTextListEditor('routeEditor', currentLists.route);
     renderTextListEditor('tiersEditor', currentLists.priceTiers);
 
     el('deleteDealBtn').style.display = index >= 0 ? '' : 'none';
@@ -886,9 +841,6 @@
     d.order = parseInt(el('f_order').value, 10) || 1;
     d.active = el('f_active').checked;
     d.imageAlt = title;
-    d.itinerary = currentLists.itinerary.filter(function(x){ return x.day || x.text; });
-    d.facts = currentLists.facts.filter(Boolean);
-    d.route = currentLists.route.filter(Boolean);
     d.priceTiers = currentLists.priceTiers.filter(Boolean);
 
     var saveBtn = el('saveDealBtn');
