@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>moroshabat — יפעת מורוביץ נסיעות — גרסה ב</title>
+<title>moroshabat — יפעת מורוביץ נסיעות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
@@ -783,7 +783,7 @@
         '<div class="pkg-body">' +
           '<h3>' + escapeHtml(d.title) + '</h3>' +
           '<p class="pkg-meta">' + escapeHtml(d.meta) + '</p>' +
-          '<p class="pkg-desc">' + escapeHtml(d.cardDesc) + '</p>' +
+          '<p class="pkg-desc">' + escapeHtmlNl(d.cardDesc) + '</p>' +
           '<div class="pkg-price-row">' +
             '<span class="pkg-price-wrap">' +
               '<span class="pkg-price">' + escapeHtml(d.price) + '</span>' +
@@ -797,7 +797,13 @@
     }
 
     function loadDeals(){
+      // Relative fetch works normally on the live site; if this page was
+      // opened as a local file instead, that fetch is blocked by the browser,
+      // so fall back to the raw GitHub URL (a normal cross-origin request).
       fetch('data/deals.json', { cache: 'no-store' })
+        .catch(function(){
+          return fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/data/deals.json?t=' + Date.now(), { cache: 'no-store' });
+        })
         .then(function(r){ return r.json(); })
         .then(function(list){
           var active = list.filter(function(d){ return d.active !== false; });
@@ -805,6 +811,10 @@
           DEALS = {};
           pkgGrid.innerHTML = '';
           active.forEach(function(d){
+            // Deals saved with structured dates get their display string
+            // recomputed on every visit, so "this year" always reflects
+            // today — not the year the admin happened to save it in.
+            if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
             DEALS[d.id] = d;
             pkgGrid.appendChild(renderPkgCard(d));
           });
@@ -827,7 +837,7 @@
       body += '<span class="deal-modal-tag">' + escapeHtml(d.tag) + '</span>';
       body += '<h3>' + escapeHtml(d.title) + '</h3>';
       body += '<p class="deal-modal-dates">' + escapeHtml(d.dates) + '</p>';
-      body += '<p class="deal-modal-desc">' + escapeHtml(d.desc) + '</p>';
+      body += '<p class="deal-modal-desc">' + escapeHtmlNl(d.desc) + '</p>';
 
       if (d.itinerary) {
         body += '<ul class="deal-itinerary">' + d.itinerary.map(function(it){
@@ -847,7 +857,7 @@
           return '<div>' + escapeHtml(p) + '</div>';
         }).join('') + '</div>';
       }
-      if (d.note) body += '<p class="deal-note">' + escapeHtml(d.note) + '</p>';
+      if (d.note) body += '<p class="deal-note">' + escapeHtmlNl(d.note) + '</p>';
       body += '<a href="#contact" class="btn" id="dealCtaLink">יצירת קשר לרכישה <span class="btn-arrow">←</span></a>';
 
       dealModalImg.src = d.image;
@@ -894,6 +904,25 @@
       return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
         return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
       });
+    }
+    function escapeHtmlNl(str){
+      return escapeHtml(str).replace(/\n/g, '<br>');
+    }
+
+    function formatDatePart(iso){
+      if (!iso) return '';
+      var bits = iso.split('-');
+      var y = parseInt(bits[0], 10), m = bits[1], day = bits[2];
+      var thisYear = new Date().getFullYear();
+      return y === thisYear ? (day + '/' + m) : (day + '/' + m + '/' + String(y).slice(-2));
+    }
+    function formatDateRange(fromIso, toIso, note){
+      var range = '';
+      if (fromIso && toIso) range = formatDatePart(fromIso) + '–' + formatDatePart(toIso);
+      else if (fromIso) range = formatDatePart(fromIso);
+      else if (toIso) range = formatDatePart(toIso);
+      if (note) range = range ? (range + ' (' + note + ')') : note;
+      return range;
     }
 
     loadDeals();

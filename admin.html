@@ -149,42 +149,53 @@
   <!-- ---------- Editor ---------- -->
   <div class="card" id="editorCard" hidden>
     <h2 id="editorTitle">עריכת חבילה</h2>
+    <p class="hint">שדות עם * הם שדות חובה — הם מוצגים בכרטיס הקטן באתר.</p>
     <div id="editorStatus"></div>
 
     <div class="row">
       <div>
-        <label>כותרת</label>
+        <label>כותרת *</label>
         <input type="text" id="f_title">
       </div>
       <div>
-        <label>תגית (למשל: קרוז / מבצע / כשר למהדרין)</label>
+        <label>תגית (למשל: קרוז / מבצע / כשר למהדרין) *</label>
         <input type="text" id="f_tag">
       </div>
     </div>
 
     <div class="row">
       <div>
-        <label>משך (למשל: 5 ימים / 4 לילות)</label>
+        <label>משך (למשל: 5 ימים / 4 לילות) *</label>
         <input type="text" id="f_meta">
-      </div>
-      <div>
-        <label>תאריכים</label>
-        <input type="text" id="f_dates">
       </div>
     </div>
 
     <div class="row">
       <div>
-        <label>מחיר (למשל: $477 או 4,968 ₪)</label>
+        <label>מתאריך *</label>
+        <input type="date" id="f_dateFrom">
+      </div>
+      <div>
+        <label>עד תאריך *</label>
+        <input type="date" id="f_dateTo">
+      </div>
+    </div>
+    <label>הערת תאריך נוספת (אופציונלי — למשל "סוכות" או "ראשון עד חמישי")</label>
+    <input type="text" id="f_dateNote">
+    <p class="hint" id="f_datesPreview" style="margin-top:4px;"></p>
+
+    <div class="row">
+      <div>
+        <label>מחיר (למשל: $477 או 4,968 ₪) *</label>
         <input type="text" id="f_price">
       </div>
       <div>
-        <label>הערת מחיר (למשל: לאדם / לזוג)</label>
+        <label>הערת מחיר (למשל: לאדם / לזוג) *</label>
         <input type="text" id="f_priceNote">
       </div>
     </div>
 
-    <label>תיאור קצר (מוצג בכרטיס)</label>
+    <label>תיאור קצר (מוצג בכרטיס) *</label>
     <textarea id="f_cardDesc"></textarea>
 
     <label>תיאור מלא (מוצג בחלון הפרטים)</label>
@@ -193,7 +204,7 @@
     <label>הערה (קטן, בתחתית חלון הפרטים)</label>
     <textarea id="f_note"></textarea>
 
-    <label>תמונה</label>
+    <label>תמונה *</label>
     <img id="f_imagePreview" class="img-preview" hidden>
     <input type="file" id="f_imageFile" accept="image/*">
 
@@ -247,6 +258,9 @@
   var GH_API = 'https://api.github.com';
   var DEALS_PATH = 'data/deals.json';
   var VAULT_PATH = 'data/admin-auth.json';
+  // Absolute (not relative) raw-content URL: works even if this page is opened
+  // as a local file, where relative fetch() calls are blocked by the browser.
+  var RAW_BASE = 'https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/';
 
   var conn = null; // { owner, repo, branch, token }
   var deals = [];
@@ -269,6 +283,27 @@
     return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
       return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
     });
+  }
+
+  // ---------- Date formatting: DD/MM this year, DD/MM/YY otherwise ----------
+  function formatDatePart(iso){
+    if (!iso) return '';
+    var bits = iso.split('-');
+    var y = parseInt(bits[0], 10), m = bits[1], day = bits[2];
+    var thisYear = new Date().getFullYear();
+    return y === thisYear ? (day + '/' + m) : (day + '/' + m + '/' + String(y).slice(-2));
+  }
+  function formatDateRange(fromIso, toIso, note){
+    var range = '';
+    if (fromIso && toIso) range = formatDatePart(fromIso) + '–' + formatDatePart(toIso);
+    else if (fromIso) range = formatDatePart(fromIso);
+    else if (toIso) range = formatDatePart(toIso);
+    if (note) range = range ? (range + ' (' + note + ')') : note;
+    return range;
+  }
+  function updateDatesPreview(){
+    var text = formatDateRange(el('f_dateFrom').value, el('f_dateTo').value, el('f_dateNote').value.trim());
+    el('f_datesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
   }
 
   // ---------- base64 helpers (unicode-safe for JSON, raw for images) ----------
@@ -320,6 +355,19 @@
     }).then(function(res){
       if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
       return res.json();
+    });
+  }
+  function ghDeleteFile(path, message){
+    return ghGetFile(path).then(function(existing){
+      var body = { message: message, sha: existing.sha, branch: conn.branch };
+      return fetch(GH_API + '/repos/' + conn.owner + '/' + conn.repo + '/contents/' + path, {
+        method: 'DELETE',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+        body: JSON.stringify(body)
+      }).then(function(res){
+        if (!res.ok) return res.json().then(function(e){ throw new Error(e.message || ('שגיאה ' + res.status)); });
+        return res.json();
+      });
     });
   }
 
@@ -378,7 +426,7 @@
   var repoVault = null;
 
   function fetchRepoVault(){
-    return fetch(VAULT_PATH, { cache: 'no-store' }).then(function(res){
+    return fetch(RAW_BASE + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' }).then(function(res){
       return res.ok ? res.json() : null;
     }).catch(function(){ return null; });
   }
@@ -585,7 +633,8 @@
     showStatus('editorStatus', '', '');
     var d = index >= 0 ? deals[index] : {
       id: null, active: true, order: (deals.reduce(function(m,x){ return Math.max(m, x.order||0); }, 0) + 1),
-      tag:'', title:'', image:'', imageAlt:'', meta:'', cardDesc:'', price:'', priceNote:'', dates:'', desc:'', note:'',
+      tag:'', title:'', image:'', imageAlt:'', meta:'', cardDesc:'', price:'', priceNote:'',
+      dates:'', dateFrom:'', dateTo:'', dateNote:'', desc:'', note:'',
       itinerary: [], facts: [], route: [], priceTiers: []
     };
 
@@ -593,7 +642,13 @@
     el('f_title').value = d.title || '';
     el('f_tag').value = d.tag || '';
     el('f_meta').value = d.meta || '';
-    el('f_dates').value = d.dates || '';
+    el('f_dateFrom').value = d.dateFrom || '';
+    el('f_dateTo').value = d.dateTo || '';
+    // Legacy deals only have the old free-text `dates` string with no
+    // structured dateFrom/dateTo — carry it into the note field so nothing
+    // is lost, rather than guessing a parse of it.
+    el('f_dateNote').value = d.dateNote || (!d.dateFrom && d.dates ? d.dates : '');
+    updateDatesPreview();
     el('f_price').value = d.price || '';
     el('f_priceNote').value = d.priceNote || '';
     el('f_cardDesc').value = d.cardDesc || '';
@@ -637,18 +692,46 @@
     }
   });
 
+  ['f_dateFrom', 'f_dateTo', 'f_dateNote'].forEach(function(id){
+    el(id).addEventListener('input', updateDatesPreview);
+  });
+
   el('saveDealBtn').addEventListener('click', function(){
     var title = el('f_title').value.trim();
-    if (!title) { showStatus('editorStatus', 'error', 'חייבים כותרת.'); return; }
+    var tag = el('f_tag').value.trim();
+    var meta = el('f_meta').value.trim();
+    var dateFrom = el('f_dateFrom').value;
+    var dateTo = el('f_dateTo').value;
+    var price = el('f_price').value.trim();
+    var priceNote = el('f_priceNote').value.trim();
+    var cardDesc = el('f_cardDesc').value.trim();
+    var hasImage = !!(pendingImageFile || (editingIndex >= 0 && deals[editingIndex].image));
+
+    var missing = [];
+    if (!title) missing.push('כותרת');
+    if (!tag) missing.push('תגית');
+    if (!meta) missing.push('משך');
+    if (!dateFrom || !dateTo) missing.push('תאריכים (מתאריך ועד תאריך)');
+    if (!price) missing.push('מחיר');
+    if (!priceNote) missing.push('הערת מחיר');
+    if (!cardDesc) missing.push('תיאור קצר');
+    if (!hasImage) missing.push('תמונה');
+    if (missing.length) {
+      showStatus('editorStatus', 'error', 'חסרים שדות חובה: ' + missing.join(', '));
+      return;
+    }
 
     var d = editingIndex >= 0 ? deals[editingIndex] : { id: genId() };
     d.title = title;
-    d.tag = el('f_tag').value.trim();
-    d.meta = el('f_meta').value.trim();
-    d.dates = el('f_dates').value.trim();
-    d.price = el('f_price').value.trim();
-    d.priceNote = el('f_priceNote').value.trim();
-    d.cardDesc = el('f_cardDesc').value.trim();
+    d.tag = tag;
+    d.meta = meta;
+    d.dateFrom = dateFrom;
+    d.dateTo = dateTo;
+    d.dateNote = el('f_dateNote').value.trim();
+    d.dates = formatDateRange(dateFrom, dateTo, d.dateNote);
+    d.price = price;
+    d.priceNote = priceNote;
+    d.cardDesc = cardDesc;
     d.desc = el('f_desc').value.trim();
     d.note = el('f_note').value.trim();
     d.order = parseInt(el('f_order').value, 10) || 1;
@@ -691,11 +774,18 @@
 
   el('deleteDealBtn').addEventListener('click', function(){
     if (editingIndex < 0) return;
-    if (!confirm('למחוק את החבילה הזו לצמיתות?')) return;
+    if (!confirm('למחוק את החבילה הזו לצמיתות? גם התמונה שלה תימחק מהריפו.')) return;
     var d = deals[editingIndex];
     deals.splice(editingIndex, 1);
     showStatus('editorStatus', 'info', 'מוחק…');
     saveDeals('מחיקת חבילה: ' + (d.title || '')).then(function(){
+      // Only delete images uploaded through this admin panel (uploads/…).
+      // The original site images (pkg-*.jpg at the repo root) are shared
+      // with other sections of the site and must never be auto-deleted.
+      if (d.image && d.image.indexOf('uploads/') === 0) {
+        return ghDeleteFile(d.image, 'מחיקת תמונה: ' + (d.title || '')).catch(function(){});
+      }
+    }).then(function(){
       renderDealsList();
       editorCard.hidden = true;
       dashboard.hidden = false;
