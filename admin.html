@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>ניהול חבילות — moroshabat</title>
+<title>ניהול חבילות moroshabat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
@@ -128,7 +128,7 @@
       </div>
       <p class="hint" style="margin-top:22px;">
         <button type="button" class="btn secondary small" id="resetVaultBtn">הגדרות מפתחים</button>
-        — רק להגדרה ראשונית או להחלפת הטוקן, לא לשימוש שוטף.
+        רק להגדרה ראשונית או להחלפת הטוקן, לא לשימוש שוטף.
       </p>
     </div>
 
@@ -138,8 +138,8 @@
         הגדרה ראשונית (למפתח/ת בלבד, פעם אחת). בוחרים שם משתמש וסיסמה לחשבון הניהול, ומדביקים GitHub Personal Access Token (מסוג Fine-grained) עם הרשאת Contents: Read and write, מוגבל רק לריפו <b>moroshabat</b>.
         אפשר ליצור טוקן כזה ב-
         <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
-        — תחת Repository access בחר "Only select repositories" ובחר moroshabat, ותחת Permissions בחר Contents: Read and write.
-        הסיסמה מצפינה את הטוקן ולא נשמרת בשום מקום כטקסט גלוי; הגרסה המוצפנת נשמרת בריפו עצמו, כך שמכאן והלאה אפשר להתחבר מכל מחשב או טלפון רק עם שם משתמש וסיסמה — בלי טוקן ובלי GitHub בכלל. לכן כדאי לבחור סיסמה חזקה וייחודית.
+        תחת Repository access בחר "Only select repositories" ובחר moroshabat, ותחת Permissions בחר Contents: Read and write.
+        הסיסמה מצפינה את הטוקן ולא נשמרת בשום מקום כטקסט גלוי; הגרסה המוצפנת נשמרת בריפו עצמו, כך שמכאן והלאה אפשר להתחבר מכל מחשב או טלפון רק עם שם משתמש וסיסמה בלי טוקן ובלי GitHub בכלל. לכן כדאי לבחור סיסמה חזקה וייחודית.
       </p>
       <label for="setupUsername">שם משתמש</label>
       <input type="text" id="setupUsername" autocomplete="username">
@@ -177,7 +177,7 @@
   <!-- ---------- Editor ---------- -->
   <div class="card" id="editorCard" hidden>
     <h2 id="editorTitle">עריכת חבילה</h2>
-    <p class="hint">שדות עם * הם שדות חובה — הם מוצגים בכרטיס הקטן באתר.</p>
+    <p class="hint">שדות עם * הם שדות חובה הם מוצגים בכרטיס הקטן באתר.</p>
     <div id="editorStatus"></div>
 
     <div class="row">
@@ -217,7 +217,7 @@
         </div>
       </div>
     </div>
-    <label>הערת תאריך נוספת (אופציונלי — למשל "סוכות" או "ראשון עד חמישי")</label>
+    <label>הערת תאריך נוספת (אופציונלי למשל "סוכות" או "ראשון עד חמישי")</label>
     <input type="text" id="f_dateNote">
     <p class="hint" id="f_datesPreview" style="margin-top:4px;"></p>
 
@@ -276,7 +276,7 @@
   <!-- ---------- Site content editor ---------- -->
   <div class="card" id="contentCard" hidden>
     <h2>עריכת תוכן האתר</h2>
-    <p class="hint">הטקסטים הקבועים באתר — הכותרת הראשית, טקסט ההיכרות, כותרות המדורים, ואודות. חבילות נערכות בנפרד.</p>
+    <p class="hint">הטקסטים הקבועים באתר הכותרת הראשית, טקסט ההיכרות, כותרות המדורים, ואודות. חבילות נערכות בנפרד.</p>
     <div id="contentStatus"></div>
 
     <fieldset>
@@ -309,29 +309,29 @@
       <input type="text" id="ct_whySubtitle">
       <div class="row" style="margin-top:14px;">
         <div>
-          <label>כרטיס 1 — כותרת</label>
+          <label>כרטיס 1 כותרת</label>
           <input type="text" id="ct_why1Title">
-          <label>כרטיס 1 — טקסט</label>
+          <label>כרטיס 1 טקסט</label>
           <textarea id="ct_why1Text"></textarea>
         </div>
         <div>
-          <label>כרטיס 2 — כותרת</label>
+          <label>כרטיס 2 כותרת</label>
           <input type="text" id="ct_why2Title">
-          <label>כרטיס 2 — טקסט</label>
+          <label>כרטיס 2 טקסט</label>
           <textarea id="ct_why2Text"></textarea>
         </div>
       </div>
       <div class="row">
         <div>
-          <label>כרטיס 3 — כותרת</label>
+          <label>כרטיס 3 כותרת</label>
           <input type="text" id="ct_why3Title">
-          <label>כרטיס 3 — טקסט</label>
+          <label>כרטיס 3 טקסט</label>
           <textarea id="ct_why3Text"></textarea>
         </div>
         <div>
-          <label>כרטיס 4 — כותרת</label>
+          <label>כרטיס 4 כותרת</label>
           <input type="text" id="ct_why4Title">
-          <label>כרטיס 4 — טקסט</label>
+          <label>כרטיס 4 טקסט</label>
           <textarea id="ct_why4Text"></textarea>
         </div>
       </div>
@@ -706,7 +706,7 @@
       return;
     }
     if (password.length < 8) {
-      showStatus('loginStatus', 'error', 'הסיסמה הזו תגן על הגישה לאתר — כדאי לבחור סיסמה חזקה של 8 תווים לפחות.');
+      showStatus('loginStatus', 'error', 'הסיסמה הזו תגן על הגישה לאתר כדאי לבחור סיסמה חזקה של 8 תווים לפחות.');
       return;
     }
     showStatus('loginStatus', 'info', 'בודק את הטוקן…');

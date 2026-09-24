@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>moroshabat — יפעת מורוביץ נסיעות</title>
+<title>moroshabat יפעת מורוביץ נסיעות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
@@ -495,7 +495,7 @@
           <span class="eyebrow">החבילות שלנו</span>
           <h2 id="c-packagesTitle">מסעות נבחרים לעונה הקרובה</h2>
         </div>
-        <p id="c-packagesSubtitle">מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע — כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
+        <p id="c-packagesSubtitle">מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
         <button type="button" class="btn add-deal-btn" id="ieAddDealBtn">+ הוספת חבילה</button>
       </div>
 
@@ -554,7 +554,7 @@
       <div class="about-copy">
         <span class="eyebrow">אודות</span>
         <h2 id="c-aboutTitle" style="font-size:1.9rem;margin-bottom:20px;">כמה מילים עליי</h2>
-        <p id="c-aboutText1">שלום, אני יפעת — סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם — לא עוד חבילה מהמדף.</p>
+        <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
         <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
         <p class="credentials" id="c-aboutCredentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
       </div>
@@ -794,7 +794,7 @@
 
 <!-- ---------- Admin bar (visible only after login) ---------- -->
 <div class="admin-bar">
-  <span><b>מצב עריכה פעיל</b> — לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
+  <span><b>מצב עריכה פעיל</b> לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
   <div class="admin-bar-actions">
     <a href="admin.html">לוח ניהול מלא</a>
     <button type="button" id="ieLogoutBtn">יציאה</button>
@@ -850,7 +850,7 @@
 <div class="ie-overlay" id="ieDealOverlay" hidden>
   <div class="ie-modal ie-modal-wide">
     <h3 id="ieDealTitle">עריכת חבילה</h3>
-    <p class="ie-hint">שדות עם * הם שדות חובה — הם מוצגים בכרטיס הקטן באתר.</p>
+    <p class="ie-hint">שדות עם * הם שדות חובה הם מוצגים בכרטיס הקטן באתר.</p>
     <div id="ieDealStatus"></div>
 
     <div class="ie-row">
@@ -1387,23 +1387,23 @@
     var CONTENT_FIELD_MAP = [
       { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
       { id: 'c-introTitle', key: 'introTitle', label: 'כותרת "טיילו בעולם עם MOROSHABAT"' },
-      { id: 'c-introText', key: 'introText', label: 'טיילו בעולם — טקסט' },
+      { id: 'c-introText', key: 'introText', label: 'טיילו בעולם טקסט' },
       { id: 'c-packagesTitle', key: 'packagesTitle', label: 'כותרת מדור החבילות' },
       { id: 'c-packagesSubtitle', key: 'packagesSubtitle', label: 'תיאור מדור החבילות' },
       { id: 'c-whyTitle', key: 'whyTitle', label: 'כותרת מדור "למה איתי"' },
       { id: 'c-whySubtitle', key: 'whySubtitle', label: 'תיאור מדור "למה איתי"' },
-      { id: 'c-why1Title', key: 'why1Title', label: 'כרטיס 1 — כותרת' },
-      { id: 'c-why1Text', key: 'why1Text', label: 'כרטיס 1 — טקסט' },
-      { id: 'c-why2Title', key: 'why2Title', label: 'כרטיס 2 — כותרת' },
-      { id: 'c-why2Text', key: 'why2Text', label: 'כרטיס 2 — טקסט' },
-      { id: 'c-why3Title', key: 'why3Title', label: 'כרטיס 3 — כותרת' },
-      { id: 'c-why3Text', key: 'why3Text', label: 'כרטיס 3 — טקסט' },
-      { id: 'c-why4Title', key: 'why4Title', label: 'כרטיס 4 — כותרת' },
-      { id: 'c-why4Text', key: 'why4Text', label: 'כרטיס 4 — טקסט' },
+      { id: 'c-why1Title', key: 'why1Title', label: 'כרטיס 1 כותרת' },
+      { id: 'c-why1Text', key: 'why1Text', label: 'כרטיס 1 טקסט' },
+      { id: 'c-why2Title', key: 'why2Title', label: 'כרטיס 2 כותרת' },
+      { id: 'c-why2Text', key: 'why2Text', label: 'כרטיס 2 טקסט' },
+      { id: 'c-why3Title', key: 'why3Title', label: 'כרטיס 3 כותרת' },
+      { id: 'c-why3Text', key: 'why3Text', label: 'כרטיס 3 טקסט' },
+      { id: 'c-why4Title', key: 'why4Title', label: 'כרטיס 4 כותרת' },
+      { id: 'c-why4Text', key: 'why4Text', label: 'כרטיס 4 טקסט' },
       { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
-      { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות — פסקה ראשונה' },
-      { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות — פסקה שנייה' },
-      { id: 'c-aboutCredentials', key: 'aboutCredentials', label: 'אודות — שורת הסמכה' }
+      { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות פסקה ראשונה' },
+      { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות פסקה שנייה' },
+      { id: 'c-aboutCredentials', key: 'aboutCredentials', label: 'אודות שורת הסמכה' }
     ];
     var currentTextField = null;
 
@@ -1490,7 +1490,7 @@
       ieEl('ieLinkFieldLabel').textContent = f.label;
       if (f.kind === 'phone') {
         ieEl('ieLinkValue').value = (contentCache && contentCache.data.linkPhoneText) || '';
-        ieEl('ieLinkHint').textContent = 'מקלידים את המספר כמו שרוצים שיוצג (למשל 052-8403104) — קישור החיוג נבנה אוטומטית.';
+        ieEl('ieLinkHint').textContent = 'מקלידים את המספר כמו שרוצים שיוצג (למשל 052-8403104) קישור החיוג נבנה אוטומטית.';
       } else {
         ieEl('ieLinkValue').value = (contentCache && contentCache.data[f.key]) || '';
         ieEl('ieLinkHint').textContent = 'הקישור המלא (https://...).';
