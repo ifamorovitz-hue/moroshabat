@@ -336,7 +336,17 @@
   .form-toggle span{ display:block; text-align:center; padding:11px 10px; border:1.5px solid var(--line-on-ink); border-radius:10px; color:var(--cream); font-weight:600; font-size:.9rem; cursor:pointer; }
   .form-toggle input:checked + span{ background:var(--yellow); border-color:var(--yellow); color:var(--yellow-ink); }
   .form-toggle input:focus-visible + span{ outline:3px solid var(--yellow); outline-offset:3px; box-shadow:0 0 0 6px var(--ink); }
-  .form-dates input[type=date]{ color-scheme:dark; }
+  .form-date-btn{ width:100%; text-align:right; background:rgba(255,255,255,.06); border:1px solid var(--line-on-ink); color:var(--cream); padding:12px 14px; border-radius:8px; font-family:inherit; font-size:1rem; cursor:pointer; }
+  .form-date-btn.placeholder{ color:rgba(255,255,255,.6); }
+  .fc-cal{ margin-top:10px; color:var(--ink); }
+  .fc-cal *{ color:inherit; }
+  .fc-cal .ie-cal-day-start, .fc-cal .ie-cal-day-end, .fc-cal .ie-cal-day-single{ color:#fff; }
+  .fc-hint{ margin:10px 0 0; font-size:.8rem; color:var(--muted) !important; text-align:center; }
+  .form-error{ margin:8px 0 0; color:#ffb4a8; font-size:.85rem; }
+  .form-budget{ display:flex; gap:10px; align-items:stretch; }
+  .form-budget input[type=number]{ flex:1; min-width:0; }
+  .form-toggle-sm{ margin-bottom:0; flex:0 0 auto; }
+  .form-toggle-sm span{ padding:11px 14px; }
   .form-two{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
   .form-note{ margin-top:16px; font-size:.8rem; color:var(--muted-on-ink); }
   .form-success{ margin-top:14px; font-size:.88rem; color:var(--yellow); font-weight:700; }
@@ -936,20 +946,21 @@
             <label><input type="radio" name="dateMode" value="exact" checked><span>תאריכים מדויקים</span></label>
             <label><input type="radio" name="dateMode" value="month"><span>עוד לא בטוחים, רק חודש</span></label>
           </div>
-          <div class="form-two" id="dates-exact">
-            <div>
-              <label for="date-from">מתאריך</label>
-              <input id="date-from" name="dateFrom" type="date" required>
+          <button type="button" class="form-date-btn" id="fcDateBtn" aria-haspopup="dialog" aria-expanded="false">בחרו תאריכים</button>
+          <div class="ie-cal-popover fc-cal" id="fcCalPopover" hidden>
+            <div class="ie-cal-header">
+              <button type="button" class="ie-cal-nav" id="fcCalPrev" aria-label="חודש קודם">‹</button>
+              <span class="ie-cal-selects">
+                <select id="fcCalMonthSel" aria-label="חודש"></select>
+                <select id="fcCalYearSel" aria-label="שנה"></select>
+              </span>
+              <button type="button" class="ie-cal-nav" id="fcCalNext" aria-label="חודש הבא">›</button>
             </div>
-            <div>
-              <label for="date-to">עד תאריך</label>
-              <input id="date-to" name="dateTo" type="date" required>
-            </div>
+            <div class="ie-cal-weekdays"><span>א</span><span>ב</span><span>ג</span><span>ד</span><span>ה</span><span>ו</span><span>ש</span></div>
+            <div class="ie-cal-grid" id="fcCalGrid"></div>
+            <p class="fc-hint" id="fcHint"></p>
           </div>
-          <div id="dates-month" hidden>
-            <label for="month-select">באיזה חודש?</label>
-            <select id="month-select" name="month" disabled required></select>
-          </div>
+          <p class="form-error" id="dateError" role="alert" hidden>יש לבחור תאריכים.</p>
         </fieldset>
         <div class="form-two">
           <div class="form-row">
@@ -958,7 +969,13 @@
           </div>
           <div class="form-row">
             <label for="budget-input">תקציב משוער (לא חובה)</label>
-            <input id="budget-input" name="budget" type="text" placeholder="למשל 15,000 ₪ לזוג">
+            <div class="form-budget">
+              <input id="budget-input" name="budget" type="number" min="0" step="any" inputmode="numeric" placeholder="למשל 15000">
+              <div class="form-toggle form-toggle-sm">
+                <label><input type="radio" name="budgetFor" value="לאדם"><span>לאדם</span></label>
+                <label><input type="radio" name="budgetFor" value="לזוג"><span>לזוג</span></label>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-row">
@@ -1327,9 +1344,17 @@
     var sendBtn = document.getElementById('sendInquiryBtn');
     if (form && sendBtn) {
       sendBtn.addEventListener('click', function(e){
+        var fc = form.__fcState();
         if (!form.checkValidity()) {
           e.preventDefault();
           form.reportValidity();
+          return;
+        }
+        if (form.dateMode.value === 'month' ? !fc.month : !(fc.from && fc.to)) {
+          e.preventDefault();
+          fc.err.textContent = form.dateMode.value === 'month' ? 'יש לבחור חודש.' : 'יש לבחור תאריך יציאה ותאריך חזרה.';
+          fc.err.hidden = false;
+          fc.btn.focus();
           return;
         }
 
@@ -1339,13 +1364,9 @@
         var message = (form.message.value || '').trim();
         var travelers = (form.travelers.value || '').trim();
         var budget = (form.budget.value || '').trim();
-        var dateLine = '';
-        if (form.dateMode.value === 'month') {
-          dateLine = 'חודש משוער: ' + form.month.options[form.month.selectedIndex].text;
-        } else {
-          var fmt = function(v){ var b = v.split('-'); return b[2] + '.' + b[1] + '.' + b[0].slice(-2); };
-          dateLine = 'תאריכים: ' + fmt(form.dateFrom.value) + ' - ' + fmt(form.dateTo.value);
-        }
+        var dateLine = form.dateMode.value === 'month'
+          ? 'חודש משוער: ' + fc.months[fc.month.m] + ' ' + fc.month.y
+          : 'תאריכים: ' + fc.fmt(fc.from) + ' - ' + fc.fmt(fc.to);
 
         // Build the WhatsApp message and set the href synchronously, right
         // here inside the click handler, so the browser treats this as a
@@ -1360,7 +1381,7 @@
           dateLine,
           'מספר נוסעים: ' + travelers
         ];
-        if (budget) lines.push('תקציב משוער: ' + budget);
+        if (budget) lines.push('תקציב משוער: ' + Number(budget).toLocaleString('en-US') + ' ₪ ' + (form.budgetFor.value || ''));
         if (message) lines.push('עוד פרטים: ' + message);
         sendBtn.href = 'https://wa.me/+972528403104?text=' + encodeURIComponent(lines.join('\n'));
 
@@ -1368,34 +1389,93 @@
         setTimeout(syncDateMode, 0);
       });
 
-      // ---- Date mode: exact dates or just a month ----
-      var MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-      var monthSel = document.getElementById('month-select');
-      var dateFrom = document.getElementById('date-from'), dateTo = document.getElementById('date-to');
-      var now = new Date();
-      var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'בחרו חודש'; monthSel.appendChild(ph);
-      for (var i = 0; i < 18; i++) {
-        var d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-        var o = document.createElement('option');
-        o.value = d.getFullYear() + '-' + (d.getMonth() + 1);
-        o.textContent = MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
-        monthSel.appendChild(o);
+      // ---- One calendar: date range, or a single month ----
+      var FC_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      var fcToday = new Date(); fcToday.setHours(0, 0, 0, 0);
+      var fcFrom = null, fcTo = null, fcMonth = null;
+      var fcViewY = fcToday.getFullYear(), fcViewM = fcToday.getMonth();
+      var fcBtn = document.getElementById('fcDateBtn'), fcPop = document.getElementById('fcCalPopover');
+      var fcMonthSel = document.getElementById('fcCalMonthSel'), fcYearSel = document.getElementById('fcCalYearSel');
+      var fcGrid = document.getElementById('fcCalGrid'), fcErr = document.getElementById('dateError'), fcHint = document.getElementById('fcHint');
+      function fcIso(y, m, d){ return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0'); }
+      function fcFmt(iso){ var b = iso.split('-'); return b[2] + '.' + b[1] + '.' + b[0].slice(-2); }
+      function fcMode(){ return form.dateMode.value === 'month' ? 'month' : 'exact'; }
+      function fcUpdateBtn(){
+        var txt = 'בחרו תאריכים';
+        if (fcMode() === 'month') txt = fcMonth ? FC_MONTHS[fcMonth.m] + ' ' + fcMonth.y : 'בחרו חודש';
+        else if (fcFrom && fcTo) txt = '⁦' + fcFmt(fcFrom) + ' - ' + fcFmt(fcTo) + '⁩';
+        else if (fcFrom) txt = '⁦' + fcFmt(fcFrom) + ' - …⁩';
+        fcBtn.textContent = txt;
+        fcBtn.classList.toggle('placeholder', txt === 'בחרו תאריכים' || txt === 'בחרו חודש');
+        fcHint.textContent = fcMode() === 'month' ? 'לחצו על יום כלשהו בחודש שמתאים לכם' : (fcFrom && !fcTo ? 'עכשיו בחרו תאריך חזרה' : 'בחרו תאריך יציאה ואז תאריך חזרה');
       }
-      var todayIso = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-      dateFrom.min = todayIso; dateTo.min = todayIso;
+      function fcRender(){
+        var ty = fcToday.getFullYear();
+        fcYearSel.innerHTML = '';
+        for (var y = ty; y <= ty + 3; y++) { var yo = document.createElement('option'); yo.value = y; yo.textContent = y; fcYearSel.appendChild(yo); }
+        fcYearSel.value = fcViewY;
+        fcMonthSel.innerHTML = '';
+        FC_MONTHS.forEach(function(n, m){
+          var mo = document.createElement('option'); mo.value = m; mo.textContent = n;
+          if (fcViewY === ty && m < fcToday.getMonth()) mo.disabled = true;
+          fcMonthSel.appendChild(mo);
+        });
+        fcMonthSel.value = fcViewM;
+        fcGrid.innerHTML = '';
+        var start = new Date(fcViewY, fcViewM, 1).getDay(), days = new Date(fcViewY, fcViewM + 1, 0).getDate();
+        for (var e = 0; e < start; e++) { var sp = document.createElement('span'); sp.className = 'ie-cal-day ie-cal-day-empty'; fcGrid.appendChild(sp); }
+        for (var d = 1; d <= days; d++) {
+          var iso = fcIso(fcViewY, fcViewM, d), b = document.createElement('button');
+          b.type = 'button'; b.className = 'ie-cal-day'; b.textContent = d;
+          if (new Date(fcViewY, fcViewM, d) < fcToday) b.disabled = true;
+          else b.addEventListener('click', (function(v, day){ return function(ev){ ev.stopPropagation(); fcPick(v, day); }; })(iso, d));
+          if (fcMode() === 'month') { if (fcMonth && fcMonth.y === fcViewY && fcMonth.m === fcViewM) b.classList.add('ie-cal-day-inrange'); }
+          else if (fcFrom === iso && fcTo === iso) b.classList.add('ie-cal-day-single');
+          else if (fcFrom === iso) b.classList.add('ie-cal-day-start');
+          else if (fcTo === iso) b.classList.add('ie-cal-day-end');
+          else if (fcFrom && fcTo && iso > fcFrom && iso < fcTo) b.classList.add('ie-cal-day-inrange');
+          fcGrid.appendChild(b);
+        }
+        document.getElementById('fcCalPrev').disabled = (fcViewY === ty && fcViewM === fcToday.getMonth());
+      }
+      function fcClose(){ fcPop.hidden = true; fcBtn.setAttribute('aria-expanded', 'false'); }
+      function fcPick(iso){
+        fcErr.hidden = true;
+        if (fcMode() === 'month') {
+          fcMonth = { y: fcViewY, m: fcViewM };
+          fcRender(); fcUpdateBtn(); fcClose(); return;
+        }
+        if (!fcFrom || (fcFrom && fcTo) || iso < fcFrom) { fcFrom = iso; fcTo = null; }
+        else { fcTo = iso; }
+        fcRender(); fcUpdateBtn();
+        if (fcFrom && fcTo) fcClose();
+      }
+      fcBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (!fcPop.hidden) { fcClose(); return; }
+        var base = fcMonth ? new Date(fcMonth.y, fcMonth.m, 1) : (fcFrom ? new Date(fcFrom) : fcToday);
+        fcViewY = base.getFullYear(); fcViewM = base.getMonth();
+        fcRender(); fcPop.hidden = false; fcBtn.setAttribute('aria-expanded', 'true');
+      });
+      document.getElementById('fcCalPrev').addEventListener('click', function(){ fcViewM--; if (fcViewM < 0) { fcViewM = 11; fcViewY--; } fcRender(); });
+      document.getElementById('fcCalNext').addEventListener('click', function(){ fcViewM++; if (fcViewM > 11) { fcViewM = 0; fcViewY++; } fcRender(); });
+      fcMonthSel.addEventListener('change', function(){ fcViewM = parseInt(this.value, 10); fcRender(); });
+      fcYearSel.addEventListener('change', function(){
+        fcViewY = parseInt(this.value, 10);
+        if (fcViewY === fcToday.getFullYear() && fcViewM < fcToday.getMonth()) fcViewM = fcToday.getMonth();
+        fcRender();
+      });
+      document.addEventListener('click', function(e){ if (!fcPop.hidden && !fcPop.contains(e.target) && e.target !== fcBtn) fcClose(); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !fcPop.hidden) { fcClose(); fcBtn.focus(); } });
       function syncDateMode(){
-        var exact = form.dateMode.value !== 'month';
-        document.getElementById('dates-exact').hidden = !exact;
-        document.getElementById('dates-month').hidden = exact;
-        dateFrom.disabled = dateTo.disabled = !exact;
-        monthSel.disabled = exact;
-        dateTo.min = dateFrom.value || todayIso;
+        fcFrom = fcTo = null; fcMonth = null; fcErr.hidden = true; fcClose(); fcUpdateBtn();
       }
       form.querySelectorAll('input[name="dateMode"]').forEach(function(r){ r.addEventListener('change', syncDateMode); });
-      dateFrom.addEventListener('change', function(){
-        dateTo.min = dateFrom.value || todayIso;
-        if (dateTo.value && dateTo.value < dateFrom.value) dateTo.value = dateFrom.value;
-      });
+      // Budget: choosing per person / per couple is required once an amount is typed
+      var budgetInput = document.getElementById('budget-input');
+      var budgetRadios = form.querySelectorAll('input[name="budgetFor"]');
+      budgetInput.addEventListener('input', function(){ budgetRadios[0].required = !!budgetInput.value.trim(); });
+      form.__fcState = function(){ return { from: fcFrom, to: fcTo, month: fcMonth, fmt: fcFmt, months: FC_MONTHS, err: fcErr, btn: fcBtn }; };
       syncDateMode();
     }
 
