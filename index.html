@@ -369,13 +369,9 @@
   .admin-bar{ position:fixed; bottom:0; inset-inline:0; z-index:200; background:#0e3d38; color:#fff; padding:12px 20px; display:none; align-items:center; justify-content:space-between; gap:16px; font-size:.86rem; box-shadow:0 -6px 20px rgba(0,0,0,.2); }
   body.edit-mode .admin-bar{ display:flex; }
   .admin-bar b{ color:#ffd400; }
-  .admin-bar button.secondary{ background:rgba(255,255,255,.14); }
-  .return-edit-btn{ display:none; position:fixed; bottom:16px; inset-inline-start:16px; z-index:200; background:#0e3d38; color:#fff; border:none; border-radius:999px; padding:10px 18px; font-weight:700; font-size:.85rem; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.3); }
-  body.preview-mode .return-edit-btn{ display:block; }
-  .admin-bar .admin-bar-actions{ display:flex; gap:10px; align-items:center; }
-  .admin-bar a{ color:#fff; opacity:.8; text-decoration:none; font-size:.8rem; }
-  .admin-bar a:hover{ opacity:1; }
-  .admin-bar button{ background:#c0392b; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-weight:700; font-size:.82rem; cursor:pointer; }
+  .mode-toggle-btn{ display:none; position:fixed; bottom:70px; inset-inline-start:16px; z-index:201; background:#ffd400; color:#241d00; border:none; border-radius:999px; padding:10px 18px; font-weight:700; font-size:.85rem; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.3); }
+  body.edit-mode .mode-toggle-btn{ display:block; }
+  body.preview-mode .mode-toggle-btn{ display:block; bottom:16px; background:#0e3d38; color:#fff; }
 
   .ie-overlay{ position:fixed; inset:0; background:rgba(10,25,20,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
   .ie-overlay[hidden]{ display:none; }
@@ -800,12 +796,8 @@
 <!-- ---------- Admin bar (visible only after login) ---------- -->
 <div class="admin-bar">
   <span><b>מצב עריכה פעיל</b> לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
-  <div class="admin-bar-actions">
-    <button type="button" class="secondary" id="iePreviewBtn">חזרה לתצוגה רגילה</button>
-    <button type="button" id="ieLogoutBtn">יציאה</button>
-  </div>
 </div>
-<button type="button" class="return-edit-btn" id="ieReturnEditBtn">חזרה למצב עריכה</button>
+<button type="button" class="mode-toggle-btn" id="ieModeToggleBtn">חזרה לתצוגה רגילה</button>
 
 <!-- ---------- Login popup ---------- -->
 <div class="ie-overlay" id="ieLoginOverlay" hidden>
@@ -1406,19 +1398,11 @@
       renderDealsGrid(dealsCache.data);
     }
 
-    ieEl('iePreviewBtn').addEventListener('click', function(){
-      document.body.classList.remove('edit-mode');
-      document.body.classList.add('preview-mode');
-    });
-    ieEl('ieReturnEditBtn').addEventListener('click', function(){
-      document.body.classList.remove('preview-mode');
-      document.body.classList.add('edit-mode');
-    });
-
-    ieEl('ieLogoutBtn').addEventListener('click', function(){
-      conn = null; contentCache = null; dealsCache = null; editModeActive = false;
-      document.body.classList.remove('edit-mode', 'preview-mode');
-      loadDeals();
+    ieEl('ieModeToggleBtn').addEventListener('click', function(){
+      var toPreview = document.body.classList.contains('edit-mode');
+      document.body.classList.toggle('edit-mode', !toPreview);
+      document.body.classList.toggle('preview-mode', toPreview);
+      this.textContent = toPreview ? 'חזרה למצב עריכה' : 'חזרה לתצוגה רגילה';
     });
 
     // ---------- Content text pencils ----------
