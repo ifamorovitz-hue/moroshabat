@@ -888,13 +888,6 @@
         <input type="text" id="ie_tag">
       </div>
     </div>
-    <div class="ie-row">
-      <div>
-        <label>משך *</label>
-        <div class="ie-inline"><input type="number" id="ie_meta" min="1" step="1" inputmode="numeric"><span class="ie-suffix">לילות</span></div>
-      </div>
-    </div>
-
     <label>תאריכים *</label>
     <button type="button" class="ie-date-btn" id="ieDateRangeBtn">בחירת טווח תאריכים</button>
     <div class="ie-cal-popover" id="ieCalPopover" hidden>
@@ -1732,6 +1725,7 @@
     }
     function updateIeDatesPreview(){
       var text = formatDateRange(selDateFrom, selDateTo, '');
+      if (text && selDateFrom && selDateTo) text += ' · ' + nightsLabel(nightsBetween(selDateFrom, selDateTo));
       ieEl('ieDatesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
     }
     ieEl('ieDateRangeBtn').addEventListener('click', function(e){
@@ -1749,11 +1743,11 @@
     ieEl('ieCalClear').addEventListener('click', function(){ selDateFrom = null; selDateTo = null; renderIeCalendar(); updateIeDateRangeLabel(); updateIeDatesPreview(); });
 
     // ---------- Duration + price helpers ----------
-    function parseNights(meta){
-      var m = /(\d+)\s*לילות/.exec(meta || '') || /^\s*(\d+)\s*$/.exec(meta || '');
-      return m ? m[1] : '';
+    function nightsBetween(fromIso, toIso){
+      var a = fromIso.split('-'), b = toIso.split('-');
+      return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
     }
-    function nightsLabel(n){ return n === 1 ? 'לילה אחד' : n + ' לילות'; }
+    function nightsLabel(n){ return n === 0 ? 'יום אחד' : n === 1 ? 'לילה אחד' : n + ' לילות'; }
     function parsePrice(price){
       var num = (/[\d.,]+/.exec(price || '') || [''])[0].replace(/,/g, '');
       var cur = (price || '').indexOf('$') >= 0 ? '$' : (price || '').indexOf('€') >= 0 ? '€' : ((price || '').indexOf('₪') >= 0 ? '₪' : '');
@@ -1794,7 +1788,6 @@
       ieEl('ieDealTitle').textContent = dealId ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
       ieEl('ie_title').value = d.title || '';
       ieEl('ie_tag').value = d.tag || '';
-      ieEl('ie_meta').value = parseNights(d.meta);
       selDateFrom = d.dateFrom || null;
       selDateTo = d.dateTo || null;
       updateIeDateRangeLabel();
@@ -1843,8 +1836,6 @@
     ieEl('ieDealSaveBtn').addEventListener('click', function(){
       var title = ieEl('ie_title').value.trim();
       var tag = ieEl('ie_tag').value.trim();
-      var nights = parseInt(ieEl('ie_meta').value, 10);
-      var meta = nights > 0 ? nightsLabel(nights) : '';
       var dateFrom = selDateFrom, dateTo = selDateTo;
       var priceNum = ieEl('ie_price').value.trim();
       var curEl = document.querySelector('input[name="ieCurrency"]:checked');
@@ -1858,7 +1849,6 @@
       var missing = [];
       if (!title) missing.push('כותרת');
       if (!tag) missing.push('תגית');
-      if (!meta) missing.push('משך');
       if (!dateFrom || !dateTo) missing.push('תאריכים');
       if (!priceNum || !(Number(priceNum) > 0)) missing.push('מחיר');
       if (!currency) missing.push('מטבע');
@@ -1868,7 +1858,7 @@
       if (missing.length) { ieShowStatus('ieDealStatus', 'error', 'חסרים שדות חובה: ' + missing.join(', ')); return; }
 
       var d = existing || { id: genDealId() };
-      d.title = title; d.tag = tag; d.meta = meta;
+      d.title = title; d.tag = tag; d.meta = nightsLabel(nightsBetween(dateFrom, dateTo));
       d.dateFrom = dateFrom; d.dateTo = dateTo;
       d.dateNote = '';
       d.dates = formatDateRange(dateFrom, dateTo, d.dateNote);
