@@ -328,6 +328,15 @@
   }
   .form-row select option{ color:var(--ink); }
   .form-row textarea{ resize:vertical; min-height:70px; }
+  .form-dates{ border:0; padding:0; margin:0 0 22px; min-inline-size:0; }
+  .form-dates legend{ font-size:.8rem; color:var(--muted-on-ink); margin-bottom:8px; padding:0; }
+  .form-toggle{ display:flex; gap:10px; margin-bottom:14px; }
+  .form-toggle label{ flex:1; margin:0 !important; position:relative; }
+  .form-toggle input{ position:absolute; opacity:0; pointer-events:none; width:1px !important; height:1px; padding:0 !important; border:0 !important; }
+  .form-toggle span{ display:block; text-align:center; padding:11px 10px; border:1.5px solid var(--line-on-ink); border-radius:10px; color:var(--cream); font-weight:600; font-size:.9rem; cursor:pointer; }
+  .form-toggle input:checked + span{ background:var(--yellow); border-color:var(--yellow); color:var(--yellow-ink); }
+  .form-toggle input:focus-visible + span{ outline:3px solid var(--yellow); outline-offset:3px; box-shadow:0 0 0 6px var(--ink); }
+  .form-dates input[type=date]{ color-scheme:dark; }
   .form-two{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
   .form-note{ margin-top:16px; font-size:.8rem; color:var(--muted-on-ink); }
   .form-success{ margin-top:14px; font-size:.88rem; color:var(--yellow); font-weight:700; }
@@ -921,9 +930,40 @@
             <option>אחר</option>
           </select>
         </div>
+        <fieldset class="form-row form-dates">
+          <legend>מתי טסים?</legend>
+          <div class="form-toggle">
+            <label><input type="radio" name="dateMode" value="exact" checked><span>תאריכים מדויקים</span></label>
+            <label><input type="radio" name="dateMode" value="month"><span>עוד לא בטוחים, רק חודש</span></label>
+          </div>
+          <div class="form-two" id="dates-exact">
+            <div>
+              <label for="date-from">מתאריך</label>
+              <input id="date-from" name="dateFrom" type="date" required>
+            </div>
+            <div>
+              <label for="date-to">עד תאריך</label>
+              <input id="date-to" name="dateTo" type="date" required>
+            </div>
+          </div>
+          <div id="dates-month" hidden>
+            <label for="month-select">באיזה חודש?</label>
+            <select id="month-select" name="month" disabled required></select>
+          </div>
+        </fieldset>
+        <div class="form-two">
+          <div class="form-row">
+            <label for="travelers-input">מספר נוסעים</label>
+            <input id="travelers-input" name="travelers" type="number" min="1" max="60" inputmode="numeric" placeholder="למשל 2" required>
+          </div>
+          <div class="form-row">
+            <label for="budget-input">תקציב משוער (לא חובה)</label>
+            <input id="budget-input" name="budget" type="text" placeholder="למשל 15,000 ₪ לזוג">
+          </div>
+        </div>
         <div class="form-row">
-          <label for="message-input">כמה מילים על הטיול שבראש שלכם</label>
-          <textarea id="message-input" name="message" placeholder="תאריכים, מספר נוסעים, תקציב משוער..."></textarea>
+          <label for="message-input">כמה מילים על הטיול שבראש שלכם (לא חובה)</label>
+          <textarea id="message-input" name="message" placeholder="מה חשוב לכם בחופשה?"></textarea>
         </div>
         <a href="#" class="btn" id="sendInquiryBtn">שליחת הפנייה בוואטסאפ <span class="btn-arrow">←</span></a>
         <p class="form-note">בלחיצה על הכפתור ייפתח וואטסאפ עם כל הפרטים שמילאתם, מוכן לשליחה אליי.</p>
@@ -1297,6 +1337,15 @@
         var phone = (form.phone.value || '').trim();
         var destination = form.destination.value;
         var message = (form.message.value || '').trim();
+        var travelers = (form.travelers.value || '').trim();
+        var budget = (form.budget.value || '').trim();
+        var dateLine = '';
+        if (form.dateMode.value === 'month') {
+          dateLine = 'חודש משוער: ' + form.month.options[form.month.selectedIndex].text;
+        } else {
+          var fmt = function(v){ var b = v.split('-'); return b[2] + '.' + b[1] + '.' + b[0].slice(-2); };
+          dateLine = 'תאריכים: ' + fmt(form.dateFrom.value) + ' - ' + fmt(form.dateTo.value);
+        }
 
         // Build the WhatsApp message and set the href synchronously, right
         // here inside the click handler, so the browser treats this as a
@@ -1307,13 +1356,47 @@
           'היי יפעת! אשמח לקבל הצעה לטיול 🙂',
           'שם: ' + name,
           'טלפון: ' + phone,
-          'יעד חלומות: ' + destination
+          'יעד חלומות: ' + destination,
+          dateLine,
+          'מספר נוסעים: ' + travelers
         ];
+        if (budget) lines.push('תקציב משוער: ' + budget);
         if (message) lines.push('עוד פרטים: ' + message);
         sendBtn.href = 'https://wa.me/+972528403104?text=' + encodeURIComponent(lines.join('\n'));
 
         form.reset();
+        setTimeout(syncDateMode, 0);
       });
+
+      // ---- Date mode: exact dates or just a month ----
+      var MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+      var monthSel = document.getElementById('month-select');
+      var dateFrom = document.getElementById('date-from'), dateTo = document.getElementById('date-to');
+      var now = new Date();
+      var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'בחרו חודש'; monthSel.appendChild(ph);
+      for (var i = 0; i < 18; i++) {
+        var d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+        var o = document.createElement('option');
+        o.value = d.getFullYear() + '-' + (d.getMonth() + 1);
+        o.textContent = MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+        monthSel.appendChild(o);
+      }
+      var todayIso = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      dateFrom.min = todayIso; dateTo.min = todayIso;
+      function syncDateMode(){
+        var exact = form.dateMode.value !== 'month';
+        document.getElementById('dates-exact').hidden = !exact;
+        document.getElementById('dates-month').hidden = exact;
+        dateFrom.disabled = dateTo.disabled = !exact;
+        monthSel.disabled = exact;
+        dateTo.min = dateFrom.value || todayIso;
+      }
+      form.querySelectorAll('input[name="dateMode"]').forEach(function(r){ r.addEventListener('change', syncDateMode); });
+      dateFrom.addEventListener('change', function(){
+        dateTo.min = dateFrom.value || todayIso;
+        if (dateTo.value && dateTo.value < dateFrom.value) dateTo.value = dateFrom.value;
+      });
+      syncDateMode();
     }
 
     // ---------- Deals: loaded from data/deals.json ----------
