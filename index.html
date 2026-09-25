@@ -161,6 +161,9 @@
       linear-gradient(to top, rgba(6,20,18,.72) 0%, rgba(6,20,18,.08) 42%, transparent 60%),
       linear-gradient(to bottom, rgba(6,20,18,.5) 0%, transparent 22%);
   }
+  .trust-row{ list-style:none; margin:22px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:10px 22px; color:var(--cream); font-size:.95rem; font-weight:600; }
+  .trust-row li{ display:flex; align-items:center; gap:8px; }
+  .trust-row li::before{ content:'✓'; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--yellow,#ffd400); color:#241d00; font-size:.72rem; font-weight:800; }
   .hero-copy h1{ font-size:clamp(2.3rem,4vw + 1.1rem,4.2rem); color:var(--cream); line-height:1.14; max-width:16ch; }
   .hero-actions{ margin-top:34px; }
 
@@ -482,6 +485,10 @@
       <div class="hero-actions">
         <a href="#contact" class="btn">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>
       </div>
+      <ul class="trust-row">
+        <li id="c-trust1">ליווי אישי</li>
+        <li id="c-trust2">זמינות במהלך החופשה</li>
+      </ul>
     </div>
   </section>
 
@@ -1087,7 +1094,8 @@
     }
 
     function renderDealsGrid(list){
-      var active = list.filter(function(d){ return d.active !== false; });
+      var todayIso = isoDate(calToday.getFullYear(), calToday.getMonth(), calToday.getDate());
+      var active = list.filter(function(d){ return d.active !== false && !(d.dateFrom && d.dateFrom < todayIso); });
       active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
       DEALS = {};
       pkgGrid.innerHTML = '';
@@ -1248,6 +1256,8 @@
         setText('c-why' + i + 'Title', c['why' + i + 'Title']);
         setText('c-why' + i + 'Text', c['why' + i + 'Text']);
       }
+      setText('c-trust1', c.trust1);
+      setText('c-trust2', c.trust2);
       setText('c-aboutTitle', c.aboutTitle);
       setText('c-aboutText1', c.aboutText1);
       setText('c-aboutText2', c.aboutText2);
@@ -1552,6 +1562,8 @@
     // ---------- Content text pencils ----------
     var CONTENT_FIELD_MAP = [
       { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
+      { id: 'c-trust1', key: 'trust1', label: 'סרגל אמון פריט ראשון' },
+      { id: 'c-trust2', key: 'trust2', label: 'סרגל אמון פריט שני' },
       { id: 'c-introTitle', key: 'introTitle', label: 'כותרת "טיילו בעולם עם MOROSHABAT"' },
       { id: 'c-introText', key: 'introText', label: 'טיילו בעולם טקסט' },
       { id: 'c-packagesTitle', key: 'packagesTitle', label: 'כותרת מדור החבילות' },
@@ -1883,7 +1895,7 @@
       ieShowStatus('ieDealStatus', '', '');
       var d = dealId ? dealsCache.data.find(function(x){ return x.id === dealId; }) : {
         id: null, active: true,
-        order: (dealsCache.data.reduce(function(m, x){ return Math.max(m, x.order || 0); }, 0) + 1),
+        order: 1,
         tag: '', title: '', image: '', imageAlt: '', meta: '', cardDesc: '', price: '', priceNote: '',
         dates: '', dateFrom: '', dateTo: '', dateNote: '', desc: '', note: '', priceTiers: []
       };
@@ -1984,6 +1996,7 @@
 
       imageStep.then(function(){
         var list = dealsCache.data.slice();
+        if (!existing && d.order <= 1) list.forEach(function(x){ x.order = (x.order || 0) + 1; });
         if (existing) {
           var idx = list.findIndex(function(x){ return x.id === existing.id; });
           list[idx] = d;
