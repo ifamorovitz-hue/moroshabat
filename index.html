@@ -400,6 +400,10 @@
   .ie-toggle-btn:has(input:checked){ border-color:#0c8479; background:#eef3f1; color:#0a6b62; }
   .ie-hint{ font-size:.8rem; color:var(--muted); margin-top:4px; }
   .ie-img-preview{ width:100%; max-width:220px; border-radius:10px; margin-top:8px; display:block; }
+  .ie-inline{ display:flex; align-items:center; gap:8px; }
+  .ie-inline input{ flex:1; min-width:0; }
+  .ie-suffix{ font-weight:700; color:#0a6b62; white-space:nowrap; }
+  .ie-currency-group{ margin-top:8px; }
   .ie-date-btn{ width:100%; text-align:right; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font-family:inherit; font-size:.92rem; cursor:pointer; }
   .ie-cal-popover{ margin-top:8px; border:1px solid var(--line); border-radius:12px; padding:14px; background:#fbfaf7; }
   .ie-cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-weight:700; }
@@ -878,7 +882,7 @@
     <div class="ie-row">
       <div>
         <label>משך *</label>
-        <input type="text" id="ie_meta">
+        <div class="ie-inline"><input type="number" id="ie_meta" min="1" step="1" inputmode="numeric"><span class="ie-suffix">לילות</span></div>
       </div>
     </div>
 
@@ -894,17 +898,19 @@
       <div class="ie-cal-grid" id="ieCalGrid"></div>
       <div class="ie-cal-footer">
         <button type="button" class="ie-btn secondary" id="ieCalClear">ניקוי</button>
-        <button type="button" class="ie-btn" id="ieCalApply">אישור</button>
       </div>
     </div>
-    <label>הערת תאריך נוספת (אופציונלי)</label>
-    <input type="text" id="ie_dateNote">
     <p class="ie-hint" id="ieDatesPreview"></p>
 
     <div class="ie-row">
       <div>
         <label>מחיר *</label>
-        <input type="text" id="ie_price">
+        <input type="number" id="ie_price" min="0" step="any" inputmode="decimal">
+        <div class="ie-toggle-group ie-currency-group">
+          <label class="ie-toggle-btn"><input type="radio" name="ieCurrency" value="₪"><span>₪</span></label>
+          <label class="ie-toggle-btn"><input type="radio" name="ieCurrency" value="$"><span>$</span></label>
+          <label class="ie-toggle-btn"><input type="radio" name="ieCurrency" value="€"><span>€</span></label>
+        </div>
       </div>
       <div>
         <label>הערת מחיר *</label>
@@ -1667,6 +1673,9 @@
       else if (iso < selDateFrom) { selDateFrom = iso; selDateTo = null; }
       else { selDateTo = iso; }
       renderIeCalendar();
+      updateIeDateRangeLabel();
+      updateIeDatesPreview();
+      if (selDateFrom && selDateTo) ieEl('ieCalPopover').hidden = true;
     }
     function updateIeDateRangeLabel(){
       var btn = ieEl('ieDateRangeBtn');
@@ -1675,7 +1684,7 @@
       else btn.textContent = 'בחירת טווח תאריכים';
     }
     function updateIeDatesPreview(){
-      var text = formatDateRange(selDateFrom, selDateTo, ieEl('ie_dateNote').value.trim());
+      var text = formatDateRange(selDateFrom, selDateTo, '');
       ieEl('ieDatesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
     }
     ieEl('ieDateRangeBtn').addEventListener('click', function(e){
@@ -1690,9 +1699,23 @@
     });
     ieEl('ieCalPrev').addEventListener('click', function(){ calViewMonth--; if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; } renderIeCalendar(); });
     ieEl('ieCalNext').addEventListener('click', function(){ calViewMonth++; if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; } renderIeCalendar(); });
-    ieEl('ieCalClear').addEventListener('click', function(){ selDateFrom = null; selDateTo = null; renderIeCalendar(); });
-    ieEl('ieCalApply').addEventListener('click', function(){ ieEl('ieCalPopover').hidden = true; updateIeDateRangeLabel(); updateIeDatesPreview(); });
-    ieEl('ie_dateNote').addEventListener('input', updateIeDatesPreview);
+    ieEl('ieCalClear').addEventListener('click', function(){ selDateFrom = null; selDateTo = null; renderIeCalendar(); updateIeDateRangeLabel(); updateIeDatesPreview(); });
+
+    // ---------- Duration + price helpers ----------
+    function parseNights(meta){
+      var m = /(\d+)\s*לילות/.exec(meta || '') || /^\s*(\d+)\s*$/.exec(meta || '');
+      return m ? m[1] : '';
+    }
+    function nightsLabel(n){ return n === 1 ? 'לילה אחד' : n + ' לילות'; }
+    function parsePrice(price){
+      var num = (/[\d.,]+/.exec(price || '') || [''])[0].replace(/,/g, '');
+      var cur = (price || '').indexOf('$') >= 0 ? '$' : (price || '').indexOf('€') >= 0 ? '€' : ((price || '').indexOf('₪') >= 0 ? '₪' : '');
+      return { num: num, cur: cur };
+    }
+    function formatPrice(num, cur){
+      var txt = Number(num).toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return cur === '₪' ? txt + ' ₪' : cur + txt;
+    }
 
     // ---------- Price-tier list editor ----------
     function renderIeTiers(){
@@ -1720,16 +1743,18 @@
         tag: '', title: '', image: '', imageAlt: '', meta: '', cardDesc: '', price: '', priceNote: '',
         dates: '', dateFrom: '', dateTo: '', dateNote: '', desc: '', note: '', priceTiers: []
       };
+      ieEl('ieCalPopover').hidden = true;
       ieEl('ieDealTitle').textContent = dealId ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
       ieEl('ie_title').value = d.title || '';
       ieEl('ie_tag').value = d.tag || '';
-      ieEl('ie_meta').value = d.meta || '';
+      ieEl('ie_meta').value = parseNights(d.meta);
       selDateFrom = d.dateFrom || null;
       selDateTo = d.dateTo || null;
       updateIeDateRangeLabel();
-      ieEl('ie_dateNote').value = d.dateNote || (!d.dateFrom && d.dates ? d.dates : '');
       updateIeDatesPreview();
-      ieEl('ie_price').value = d.price || '';
+      var pp = parsePrice(d.price);
+      ieEl('ie_price').value = pp.num;
+      document.querySelectorAll('input[name="ieCurrency"]').forEach(function(r){ r.checked = (r.value === pp.cur); });
       document.querySelectorAll('input[name="iePriceNote"]').forEach(function(r){ r.checked = (r.value === d.priceNote); });
       ieEl('ie_cardDesc').value = d.cardDesc || '';
       ieEl('ie_desc').value = d.desc || '';
@@ -1771,9 +1796,12 @@
     ieEl('ieDealSaveBtn').addEventListener('click', function(){
       var title = ieEl('ie_title').value.trim();
       var tag = ieEl('ie_tag').value.trim();
-      var meta = ieEl('ie_meta').value.trim();
+      var nights = parseInt(ieEl('ie_meta').value, 10);
+      var meta = nights > 0 ? nightsLabel(nights) : '';
       var dateFrom = selDateFrom, dateTo = selDateTo;
-      var price = ieEl('ie_price').value.trim();
+      var priceNum = ieEl('ie_price').value.trim();
+      var curEl = document.querySelector('input[name="ieCurrency"]:checked');
+      var currency = curEl ? curEl.value : '';
       var priceNoteEl = document.querySelector('input[name="iePriceNote"]:checked');
       var priceNote = priceNoteEl ? priceNoteEl.value : '';
       var cardDesc = ieEl('ie_cardDesc').value.trim();
@@ -1785,7 +1813,8 @@
       if (!tag) missing.push('תגית');
       if (!meta) missing.push('משך');
       if (!dateFrom || !dateTo) missing.push('תאריכים');
-      if (!price) missing.push('מחיר');
+      if (!priceNum || !(Number(priceNum) > 0)) missing.push('מחיר');
+      if (!currency) missing.push('מטבע');
       if (!priceNote) missing.push('הערת מחיר');
       if (!cardDesc) missing.push('תיאור קצר');
       if (!hasImage) missing.push('תמונה');
@@ -1794,9 +1823,9 @@
       var d = existing || { id: genDealId() };
       d.title = title; d.tag = tag; d.meta = meta;
       d.dateFrom = dateFrom; d.dateTo = dateTo;
-      d.dateNote = ieEl('ie_dateNote').value.trim();
+      d.dateNote = '';
       d.dates = formatDateRange(dateFrom, dateTo, d.dateNote);
-      d.price = price; d.priceNote = priceNote; d.cardDesc = cardDesc;
+      d.price = formatPrice(priceNum, currency); d.priceNote = priceNote; d.cardDesc = cardDesc;
       d.desc = ieEl('ie_desc').value.trim();
       d.note = ieEl('ie_note').value.trim();
       d.order = parseInt(ieEl('ie_order').value, 10) || 1;
