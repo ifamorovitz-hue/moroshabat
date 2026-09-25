@@ -2248,11 +2248,24 @@
       var numRe = /(\d{1,2})[.\/](\d{1,2})(?:[.\/](\d{2,4}))?/g, m;
       while ((m = numRe.exec(text)) !== null) { var p = toIsoParts(m[1], m[2], m[3]); if (p) found.push(p); }
       if (found.length < 2) {
-        var hebRe = /(\d{1,2})\s*[-–]\s*(\d{1,2})\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)(?:\s+(\d{2,4}))?/;
+        // "27-29.09" (two days, one numeric month)
+        var dm = /(\d{1,2})\s*[-–]\s*(\d{1,2})[.\/](\d{1,2})(?:[.\/](\d{2,4}))?/.exec(text);
+        if (dm) found = [toIsoParts(dm[1], dm[3], dm[4]), toIsoParts(dm[2], dm[3], dm[4])].filter(Boolean);
+      }
+      if (found.length < 2) {
+        // Hebrew months: "10-14 בדצמבר", "27 בספטמבר עד 1 באוקטובר", "מה-27 עד ה-1 באוקטובר 2026"
+        var MON = '(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)';
+        var hebRe = new RegExp('(\\d{1,2})\\s*(?:ב?' + MON + ')?\\s*(?:[-–]|ועד\\s+ה?-?|עד\\s+ה?-?)\\s*(\\d{1,2})\\s*ב?' + MON + '(?:\\s+(\\d{2,4}))?');
         var h = hebRe.exec(text);
         if (h) {
-          var mo = HEB_MONTH_NAMES[h[3]];
-          found = [toIsoParts(h[1], mo, h[4]), toIsoParts(h[2], mo, h[4])].filter(Boolean);
+          var mo2 = HEB_MONTH_NAMES[h[4]];
+          var mo1 = h[2] ? HEB_MONTH_NAMES[h[2]] : (+h[1] > +h[3] ? (mo2 === 1 ? 12 : mo2 - 1) : mo2);
+          var yr2 = h[5] || null;
+          var pFrom = toIsoParts(h[1], mo1, yr2), pTo = toIsoParts(h[3], mo2, yr2);
+          if (pFrom && pTo) {
+            if (!yr2 && mo1 > mo2) pFrom.y = pTo.y - 1;
+            found = [pFrom, pTo];
+          }
         }
       }
       if (found.length >= 2) {
@@ -2265,7 +2278,7 @@
 
       // Price: look at text with date-like numbers removed
       var noDates = text.replace(numRe, ' ');
-      var priceRe = /(₪|\$|€)\s*([\d,]+(?:\.\d+)?)|([\d,]+(?:\.\d+)?)\s*(₪|\$|€|שקלים|שקל|ש"ח|שח|דולר|אירו|יורו)/g;
+      var priceRe = /(₪|\$|€)[ \t]*([\d,]+(?:\.\d+)?)|([\d,]+(?:\.\d+)?)[ \t]*(₪|\$|€|שקלים|שקל|ש"ח|שח|דולר|אירו|יורו)/g;
       var pm, best = null;
       while ((pm = priceRe.exec(noDates)) !== null) {
         var num = (pm[2] || pm[3]).replace(/,/g, '');
@@ -2317,7 +2330,7 @@
           return;
         }
         if (/באחריות|בכפוף|כפוף|אחריות/.test(plain)) { info.notes.push(plain.replace(/!+/g, '').trim()); return; }
-        var hasDate = numReG.test(l) || /\d{1,2}\s*[-–]\s*\d{1,2}\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)/.test(l);
+        var hasDate = numReG.test(l) || /\d{1,2}\s*(ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)\s*)?([-–]|עד)\s*(ה-?)?\d{1,2}\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)|\d{1,2}\s*[-–]\s*\d{1,2}[.\/]\d{1,2}/.test(l);
         numReG.lastIndex = 0;
         var isBullet = /^[-•*]/.test(l);
         if (priceHere && isBullet && best && l.indexOf(best.num) === -1) { out.tiers.push(plain); return; }
@@ -2421,9 +2434,10 @@
         .then(function(blob){ return resizeImage(new File([blob], 'destination.jpg', { type: blob.type || 'image/jpeg' }), 1600); });
     }
     var autoImageToken = 0;
-    function autoPickImage(title, text, tag){
+    function autoPickImage(title, text, tag, extra){
+      extra = extra || '';
       var token = ++autoImageToken;
-      ieShowStatus('ieDealStatus', 'info', 'הטופס מולא אוטומטית מהטקסט. מחפש תמונה מתאימה ליעד…');
+      ieShowStatus('ieDealStatus', 'info', 'הטופס מולא אוטומטית מהטקסט. מחפש תמונה מתאימה ליעד…' + extra);
       findDestinationImage(destinationQuery(title, text, tag)).then(function(item){
         if (!item) throw new Error('none');
         return downloadAsFile(item);
@@ -2433,9 +2447,9 @@
         var reader = new FileReader();
         reader.onload = function(){ ieEl('ie_imagePreview').src = reader.result; ieEl('ie_imagePreview').hidden = false; };
         reader.readAsDataURL(file);
-        ieShowStatus('ieDealStatus', 'ok', 'נבחרה אוטומטית תמונה מתאימה ליעד (ללא זכויות יוצרים). אפשר להחליף אותה בכל רגע. כדאי לעבור על שאר השדות לפני השמירה.');
+        ieShowStatus('ieDealStatus', 'ok', 'נבחרה אוטומטית תמונה מתאימה ליעד (ללא זכויות יוצרים). אפשר להחליף אותה בכל רגע. כדאי לעבור על שאר השדות לפני השמירה.' + extra);
       }).catch(function(){
-        if (token === autoImageToken) ieShowStatus('ieDealStatus', 'error', 'הטופס מולא מהטקסט, אבל לא נמצאה תמונה אוטומטית. יש לבחור תמונה ידנית.');
+        if (token === autoImageToken) ieShowStatus('ieDealStatus', 'error', 'הטופס מולא מהטקסט, אבל לא נמצאה תמונה אוטומטית. יש לבחור תמונה ידנית.' + extra);
       });
     }
 
@@ -2458,7 +2472,7 @@
         cardDesc: r.cardDesc, desc: r.desc, note: r.note, priceTiers: r.tiers
       };
       openDealEditor(null, prefill);
-      autoPickImage(r.title, text, r.tag);
+      autoPickImage(r.title, text, r.tag, r.dateFrom ? '' : ' לא זוהו תאריכים בטקסט, יש לבחור אותם בלוח.');
     });
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && !ieEl('ieParseOverlay').hidden) ieEl('ieParseOverlay').hidden = true;
