@@ -171,6 +171,12 @@
   .hero-copy h1{ font-size:clamp(2.3rem,4vw + 1.1rem,4.2rem); color:var(--cream); line-height:1.14; max-width:16ch; }
   .hero-actions{ margin-top:34px; }
 
+  /* ---------- Statement band ---------- */
+  .statement{ background:var(--paper); padding-block:72px; text-align:center; }
+  .statement-tags{ color:var(--teal-dark); font-weight:700; font-size:.95rem; letter-spacing:.08em; margin:0 0 18px; }
+  .statement h2{ font-size:clamp(2rem,3.6vw + 1rem,3.4rem); color:var(--ink); line-height:1.2; }
+  @media (max-width:560px){ .statement{ padding-block:52px; } .statement-tags{ font-size:.85rem; letter-spacing:.04em; } }
+
   /* ---------- Intro / brand band (teal) ---------- */
   .intro{ background:var(--teal); color:var(--cream); padding-block:96px; }
   .intro-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
@@ -596,6 +602,14 @@
         <li id="c-trust1">ליווי אישי</li>
         <li id="c-trust2">זמינות במהלך החופשה</li>
       </ul>
+    </div>
+  </section>
+
+  <!-- ---------- STATEMENT ---------- -->
+  <section class="statement">
+    <div class="wrap">
+      <p class="statement-tags" id="c-statementTags">תכנון אישי ✦ תשומת לב לפרטים ✦ ראש שקט</p>
+      <h2 id="c-statementTitle">הפרטים הקטנים עושים<br>את החופשות הגדולות</h2>
     </div>
   </section>
 
@@ -1720,6 +1734,8 @@
       setText('c-com4Title', c.com4Title);
       setText('c-com4Text', c.com4Text);
       setText('c-comNote', c.comNote);
+      setText('c-statementTags', c.statementTags);
+      setHtmlNl('c-statementTitle', c.statementTitle);
       setText('c-aboutTitle', c.aboutTitle);
       setText('c-aboutText1', c.aboutText1);
       setText('c-aboutText2', c.aboutText2);
@@ -2126,6 +2142,8 @@
       { id: 'c-com4Title', key: 'com4Title', label: "קהילה פיצ'ר 4 כותרת" },
       { id: 'c-com4Text', key: 'com4Text', label: "קהילה פיצ'ר 4 טקסט" },
       { id: 'c-comNote', key: 'comNote', label: "שורת הקבוצה מתחת לכפתור" },
+      { id: 'c-statementTags', key: 'statementTags', label: 'שורת הערכים מעל הסלוגן' },
+      { id: 'c-statementTitle', key: 'statementTitle', label: 'סלוגן: הפרטים הקטנים' },
       { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
       { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות פסקה ראשונה' },
       { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות פסקה שנייה' },
