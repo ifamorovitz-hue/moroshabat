@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>moroshabat יפעת מורוביץ נסיעות</title>
+<meta name="description" content="חופשות בהתאמה אישית עם יפעת מורוביץ: ליווי אישי, תשומת לב לפרטים וראש שקט.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="moroshabat יפעת מורוביץ נסיעות">
+<meta property="og:description" content="חופשות בהתאמה אישית עם יפעת מורוביץ: ליווי אישי, תשומת לב לפרטים וראש שקט.">
+<meta property="og:image" content="https://ifamorovitz-hue.github.io/moroshabat/hero-poster-1.jpg">
+<meta property="og:locale" content="he_IL">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
@@ -204,6 +210,21 @@
   .pkg-card{ position:relative; display:flex; flex-direction:column; border-radius:var(--radius); overflow:hidden; background:var(--cream); box-shadow:var(--shadow); }
   .pkg-media{ position:relative; height:190px; }
   .pkg-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pkg-share-btn{ position:absolute; z-index:3; bottom:12px; inset-inline-end:12px; width:38px; height:38px; border-radius:50%; border:0; background:rgba(255,255,255,.95); color:var(--teal-dark); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.25); }
+  .pkg-share-btn svg{ width:19px; height:19px; }
+  .deal-share-btn{ display:inline-flex; align-items:center; gap:8px; margin-inline-start:10px; background:transparent; color:var(--teal-dark); border:2px solid var(--teal-dark); border-radius:999px; padding:10px 18px; font-weight:700; cursor:pointer; font-family:inherit; font-size:.95rem; }
+  .deal-share-btn svg{ width:18px; height:18px; }
+  .share-overlay{ position:fixed; inset:0; z-index:420; background:rgba(22,60,67,.55); display:flex; align-items:center; justify-content:center; padding:20px; }
+  .share-overlay[hidden]{ display:none; }
+  .share-card{ background:var(--paper); color:var(--text); border-radius:18px; width:100%; max-width:380px; padding:24px 22px 20px; box-shadow:0 30px 70px -20px rgba(0,0,0,.5); }
+  .share-card h3{ font-size:1.15rem; margin:0 0 4px; color:var(--ink); }
+  .share-card .share-sub{ margin:0 0 16px; color:var(--muted); font-size:.9rem; }
+  .share-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .share-opt{ display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 6px; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none; font-size:.82rem; font-weight:600; cursor:pointer; font-family:inherit; }
+  .share-opt svg{ width:26px; height:26px; }
+  .share-opt:hover{ background:var(--mint); }
+  .share-note{ margin:14px 0 0; font-size:.82rem; color:var(--muted); line-height:1.6; }
+  .share-close{ display:block; margin:14px auto 0; background:none; border:0; color:var(--ink); text-decoration:underline; cursor:pointer; font-size:.92rem; }
   .pkg-tag{ position:absolute; z-index:2; top:14px; inset-inline-start:14px; background:var(--yellow); color:var(--yellow-ink); font-size:.74rem; font-weight:700; padding:6px 12px; border-radius:100px; }
   .pkg-body{ display:flex; flex-direction:column; gap:8px; padding:20px 22px 22px; flex:1; }
   .pkg-body h3{ color:var(--text); font-size:1.15rem; font-weight:800; }
@@ -1085,6 +1106,82 @@
 })();
 </script>
 
+<!-- ---------- Share popup ---------- -->
+<div class="share-overlay" id="shareOverlay" role="dialog" aria-modal="true" aria-labelledby="shareTitle" hidden>
+  <div class="share-card">
+    <h3 id="shareTitle">שיתוף החבילה</h3>
+    <p class="share-sub" id="shareSub"></p>
+    <div class="share-grid">
+      <a class="share-opt" id="shWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#25a244" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm5.2 13.9c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-1.9.9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5.2.6.8 2 .9 2.1.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg>וואטסאפ</a>
+      <a class="share-opt" id="shFb" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#1877f2" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.4H7.6V14h2.7v8z"/></svg>פייסבוק</a>
+      <a class="share-opt" id="shTg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#229ed9" aria-hidden="true"><path d="M21.5 4.2L2.8 11.4c-.9.3-.9 1.3 0 1.6l4.7 1.5 1.8 5.6c.2.6 1 .8 1.4.3l2.6-2.6 4.6 3.4c.6.4 1.4.1 1.6-.6l3-14.5c.2-.9-.6-1.6-1.5-1.3zM9.6 14.4l8.4-5.2-6.6 6.3-.3 3z"/></svg>טלגרם</a>
+      <a class="share-opt" id="shX" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#111" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.5z"/></svg>X</a>
+      <a class="share-opt" id="shMail"><svg viewBox="0 0 24 24" fill="none" stroke="#163c43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>אימייל</a>
+      <button type="button" class="share-opt" id="shCopy"><svg viewBox="0 0 24 24" fill="none" stroke="#163c43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span id="shCopyLbl">העתקת קישור</span></button>
+    </div>
+    <p class="share-note">לאינסטגרם וטיקטוק: לוחצים על "העתקת קישור" ומדביקים בסטורי, בביו או בהודעה.</p>
+    <button type="button" class="share-close" id="shareClose">סגירה</button>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('shareOverlay');
+  var current = null, lastFocus = null;
+  function dealUrl(id){ return location.origin + location.pathname + '?deal=' + encodeURIComponent(id); }
+  function dealText(d){
+    var bits = [d.title];
+    if (d.dates) bits.push(d.dates);
+    if (d.price) bits.push('החל מ-' + d.price + (d.priceNote ? ' ' + d.priceNote : ''));
+    return bits.join(' | ');
+  }
+  function closeMenu(){
+    overlay.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function openMenu(d, url, text){
+    current = { d: d, url: url, text: text };
+    var enc = encodeURIComponent;
+    document.getElementById('shareSub').textContent = d.title;
+    document.getElementById('shWa').href = 'https://wa.me/?text=' + enc(text + '\n' + url);
+    document.getElementById('shFb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + enc(url);
+    document.getElementById('shTg').href = 'https://t.me/share/url?url=' + enc(url) + '&text=' + enc(text);
+    document.getElementById('shX').href = 'https://twitter.com/intent/tweet?text=' + enc(text) + '&url=' + enc(url);
+    document.getElementById('shMail').href = 'mailto:?subject=' + enc(d.title) + '&body=' + enc(text + '\n' + url);
+    lastFocus = document.activeElement;
+    overlay.hidden = false;
+    document.getElementById('shWa').focus();
+  }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('[data-share-deal]');
+    if (!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    var id = btn.getAttribute('data-share-deal');
+    var d = window.__shareDeals && window.__shareDeals[id];
+    if (!d) return;
+    var url = dealUrl(id), text = dealText(d);
+    if (navigator.share) {
+      navigator.share({ title: d.title, text: text, url: url }).catch(function(err){ if (err && err.name !== 'AbortError') openMenu(d, url, text); });
+    } else openMenu(d, url, text);
+  }, true);
+  document.getElementById('shareClose').addEventListener('click', closeMenu);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeMenu(); });
+  document.getElementById('shCopy').addEventListener('click', function(){
+    var lbl = document.getElementById('shCopyLbl');
+    var done = function(){ lbl.textContent = 'הקישור הועתק!'; setTimeout(function(){ lbl.textContent = 'העתקת קישור'; }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(current.url).then(done, done); else done();
+  });
+  document.addEventListener('keydown', function(e){
+    if (overlay.hidden) return;
+    if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); return; }
+    if (e.key === 'Tab') {
+      var f = overlay.querySelectorAll('a[href], button:not([disabled])'), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }, true);
+})();
+</script>
+
 <!-- ---------- eSIMo coupon popup ---------- -->
 <div class="promo-overlay" id="promoOverlay" role="dialog" aria-modal="true" aria-labelledby="promoTitle" hidden>
   <div class="promo-card">
@@ -1634,6 +1731,7 @@
     var pkgGrid = document.getElementById('pkgGrid');
     var pkgLoading = document.getElementById('pkgLoading');
 
+    var SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
     function renderPkgCard(d){
       var article = document.createElement('article');
       article.className = 'pkg-card';
@@ -1655,6 +1753,11 @@
           '</div>' +
           '<a href="#" class="pkg-cta deal-open-link" data-deal="' + escapeHtml(d.id) + '">לפרטי החופשה &gt;</a>' +
         '</div>';
+      var shareBtn = document.createElement('button');
+      shareBtn.type = 'button'; shareBtn.className = 'pkg-share-btn';
+      shareBtn.setAttribute('data-share-deal', d.id); shareBtn.setAttribute('aria-label', 'שיתוף החבילה: ' + d.title);
+      shareBtn.innerHTML = SHARE_ICON;
+      article.querySelector('.pkg-media').appendChild(shareBtn);
       if (editModeActive) {
         var media = article.querySelector('.pkg-media');
         var actions = document.createElement('div');
@@ -1673,6 +1776,7 @@
       var active = list.filter(function(d){ return d.active !== false && !(d.dateFrom && d.dateFrom < todayIso); });
       active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
       DEALS = {};
+      window.__shareDeals = DEALS;
       pkgGrid.innerHTML = '';
       active.forEach(function(d){
         // Deals saved with structured dates get their display string
@@ -1694,7 +1798,7 @@
           return fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/data/deals.json?t=' + Date.now(), { cache: 'no-store' });
         })
         .then(function(r){ return r.json(); })
-        .then(renderDealsGrid)
+        .then(function(list){ renderDealsGrid(list); openDealFromUrl(); })
         .catch(function(){
           if (pkgLoading) pkgLoading.textContent = 'לא ניתן לטעון את החבילות כרגע.';
         });
@@ -1735,12 +1839,20 @@
       }
       if (d.note) body += '<p class="deal-note">' + escapeHtmlNl(d.note) + '</p>';
       body += '<a href="#contactForm" class="btn" id="dealCtaLink">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>';
+      body += '<button type="button" class="deal-share-btn" data-share-deal="' + escapeHtml(d.id) + '">' + SHARE_ICON + 'שיתוף</button>';
 
       dealModalImg.src = d.image;
       dealModalImg.alt = d.title;
       dealModalBody.innerHTML = body;
     }
 
+    var dealUrlHandled = false;
+    function openDealFromUrl(){
+      if (dealUrlHandled) return;
+      dealUrlHandled = true;
+      var id = new URLSearchParams(location.search).get('deal');
+      if (id && DEALS[id]) openDealModal(id);
+    }
     function openDealModal(id){
       renderDealModal(id);
       if (dealModalOverlay) {
