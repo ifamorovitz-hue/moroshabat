@@ -1489,7 +1489,7 @@
         var travelers = (form.travelers.value || '').trim();
         var budget = (form.budget.value || '').trim();
         var dateLine = form.dateMode.value === 'month'
-          ? 'חודש מועדף: ' + fc.months[fc.month.m] + ' ' + fc.month.y
+          ? 'חודש מועדף: ' + fc.months[fc.month.m]
           : 'תאריכים: ' + fc.fmt(fc.from) + ' - ' + fc.fmt(fc.to);
 
         // Build the WhatsApp message and set the href synchronously, right
@@ -1526,16 +1526,16 @@
       var monthPick = document.getElementById('fcMonthPick');
       (function(){
         var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'בחרו חודש מועדף'; monthPick.appendChild(ph);
-        for (var k = 0; k < 18; k++) {
-          var dt = new Date(fcToday.getFullYear(), fcToday.getMonth() + k, 1), o = document.createElement('option');
-          o.value = dt.getFullYear() + '-' + dt.getMonth(); o.textContent = FC_MONTHS[dt.getMonth()] + ' ' + dt.getFullYear();
+        for (var k = 0; k < 12; k++) {
+          var mi = (fcToday.getMonth() + k) % 12, o = document.createElement('option');
+          o.value = mi; o.textContent = FC_MONTHS[mi];
           monthPick.appendChild(o);
         }
       })();
       monthPick.addEventListener('change', function(){
         fcErr.hidden = true;
         if (!this.value) { fcMonth = null; return; }
-        var b = this.value.split('-'); fcMonth = { y: +b[0], m: +b[1] };
+        fcMonth = { m: +this.value };
       });
       function fcMode(){ return form.dateMode.value === 'month' ? 'month' : 'exact'; }
       function fcUpdateBtn(){
