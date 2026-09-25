@@ -1061,6 +1061,14 @@
   var v = document.querySelector('.hero-video');
   if (!v) return;
   var clips = [['hero-1.mp4', 'hero-poster-1.jpg'], ['hero-2.mp4', 'hero-poster-2.jpg'], ['hero-3.mp4', 'hero-poster-3.jpg']], i = 0;
+  setTimeout(function(){
+    if (!v.paused) return;
+    var btn = document.getElementById('heroVideoToggle');
+    var p = v.play();
+    if (p && p.catch) p.catch(function(){
+      if (btn) { btn.textContent = 'הפעלת הסרטון'; btn.setAttribute('aria-pressed', 'true'); }
+    });
+  }, 1500);
   v.addEventListener('ended', function(){
     i = (i + 1) % clips.length;
     v.style.opacity = 0;
@@ -1827,7 +1835,8 @@
 
     function applySiteContent(c){
       setHtmlNl('c-heroTitle', c.heroTitle);
-      setHtmlNl('c-introTitle', c.introTitle);
+      var introEl = document.getElementById('c-introTitle');
+      if (introEl && c.introTitle != null) introEl.innerHTML = escapeHtmlNl(c.introTitle).replace(/MOROSHABAT/g, '<span class="hi">MOROSHABAT</span>');
       setIntroText(c.introText);
       setText('c-packagesTitle', c.packagesTitle);
       setText('c-packagesSubtitle', c.packagesSubtitle);
