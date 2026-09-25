@@ -173,15 +173,16 @@
   }
   .trust-row{ list-style:none; margin:22px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:10px 22px; color:var(--cream); font-size:.95rem; font-weight:600; }
   .trust-row li{ display:flex; align-items:center; gap:8px; }
+  @media (max-width:560px){ .trust-row{ gap:8px 10px; font-size:.78rem; flex-wrap:nowrap; justify-content:center; } .trust-row li{ gap:5px; white-space:nowrap; } .trust-row li::before{ width:16px; height:16px; font-size:.62rem; } }
   .trust-row li::before{ content:'✓'; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--yellow,#f6ed7d); color:#241d00; font-size:.72rem; font-weight:800; }
   .hero-copy h1{ font-size:clamp(2.3rem,4vw + 1.1rem,4.2rem); color:var(--cream); line-height:1.14; max-width:16ch; }
   .hero-actions{ margin-top:34px; }
 
   /* ---------- Statement band ---------- */
-  .statement{ background:var(--paper); padding-block:40px 36px; text-align:center; border-bottom:1px solid var(--line); }
-  .statement-tags{ color:var(--teal-dark); font-weight:700; font-size:.82rem; letter-spacing:.14em; margin:0 0 10px; }
-  .statement h2{ font-size:clamp(1.35rem,1.4vw + 1rem,1.9rem); color:var(--ink); line-height:1.35; font-weight:600; letter-spacing:0; }
-  @media (max-width:560px){ .statement{ padding-block:30px 28px; } .statement-tags{ letter-spacing:.06em; font-size:.78rem; } }
+  .statement{ background:var(--paper); padding-block:44px 40px; text-align:center; }
+  .statement h2{ font-size:clamp(1.7rem,2.4vw + 1rem,2.7rem); color:var(--ink); line-height:1.25; font-weight:800; letter-spacing:-.01em; }
+  .statement-sub{ margin:14px auto 0; color:var(--muted); font-size:clamp(1rem,.6vw + .9rem,1.2rem); line-height:1.6; max-width:34rem; }
+  @media (max-width:560px){ .statement{ padding-block:34px 30px; } }
 
   /* ---------- Intro / brand band (teal) ---------- */
   .intro{ background:var(--teal); color:var(--cream); padding-block:96px; }
@@ -640,6 +641,7 @@
         <a href="#contactForm" class="btn">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>
       </div>
       <ul class="trust-row">
+        <li id="c-trust0">תכנון אישי</li>
         <li id="c-trust1">ליווי אישי</li>
         <li id="c-trust2">זמינות במהלך החופשה</li>
       </ul>
@@ -649,8 +651,8 @@
   <!-- ---------- STATEMENT ---------- -->
   <section class="statement">
     <div class="wrap">
-      <p class="statement-tags" id="c-statementTags">תכנון אישי ✦ תשומת לב לפרטים ✦ ראש שקט</p>
       <h2 id="c-statementTitle">הפרטים הקטנים עושים<br>את החופשות הגדולות</h2>
+      <p class="statement-sub" id="c-statementSub">חופשה שמתוכננת בדיוק בשבילכם,<br>מהפרט הראשון ועד החזרה הביתה.</p>
     </div>
   </section>
 
@@ -1973,6 +1975,7 @@
         setText('c-why' + i + 'Title', c['why' + i + 'Title']);
         setText('c-why' + i + 'Text', c['why' + i + 'Text']);
       }
+      setText('c-trust0', c.trust0);
       setText('c-trust1', c.trust1);
       setText('c-trust2', c.trust2);
       setText('c-howTitle', c.howTitle);
@@ -1996,7 +1999,7 @@
       setText('c-com4Title', c.com4Title);
       setText('c-com4Text', c.com4Text);
       setText('c-comNote', c.comNote);
-      setText('c-statementTags', c.statementTags);
+      setHtmlNl('c-statementSub', c.statementSub);
       setHtmlNl('c-statementTitle', c.statementTitle);
       setText('c-aboutTitle', c.aboutTitle);
       setText('c-aboutText1', c.aboutText1);
@@ -2367,8 +2370,9 @@
     // ---------- Content text pencils ----------
     var CONTENT_FIELD_MAP = [
       { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
-      { id: 'c-trust1', key: 'trust1', label: 'סרגל אמון פריט ראשון' },
-      { id: 'c-trust2', key: 'trust2', label: 'סרגל אמון פריט שני' },
+      { id: 'c-trust0', key: 'trust0', label: 'סרגל אמון פריט ראשון' },
+      { id: 'c-trust1', key: 'trust1', label: 'סרגל אמון פריט שני' },
+      { id: 'c-trust2', key: 'trust2', label: 'סרגל אמון פריט שלישי' },
       { id: 'c-introTitle', key: 'introTitle', label: 'כותרת "טיילו בעולם עם MOROSHABAT"' },
       { id: 'c-introText', key: 'introText', label: 'טיילו בעולם טקסט' },
       { id: 'c-packagesTitle', key: 'packagesTitle', label: 'כותרת מדור החבילות' },
@@ -2404,7 +2408,7 @@
       { id: 'c-com4Title', key: 'com4Title', label: "קהילה פיצ'ר 4 כותרת" },
       { id: 'c-com4Text', key: 'com4Text', label: "קהילה פיצ'ר 4 טקסט" },
       { id: 'c-comNote', key: 'comNote', label: "שורת הקבוצה מתחת לכפתור" },
-      { id: 'c-statementTags', key: 'statementTags', label: 'שורת הערכים מעל הסלוגן' },
+      { id: 'c-statementSub', key: 'statementSub', label: 'משפט מתחת לסלוגן' },
       { id: 'c-statementTitle', key: 'statementTitle', label: 'סלוגן: הפרטים הקטנים' },
       { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
       { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות פסקה ראשונה' },
