@@ -513,14 +513,17 @@
   .promo-overlay[hidden]{ display:none; }
   .promo-card{ position:relative; background:var(--paper); color:var(--text); border-radius:18px; max-width:440px; width:100%; padding:34px 30px 26px; text-align:center; box-shadow:0 30px 70px -20px rgba(0,0,0,.5); max-height:92vh; overflow-y:auto; }
   .promo-close{ position:absolute; top:12px; inset-inline-start:12px; width:36px; height:36px; border-radius:50%; border:0; background:var(--mint); color:var(--ink); font-size:1.1rem; cursor:pointer; }
-  .promo-emoji{ font-size:2.4rem; line-height:1; margin-bottom:10px; }
-  .promo-card h2{ font-size:1.35rem; color:var(--ink); line-height:1.35; }
-  .promo-card p{ margin:12px 0 0; color:var(--muted); font-size:.98rem; }
-  .promo-code{ display:flex; align-items:center; justify-content:center; gap:10px; margin:20px 0 6px; padding:12px 14px; border:2px dashed var(--teal); border-radius:12px; background:#fff; }
-  .promo-code strong{ font-size:1.45rem; letter-spacing:.14em; color:var(--ink); direction:ltr; }
-  .promo-copy{ border:0; background:var(--teal-dark); color:#fff; font-weight:700; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:.85rem; }
-  .promo-cta{ display:block; margin-top:16px; background:var(--yellow); color:var(--yellow-ink); font-weight:800; text-decoration:none; border-radius:999px; padding:14px 20px; }
-  .promo-skip{ margin-top:12px; background:none; border:0; color:var(--muted); text-decoration:underline; cursor:pointer; font-size:.9rem; }
+  .promo-art{ display:block; width:min(340px,100%); height:auto; margin:0 auto 6px; }
+  .promo-card h2{ font-size:2.3rem; color:var(--ink); line-height:1.2; font-weight:800; }
+  .promo-sub{ display:block; margin-top:6px; font-size:1.55rem; color:var(--teal-dark); font-weight:800; }
+  .promo-card p{ margin:16px 0 0; color:var(--muted); font-size:1.02rem; line-height:1.7; }
+  .promo-code{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin:22px 0 14px; padding:12px 16px; border:2px dashed #7fb3ad; border-radius:16px; background:#fff; }
+  .promo-code strong{ font-size:1.6rem; letter-spacing:.16em; color:var(--ink); direction:ltr; font-weight:800; }
+  .promo-divider{ width:1px; align-self:stretch; background:var(--line); }
+  .promo-copy{ display:inline-flex; align-items:center; gap:8px; border:0; background:var(--teal-dark); color:#fff; font-weight:700; border-radius:12px; padding:11px 18px; cursor:pointer; font-size:.95rem; }
+  .promo-cta{ display:flex; align-items:center; justify-content:center; gap:10px; background:var(--yellow); color:var(--yellow-ink); font-weight:800; font-size:1.1rem; text-decoration:none; border-radius:999px; padding:15px 20px; border:1.5px solid var(--teal-dark); }
+  .promo-skip{ margin-top:14px; background:none; border:0; color:var(--ink); text-decoration:underline; cursor:pointer; font-size:.95rem; }
+  @media (max-width:420px){ .promo-card{ padding:26px 18px 22px; } .promo-card h2{ font-size:1.9rem; } .promo-sub{ font-size:1.3rem; } .promo-code{ gap:8px; padding:10px 12px; } .promo-code strong{ font-size:1.25rem; letter-spacing:.1em; } .promo-copy{ padding:10px 12px; font-size:.85rem; } }
 
   /* ---------- Accessibility widget ---------- */
   .a11y-fab{ position:fixed; z-index:250; left:14px; bottom:88px; width:52px; height:52px; border-radius:50%; border:2px solid #fff; background:#163c43; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.35); }
@@ -1053,11 +1056,26 @@
 <div class="promo-overlay" id="promoOverlay" role="dialog" aria-modal="true" aria-labelledby="promoTitle" hidden>
   <div class="promo-card">
     <button type="button" class="promo-close" id="promoClose" aria-label="סגירה">✕</button>
-    <div class="promo-emoji" aria-hidden="true">😃</div>
-    <h2 id="promoTitle">מעולם לא היה כל כך משתלם וקל לגלוש באינטרנט בחו"ל!</h2>
-    <p>קבלו ממני קופון הנחה של <bdi dir="ltr">$2.00</bdi> לרכישה הראשונה באפליקציית eSIMo. השתמשו בקוד הזה בזמן התשלום. בשביל זה יש חברים!</p>
-    <div class="promo-code"><strong id="promoCode">IFAM556</strong><button type="button" class="promo-copy" id="promoCopy">העתקת הקוד</button></div>
-    <a class="promo-cta" id="promoCta" href="https://esimo.sng.link/Dfwtk/7kw2/zyec" target="_blank" rel="noopener sponsored">לקבלת ההנחה באפליקציית eSIMo</a>
+    <svg class="promo-art" viewBox="0 0 360 120" aria-hidden="true">
+      <path d="M40 78c-16-10-14-40 6-44 20-4 30 22 60 22 34 0 44-12 66-8" fill="none" stroke="#7fb3ad" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+      <path d="M232 46c22 4 46 14 70 26" fill="none" stroke="#a9cdc8" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+      <circle cx="182" cy="46" r="40" fill="#cfe7e3"/>
+      <path d="M198 30l-30 10-22-4-4 6 18 8-10 12-10-2-3 5 12 6 6 12 5-3-2-10 12-10 8 18 6-3-2-24 20-12c4-3 4-9-2-11-4-1-8 0-12 2z" fill="#163c43" transform="translate(-4 4) scale(.98)"/>
+      <circle cx="282" cy="72" r="26" fill="#dcebe8" stroke="#a9cdc8" stroke-width="2"/>
+      <path d="M268 62c6-4 12 0 14 6s-6 6-4 12M290 60c-2 8 6 10 6 18" fill="none" stroke="#7fb3ad" stroke-width="3" stroke-linecap="round"/>
+      <path d="M62 14l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#24636c"/>
+      <path d="M262 18l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#e0b44c"/>
+      <path d="M298 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#e0b44c"/>
+      <path d="M312 92l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#e0b44c"/>
+    </svg>
+    <h2 id="promoTitle">טסים לחו"ל?<span class="promo-sub">קחו <bdi dir="ltr">$2</bdi> הנחה ל-<bdi dir="ltr">eSIM</bdi></span></h2>
+    <p>קבלו ממני קופון של <bdi dir="ltr">$2</bdi> לרכישה הראשונה באפליקציית eSIMo. העתיקו את הקוד והשתמשו בו בזמן התשלום.</p>
+    <div class="promo-code">
+      <strong id="promoCode">IFAM556</strong>
+      <span class="promo-divider" aria-hidden="true"></span>
+      <button type="button" class="promo-copy" id="promoCopy"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span id="promoCopyLabel">העתקת הקוד</span></button>
+    </div>
+    <a class="promo-cta" id="promoCta" href="https://esimo.sng.link/Dfwtk/7kw2/zyec" target="_blank" rel="noopener sponsored"><span aria-hidden="true">→</span> למימוש ההנחה ב-<bdi dir="ltr">eSIMo</bdi></a>
     <button type="button" class="promo-skip" id="promoSkip">אולי בפעם אחרת</button>
   </div>
 </div>
@@ -1085,8 +1103,8 @@
   document.getElementById('promoCta').addEventListener('click', function(){ try { sessionStorage.setItem('moroshabatPromoSeen', '1'); } catch(e){} });
   overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
   document.getElementById('promoCopy').addEventListener('click', function(){
-    var btn = this, code = document.getElementById('promoCode').textContent;
-    var done = function(){ btn.textContent = 'הועתק!'; setTimeout(function(){ btn.textContent = 'העתקת הקוד'; }, 2000); };
+    var code = document.getElementById('promoCode').textContent, lbl = document.getElementById('promoCopyLabel');
+    var done = function(){ lbl.textContent = 'הועתק!'; setTimeout(function(){ lbl.textContent = 'העתקת הקוד'; }, 2000); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
     else done();
   });
