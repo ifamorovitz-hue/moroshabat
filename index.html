@@ -775,7 +775,7 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a></span>
     </div>
   </div>
 </footer>
@@ -828,6 +828,25 @@
     <div class="ie-actions">
       <button type="button" class="ie-btn" id="ieTextSaveBtn">שמירה</button>
       <button type="button" class="ie-btn secondary" id="ieTextCancelBtn">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Developer settings popup ---------- -->
+<div class="ie-overlay" id="ieDevOverlay" hidden>
+  <div class="ie-modal">
+    <h3>הגדרות מפתחים</h3>
+    <p class="ie-hint">להגדרה ראשונית או להחלפת טוקן שפג. בוחרים שם משתמש וסיסמה למנהלת, ומדביקים GitHub Fine-grained Token עם הרשאת Contents: Read and write על הריפו moroshabat בלבד (נוצר בבעלות בעלת הריפו ב-github.com/settings/personal-access-tokens/new). הסיסמה מצפינה את הטוקן, והגרסה המוצפנת נשמרת בריפו.</p>
+    <div id="ieDevStatus"></div>
+    <label>שם משתמש</label>
+    <input type="text" id="ieDevUsername" autocomplete="off">
+    <label>סיסמה (לפחות 8 תווים)</label>
+    <input type="password" id="ieDevPassword" autocomplete="new-password">
+    <label>GitHub Token</label>
+    <input type="password" id="ieDevToken" placeholder="github_pat_..." autocomplete="off">
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieDevSaveBtn">שמירה</button>
+      <button type="button" class="ie-btn secondary" id="ieDevCancelBtn">ביטול</button>
     </div>
   </div>
 </div>
@@ -1289,7 +1308,7 @@
     function ieDeriveKey(password, saltBuf){
       var enc = new TextEncoder();
       return crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']).then(function(km){
-        return crypto.subtle.deriveKey({ name:'PBKDF2', salt:saltBuf, iterations:300000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['decrypt']);
+        return crypto.subtle.deriveKey({ name:'PBKDF2', salt:saltBuf, iterations:300000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['encrypt', 'decrypt']);
       });
     }
     function ieDecryptVault(password, vault){
@@ -1363,6 +1382,45 @@
       ieShowStatus('ieLoginStatus', '', '');
       ieEl('ieLoginOverlay').hidden = false;
     });
+    // ---------- Developer settings: create/replace the encrypted admin vault ----------
+    var footerDevLink = document.getElementById('footerDevLink');
+    if (footerDevLink) footerDevLink.addEventListener('click', function(e){
+      e.preventDefault();
+      ieShowStatus('ieDevStatus', '', '');
+      ieEl('ieDevOverlay').hidden = false;
+    });
+    ieEl('ieDevCancelBtn').addEventListener('click', function(){ ieEl('ieDevOverlay').hidden = true; });
+    ieEl('ieDevSaveBtn').addEventListener('click', function(){
+      var username = ieEl('ieDevUsername').value.trim();
+      var password = ieEl('ieDevPassword').value;
+      var token = ieEl('ieDevToken').value.trim();
+      if (!username || !password || !token) { ieShowStatus('ieDevStatus', 'error', 'יש למלא שם משתמש, סיסמה וטוקן.'); return; }
+      if (password.length < 8) { ieShowStatus('ieDevStatus', 'error', 'הסיסמה צריכה להיות באורך 8 תווים לפחות.'); return; }
+      var btn = ieEl('ieDevSaveBtn');
+      btn.disabled = true;
+      ieShowStatus('ieDevStatus', 'info', 'בודק את הטוקן…');
+      var prevConn = conn;
+      conn = { owner: 'ifamorovitz-hue', repo: 'moroshabat', branch: 'main', token: token };
+      var salt = crypto.getRandomValues(new Uint8Array(16));
+      var iv = crypto.getRandomValues(new Uint8Array(12));
+      var vault;
+      ghGetFile(DEALS_PATH).then(function(){
+        return ieDeriveKey(password, salt.buffer);
+      }).then(function(key){
+        return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(conn)));
+      }).then(function(cipher){
+        vault = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher), username: username };
+        return ghGetFile(VAULT_PATH).then(function(f){ return f.sha; }, function(){ return null; });
+      }).then(function(sha){
+        return ghPutFile(VAULT_PATH, b64EncodeUnicode(JSON.stringify(vault, null, 2)), 'עדכון פרטי התחברות ניהול', sha);
+      }).then(function(){
+        ieShowStatus('ieDevStatus', 'ok', 'נשמר! אפשר להתחבר עכשיו דרך "ניהול" עם שם המשתמש והסיסמה.');
+        ieEl('ieDevPassword').value = ''; ieEl('ieDevToken').value = '';
+      }).catch(function(err){
+        ieShowStatus('ieDevStatus', 'error', 'נכשל (בדקו את הטוקן): ' + err.message);
+      }).finally(function(){ conn = prevConn; btn.disabled = false; });
+    });
+
     ieEl('ieLoginCancelBtn').addEventListener('click', function(){ ieEl('ieLoginOverlay').hidden = true; });
 
     ieEl('ieLoginBtn').addEventListener('click', function(){
