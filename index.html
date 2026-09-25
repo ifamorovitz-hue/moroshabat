@@ -235,6 +235,40 @@
   .how-step .num{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:var(--teal-dark); color:#fff; font-weight:800; margin-bottom:18px; }
   .how-step h3{ font-size:1.08rem; }
   .how-step p{ margin-top:10px; color:var(--muted); font-size:.9rem; }
+  .community{ background:linear-gradient(180deg,#fff7ec 0%,#eef6f4 100%); padding-block:100px; }
+  .community-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center; }
+  @media (max-width:900px){ .community-grid{ grid-template-columns:1fr; gap:44px; } }
+  .community-copy h2{ font-size:clamp(1.9rem,3vw + 1rem,2.9rem); margin-top:8px; }
+  .community-lede{ color:var(--muted); margin-top:14px; max-width:52ch; font-size:1.05rem; }
+  .community-features{ display:grid; grid-template-columns:1fr 1fr; gap:22px 26px; margin:30px 0; }
+  @media (max-width:560px){ .community-features{ grid-template-columns:1fr; } }
+  .cf-icon{ display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:50%; background:#fde8de; color:#b4532a; margin-bottom:10px; }
+  .cf:nth-child(2) .cf-icon{ background:#dff1ec; color:var(--teal-dark); }
+  .cf:nth-child(3) .cf-icon{ background:#e4ecf8; color:#2f5fa8; }
+  .cf-icon svg{ width:24px; height:24px; }
+  .cf h3{ font-size:1.05rem; }
+  .cf p{ color:var(--muted); font-size:.92rem; margin-top:4px; }
+  .btn-wa{ display:inline-flex; align-items:center; gap:12px; background:#0f7a44; color:#fff; text-decoration:none; font-weight:800; border-radius:999px; padding:15px 28px; font-size:1.02rem; box-shadow:0 12px 28px -12px rgba(15,122,68,.7); transition:transform .2s ease; }
+  .btn-wa:hover{ transform:translateY(-2px); }
+  .btn-wa svg{ width:26px; height:26px; }
+  .community-note{ margin-top:14px; color:var(--muted); font-size:.9rem; }
+  .community-visual{ position:relative; display:flex; flex-direction:column; align-items:center; gap:22px; }
+  .phone{ width:min(290px,80vw); background:#111; border-radius:38px; padding:10px; box-shadow:0 30px 60px -20px rgba(10,30,27,.5); }
+  .phone-bar{ background:#f0eee9; border-radius:28px 28px 0 0; padding:14px 14px 10px; display:flex; align-items:center; gap:10px; }
+  .phone-bar strong{ display:block; font-size:.9rem; }
+  .phone-bar small{ color:#4a4a4a; font-size:.75rem; }
+  .phone-avatar{ width:38px; height:38px; border-radius:50%; background:var(--teal-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .phone-chat{ background:#efe7da; padding:14px 12px; display:flex; flex-direction:column; gap:12px; min-height:300px; }
+  .bubble{ background:#fff; border-radius:12px; padding:9px 11px; max-width:92%; box-shadow:0 1px 2px rgba(0,0,0,.12); font-size:.82rem; }
+  .bubble b{ display:block; color:#b4532a; font-size:.78rem; }
+  .bubble p{ margin:3px 0 6px; color:#222; }
+  .bubble img{ width:100%; height:110px; object-fit:cover; border-radius:8px; display:block; }
+  .react{ display:inline-block; margin-top:6px; background:#fff; border:1px solid #eee; border-radius:999px; padding:1px 8px; font-size:.72rem; }
+  .phone-input{ background:#f0eee9; border-radius:0 0 28px 28px; padding:12px 16px; color:#595959; font-size:.82rem; }
+  .polaroids{ display:flex; gap:10px; }
+  .polaroids img{ width:92px; height:78px; object-fit:cover; background:#fff; padding:5px 5px 14px; border-radius:4px; box-shadow:0 8px 18px -8px rgba(0,0,0,.4); transform:rotate(-4deg); }
+  .polaroids img:nth-child(2){ transform:rotate(3deg); }
+  .polaroids img:nth-child(3){ transform:rotate(-2deg); }
   .testimonials{ background:var(--mint); padding-block:100px; }
   .testimonials-head{ text-align:center; max-width:640px; margin:0 auto; }
   .testimonials-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
@@ -789,6 +823,47 @@
         <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
         <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
         <p class="credentials" id="c-aboutCredentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- COMMUNITY (WhatsApp group) ---------- -->
+  <section class="community" id="community">
+    <div class="wrap community-grid">
+      <div class="community-copy">
+        <span class="eyebrow">הקבוצה שלנו</span>
+        <h2 id="c-comTitle">קהילת מטיילים שאוהבת את העולם</h2>
+        <p class="community-lede" id="c-comLede">הצטרפו לקבוצת הוואטסאפ שלי וקבלו השראה, טיפים ועדכונים על דילים שווים, יעדים מיוחדים והמלצות אמיתיות מהשטח.</p>
+        <div class="community-features">
+          <div class="cf"><span class="cf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20c.5-3.6 3-5.6 6.2-5.6s5.7 2 6.2 5.6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.8 14.2c2.2.2 3.8 1.8 4.2 4.6"/></svg></span><h3 id="c-com1Title">קהילה נעימה ומסודרת</h3><p id="c-com1Text">מטיילים שאוהבים לחלוק ולתת השראה.</p></div>
+          <div class="cf"><span class="cf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span><h3 id="c-com2Title">השראה ליעדים חדשים</h3><p id="c-com2Text">תמונות, מסלולים ורעיונות לחופשות מיוחדות.</p></div>
+          <div class="cf"><span class="cf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg></span><h3 id="c-com3Title">דילים ועדכונים חמים</h3><p id="c-com3Text">במחירים מיוחדים, ישירות אליכם לנייד.</p></div>
+          <div class="cf"><span class="cf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12H9l-5 4z"/><path d="M8 9h8M8 12.5h5"/></svg></span><h3 id="c-com4Title">המלצות אמיתיות</h3><p id="c-com4Text">חוויות, מלונות, מסעדות וטיפים מהשטח.</p></div>
+        </div>
+        <a class="btn-wa" href="https://bit.ly/3YL9hh5" target="_blank" rel="noopener" id="c-linkWaGroup2"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm5.2 13.9c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-1.9.9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5.2.6.8 2 .9 2.1.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.5.5-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg><span>הצטרפו לקבוצת הוואטסאפ של MOROSHABAT</span></a>
+        <p class="community-note" id="c-comNote">קבוצה שקטה | בלי ספאם | רק תוכן איכותי</p>
+      </div>
+      <div class="community-visual" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-bar"><span class="phone-avatar">M</span><div><strong>MOROSHABAT ✈</strong><small>קבוצת מטיילים</small></div></div>
+          <div class="phone-chat">
+            <div class="bubble">
+              <b>יפעת מורוביץ</b>
+              <p>דיל חדש עלה לקבוצה! כל הפרטים בהודעה הבאה</p>
+              <img src="pkg-vienna.jpg" alt="">
+              <span class="react">❤️ 👍 24</span>
+            </div>
+            <div class="bubble">
+              <b>יפעת מורוביץ</b>
+              <p>מוזמנים לשאול הכול, אני כאן בשבילכם</p>
+              <span class="react">❤️ 8</span>
+            </div>
+          </div>
+          <div class="phone-input">הודעה</div>
+        </div>
+        <div class="polaroids">
+          <img src="pkg-beach.jpg" alt=""><img src="pkg-temple.jpg" alt=""><img src="pkg-hike.jpg" alt="">
+        </div>
       </div>
     </div>
   </section>
@@ -1446,6 +1521,17 @@
       setText('c-how3Text', c.how3Text);
       setText('c-how4Title', c.how4Title);
       setText('c-how4Text', c.how4Text);
+      setText('c-comTitle', c.comTitle);
+      setText('c-comLede', c.comLede);
+      setText('c-com1Title', c.com1Title);
+      setText('c-com1Text', c.com1Text);
+      setText('c-com2Title', c.com2Title);
+      setText('c-com2Text', c.com2Text);
+      setText('c-com3Title', c.com3Title);
+      setText('c-com3Text', c.com3Text);
+      setText('c-com4Title', c.com4Title);
+      setText('c-com4Text', c.com4Text);
+      setText('c-comNote', c.comNote);
       setText('c-aboutTitle', c.aboutTitle);
       setText('c-aboutText1', c.aboutText1);
       setText('c-aboutText2', c.aboutText2);
@@ -1455,6 +1541,7 @@
       ['c-linkPhone', 'c-linkPhone2'].forEach(function(id){ setHref(id, c.linkPhoneHref); setText(id, c.linkPhoneText); });
       ['c-linkWaDirect', 'c-linkWaDirect2', 'c-linkWaDirect3'].forEach(function(id){ setHref(id, c.linkWaDirectHref); });
       setHref('c-linkWaGroup', c.linkWaGroupHref);
+      setHref('c-linkWaGroup2', c.linkWaGroupHref);
       ['c-linkFb', 'c-linkFb2'].forEach(function(id){ setHref(id, c.linkFbHref); });
       ['c-linkIg', 'c-linkIg2'].forEach(function(id){ setHref(id, c.linkIgHref); });
     }
@@ -1776,6 +1863,17 @@
       { id: 'c-how3Text', key: 'how3Text', label: 'שלב 3 טקסט' },
       { id: 'c-how4Title', key: 'how4Title', label: 'שלב 4 כותרת' },
       { id: 'c-how4Text', key: 'how4Text', label: 'שלב 4 טקסט' },
+      { id: 'c-comTitle', key: 'comTitle', label: "כותרת מדור הקהילה" },
+      { id: 'c-comLede', key: 'comLede', label: "תיאור מדור הקהילה" },
+      { id: 'c-com1Title', key: 'com1Title', label: "קהילה פיצ'ר 1 כותרת" },
+      { id: 'c-com1Text', key: 'com1Text', label: "קהילה פיצ'ר 1 טקסט" },
+      { id: 'c-com2Title', key: 'com2Title', label: "קהילה פיצ'ר 2 כותרת" },
+      { id: 'c-com2Text', key: 'com2Text', label: "קהילה פיצ'ר 2 טקסט" },
+      { id: 'c-com3Title', key: 'com3Title', label: "קהילה פיצ'ר 3 כותרת" },
+      { id: 'c-com3Text', key: 'com3Text', label: "קהילה פיצ'ר 3 טקסט" },
+      { id: 'c-com4Title', key: 'com4Title', label: "קהילה פיצ'ר 4 כותרת" },
+      { id: 'c-com4Text', key: 'com4Text', label: "קהילה פיצ'ר 4 טקסט" },
+      { id: 'c-comNote', key: 'comNote', label: "שורת הקבוצה מתחת לכפתור" },
       { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
       { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות פסקה ראשונה' },
       { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות פסקה שנייה' },
@@ -1919,6 +2017,7 @@
       { id: 'c-linkPhone', label: 'מספר טלפון', kind: 'phone' },
       { id: 'c-linkWaDirect', label: 'קישור וואטסאפ ישיר', kind: 'url', key: 'linkWaDirectHref' },
       { id: 'c-linkWaGroup', label: 'קישור לקבוצת הדילים בוואטסאפ', kind: 'url', key: 'linkWaGroupHref' },
+      { id: 'c-linkWaGroup2', label: 'קישור לקבוצת הדילים בוואטסאפ (מדור הקהילה)', kind: 'url', key: 'linkWaGroupHref' },
       { id: 'c-linkFb', label: 'קישור לפייסבוק', kind: 'url', key: 'linkFbHref' },
       { id: 'c-linkIg', label: 'קישור לאינסטגרם', kind: 'url', key: 'linkIgHref' }
     ];
