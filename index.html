@@ -366,12 +366,7 @@
   .add-deal-btn{ display:none; }
   body.edit-mode .add-deal-btn{ display:inline-flex; }
 
-  .admin-bar{ position:fixed; bottom:0; inset-inline:0; z-index:200; background:#0e3d38; color:#fff; padding:12px 20px; display:none; align-items:center; justify-content:space-between; gap:16px; font-size:.86rem; box-shadow:0 -6px 20px rgba(0,0,0,.2); }
-  body.edit-mode .admin-bar{ display:flex; }
-  .admin-bar b{ color:#ffd400; }
-  .mode-toggle-btn{ display:none; position:fixed; bottom:70px; inset-inline-start:16px; z-index:201; background:#ffd400; color:#241d00; border:none; border-radius:999px; padding:10px 18px; font-weight:700; font-size:.85rem; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.3); }
-  body.edit-mode .mode-toggle-btn{ display:block; }
-  body.preview-mode .mode-toggle-btn{ display:block; bottom:16px; background:#0e3d38; color:#fff; }
+  body:not(.edit-mode) .edit-pencil, body:not(.edit-mode) .pkg-admin-actions{ display:none; }
 
   .ie-overlay{ position:fixed; inset:0; background:rgba(10,25,20,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
   .ie-overlay[hidden]{ display:none; }
@@ -797,11 +792,6 @@
 </div>
 </div>
 
-<!-- ---------- Admin bar (visible only after login) ---------- -->
-<div class="admin-bar">
-  <span><b>מצב עריכה פעיל</b> לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
-</div>
-<button type="button" class="mode-toggle-btn" id="ieModeToggleBtn">חזרה לתצוגה רגילה</button>
 
 <!-- ---------- Login popup ---------- -->
 <div class="ie-overlay" id="ieLoginOverlay" hidden>
@@ -1379,9 +1369,15 @@
     var footerAdminLink = document.getElementById('footerAdminLink');
     if (footerAdminLink) footerAdminLink.addEventListener('click', function(e){
       e.preventDefault();
+      if (document.body.classList.contains('edit-mode')) { setEditView(false); return; }
+      if (conn) { setEditView(true); return; }
       ieShowStatus('ieLoginStatus', '', '');
       ieEl('ieLoginOverlay').hidden = false;
     });
+    function setEditView(on){
+      document.body.classList.toggle('edit-mode', on);
+      footerAdminLink.textContent = on ? 'חזרה לתצוגת האתר' : 'ניהול';
+    }
     // ---------- Developer settings: create/replace the encrypted admin vault ----------
     var footerDevLink = document.getElementById('footerDevLink');
     if (footerDevLink) footerDevLink.addEventListener('click', function(e){
@@ -1454,20 +1450,13 @@
     function enterEditMode(){
       ieEl('ieLoginOverlay').hidden = true;
       ieEl('iePassword').value = '';
-      document.body.classList.add('edit-mode');
+      setEditView(true);
       editModeActive = true;
       attachContentPencils();
       attachLinkPencils();
       attachImagePencils();
       renderDealsGrid(dealsCache.data);
     }
-
-    ieEl('ieModeToggleBtn').addEventListener('click', function(){
-      var toPreview = document.body.classList.contains('edit-mode');
-      document.body.classList.toggle('edit-mode', !toPreview);
-      document.body.classList.toggle('preview-mode', toPreview);
-      this.textContent = toPreview ? 'חזרה למצב עריכה' : 'חזרה לתצוגה רגילה';
-    });
 
     // ---------- Content text pencils ----------
     var CONTENT_FIELD_MAP = [
