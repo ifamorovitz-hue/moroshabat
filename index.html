@@ -463,6 +463,8 @@
   .ie-cal-popover{ margin-top:8px; border:1px solid var(--line); border-radius:12px; padding:14px; background:#fbfaf7; }
   .ie-cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-weight:700; }
   .ie-cal-nav{ background:none; border:none; font-size:1.2rem; cursor:pointer; color:#0a6b62; padding:2px 10px; border-radius:6px; }
+  .ie-cal-selects{ display:flex; gap:6px; }
+  .ie-cal-selects select{ font-family:inherit; font-weight:700; font-size:.92rem; padding:5px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; color:inherit; width:auto; cursor:pointer; }
   .ie-cal-nav[disabled]{ opacity:.3; cursor:not-allowed; }
   .ie-cal-weekdays, .ie-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); direction:rtl; }
   .ie-cal-weekdays{ text-align:center; font-size:.74rem; color:var(--muted); margin-bottom:4px; }
@@ -1183,7 +1185,10 @@
     <div class="ie-cal-popover" id="ieCalPopover" hidden>
       <div class="ie-cal-header">
         <button type="button" class="ie-cal-nav" id="ieCalPrev">‹</button>
-        <span id="ieCalMonthLabel"></span>
+        <span class="ie-cal-selects">
+          <select id="ieCalMonthSel" aria-label="חודש"></select>
+          <select id="ieCalYearSel" aria-label="שנה"></select>
+        </span>
         <button type="button" class="ie-cal-nav" id="ieCalNext">›</button>
       </div>
       <div class="ie-cal-weekdays"><span>א</span><span>ב</span><span>ג</span><span>ד</span><span>ה</span><span>ו</span><span>ש</span></div>
@@ -2083,7 +2088,20 @@
 
     // ---------- Date-range calendar (deal editor) ----------
     function renderIeCalendar(){
-      ieEl('ieCalMonthLabel').textContent = HEBREW_MONTHS[calViewMonth] + ' ' + calViewYear;
+      var monthSel = ieEl('ieCalMonthSel'), yearSel = ieEl('ieCalYearSel');
+      var thisYear = calToday.getFullYear();
+      yearSel.innerHTML = '';
+      for (var y = thisYear; y <= thisYear + 6; y++) {
+        var yo = document.createElement('option'); yo.value = y; yo.textContent = y; yearSel.appendChild(yo);
+      }
+      yearSel.value = calViewYear;
+      monthSel.innerHTML = '';
+      HEBREW_MONTHS.forEach(function(name, m){
+        var mo = document.createElement('option'); mo.value = m; mo.textContent = name;
+        if (calViewYear === thisYear && m < calToday.getMonth()) mo.disabled = true;
+        monthSel.appendChild(mo);
+      });
+      monthSel.value = calViewMonth;
       var grid = ieEl('ieCalGrid');
       grid.innerHTML = '';
       var startWeekday = new Date(calViewYear, calViewMonth, 1).getDay();
@@ -2149,6 +2167,12 @@
         renderIeCalendar();
         pop.hidden = false;
       } else pop.hidden = true;
+    });
+    ieEl('ieCalMonthSel').addEventListener('change', function(){ calViewMonth = parseInt(this.value, 10); renderIeCalendar(); });
+    ieEl('ieCalYearSel').addEventListener('change', function(){
+      calViewYear = parseInt(this.value, 10);
+      if (calViewYear === calToday.getFullYear() && calViewMonth < calToday.getMonth()) calViewMonth = calToday.getMonth();
+      renderIeCalendar();
     });
     ieEl('ieCalPrev').addEventListener('click', function(){ calViewMonth--; if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; } renderIeCalendar(); });
     ieEl('ieCalNext').addEventListener('click', function(){ calViewMonth++; if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; } renderIeCalendar(); });
