@@ -1413,6 +1413,9 @@
 
     ieEl('ieLoginCancelBtn').addEventListener('click', function(){ ieEl('ieLoginOverlay').hidden = true; });
 
+    ['ieUsername', 'iePassword'].forEach(function(id){
+      ieEl(id).addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); ieEl('ieLoginBtn').click(); } });
+    });
     ieEl('ieLoginBtn').addEventListener('click', function(){
       var username = ieEl('ieUsername').value.trim();
       var password = ieEl('iePassword').value;
