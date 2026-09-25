@@ -957,7 +957,7 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a></span></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a> · <a href="#" id="footerLogoutLink" style="color:inherit;">התנתקות</a></span></span>
     </div>
   </div>
 </footer>
@@ -1711,6 +1711,7 @@
       ieEl('ieLoginOverlay').hidden = false;
     });
     function setEditView(on){
+      try { localStorage.setItem('moroshabatMode', on ? 'edit' : 'view'); } catch(e){}
       document.body.classList.toggle('edit-mode', on);
       footerAdminLink.textContent = on ? 'חזרה לתצוגת האתר' : 'ניהול';
     }
@@ -1719,6 +1720,16 @@
     function isStrongPassword(pw){
       return pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /\d/.test(pw);
     }
+
+    var footerLogoutLink = document.getElementById('footerLogoutLink');
+    if (footerLogoutLink) footerLogoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      conn = null; contentCache = null; dealsCache = null; editModeActive = false;
+      sessionClear();
+      try { localStorage.removeItem('moroshabatMode'); } catch(err){}
+      setEditView(false);
+      loadDeals();
+    });
 
     // ---------- Change password ----------
     var footerPwLink = document.getElementById('footerPwLink');
@@ -1743,7 +1754,7 @@
       ieShowStatus('iePwStatus', 'info', 'שומר…');
       var salt = crypto.getRandomValues(new Uint8Array(16));
       var iv = crypto.getRandomValues(new Uint8Array(12));
-      var username, vault;
+      var username, vault, newKey;
       fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/' + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' })
         .then(function(r){ return r.json(); })
         .then(function(v){
@@ -1751,13 +1762,14 @@
           return ieDecryptVault(cur, v).catch(function(){ throw new Error('הסיסמה הנוכחית שגויה.'); });
         })
         .then(function(){ return ieDeriveKey(pw, salt.buffer); })
-        .then(function(key){ return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(conn))); })
+        .then(function(key){ newKey = key; return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(conn))); })
         .then(function(cipher){
           vault = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher), username: username };
           return ghGetFile(VAULT_PATH);
         })
         .then(function(f){ return ghPutFile(VAULT_PATH, b64EncodeUnicode(JSON.stringify(vault, null, 2)), 'שינוי סיסמת ניהול', f.sha); })
         .then(function(){
+          sessionSave(newKey);
           ieShowStatus('iePwStatus', 'ok', 'הסיסמה עודכנה.');
           setTimeout(function(){ ieEl('iePwOverlay').hidden = true; }, 900);
         })
@@ -1826,22 +1838,73 @@
           if (!vault || username.toLowerCase() !== String(vault.username || '').toLowerCase()) {
             throw new Error('שם משתמש או סיסמה שגויים.');
           }
-          return ieDecryptVault(password, vault);
+          return ieDeriveKey(password, b64ToBuf(vault.salt)).then(function(key){
+            return decryptWithKey(key, vault).then(function(c){ return { c: c, key: key }; });
+          });
         })
-        .then(function(c){
-          conn = c;
-          return Promise.all([ghGetFile(DEALS_PATH), ghGetFile(CONTENT_PATH)]);
+        .then(function(res){
+          conn = res.c;
+          sessionSave(res.key);
+          return loadAdminData();
         })
-        .then(function(results){
-          dealsCache = { data: JSON.parse(b64DecodeUnicode(results[0].content)), sha: results[0].sha };
-          contentCache = { data: JSON.parse(b64DecodeUnicode(results[1].content)), sha: results[1].sha };
-          enterEditMode();
-        })
+        .then(enterEditMode)
         .catch(function(err){
           conn = null;
           ieShowStatus('ieLoginStatus', 'error', 'שם משתמש או סיסמה שגויים, או שהטוקן השמור כבר לא תקף.');
         });
     });
+
+    function decryptWithKey(key, vault){
+      return crypto.subtle.decrypt({ name:'AES-GCM', iv: b64ToBuf(vault.iv) }, key, b64ToBuf(vault.data)).then(function(buf){
+        return JSON.parse(new TextDecoder().decode(buf));
+      });
+    }
+    function loadAdminData(){
+      return Promise.all([ghGetFile(DEALS_PATH), ghGetFile(CONTENT_PATH)]).then(function(results){
+        dealsCache = { data: JSON.parse(b64DecodeUnicode(results[0].content)), sha: results[0].sha };
+        contentCache = { data: JSON.parse(b64DecodeUnicode(results[1].content)), sha: results[1].sha };
+      });
+    }
+
+    // ---------- Stay signed in across refreshes ----------
+    // A non-extractable CryptoKey (not the token itself) is kept in IndexedDB;
+    // the encrypted vault in the repo is decrypted with it on the next visit.
+    var SESSION_MAX_AGE = 14 * 24 * 3600 * 1000;
+    function idbOpen(){
+      return new Promise(function(resolve, reject){
+        var r = indexedDB.open('moroshabat-admin', 1);
+        r.onupgradeneeded = function(){ r.result.createObjectStore('kv'); };
+        r.onsuccess = function(){ resolve(r.result); };
+        r.onerror = function(){ reject(r.error); };
+      });
+    }
+    function idbRun(mode, fn){
+      return idbOpen().then(function(db){
+        return new Promise(function(resolve, reject){
+          var tx = db.transaction('kv', mode), req = fn(tx.objectStore('kv'));
+          tx.oncomplete = function(){ resolve(req && req.result); };
+          tx.onerror = function(){ reject(tx.error); };
+        });
+      });
+    }
+    function sessionSave(key){ idbRun('readwrite', function(st){ return st.put({ key: key, at: Date.now() }, 'session'); }).catch(function(){}); }
+    function sessionClear(){ idbRun('readwrite', function(st){ return st.delete('session'); }).catch(function(){}); }
+    function restoreSession(){
+      if (!window.indexedDB) return;
+      idbRun('readonly', function(st){ return st.get('session'); }).then(function(rec){
+        if (!rec || !rec.key || Date.now() - rec.at > SESSION_MAX_AGE) { if (rec) sessionClear(); return null; }
+        return fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/' + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' })
+          .then(function(r){ return r.json(); })
+          .then(function(vault){ return decryptWithKey(rec.key, vault); })
+          .then(function(c){ conn = c; return loadAdminData(); })
+          .then(function(){
+            var mode = null; try { mode = localStorage.getItem('moroshabatMode'); } catch(e){}
+            enterEditMode();
+            if (mode === 'view') setEditView(false);
+          })
+          .catch(function(){ conn = null; sessionClear(); });
+      }).catch(function(){});
+    }
 
     function enterEditMode(){
       ieEl('ieLoginOverlay').hidden = true;
@@ -2689,6 +2752,7 @@
 
     loadSiteContent();
     loadDeals();
+    restoreSession();
   })();
 </script>
 </body>
