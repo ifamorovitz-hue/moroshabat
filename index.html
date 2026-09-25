@@ -807,6 +807,7 @@
       <button type="button" class="ie-btn" id="ieLoginBtn">התחברות</button>
       <button type="button" class="ie-btn secondary" id="ieLoginCancelBtn">ביטול</button>
     </div>
+    <p class="ie-hint"><a href="#" id="ieForgotLink">שכחתי סיסמה</a></p>
   </div>
 </div>
 
@@ -830,7 +831,8 @@
     <div id="iePwStatus"></div>
     <label>סיסמה נוכחית</label>
     <input type="password" id="iePwCurrent" autocomplete="current-password">
-    <label>סיסמה חדשה (לפחות 8 תווים)</label>
+    <label>סיסמה חדשה</label>
+    <p class="ie-hint">לפחות 10 תווים, עם אות גדולה באנגלית, אות קטנה באנגלית ומספר.</p>
     <input type="password" id="iePwNew" autocomplete="new-password">
     <label>אימות סיסמה חדשה</label>
     <input type="password" id="iePwNew2" autocomplete="new-password">
@@ -849,7 +851,8 @@
     <div id="ieDevStatus"></div>
     <label>שם משתמש</label>
     <input type="text" id="ieDevUsername" autocomplete="off">
-    <label>סיסמה (לפחות 8 תווים)</label>
+    <label>סיסמה</label>
+    <p class="ie-hint">לפחות 10 תווים, עם אות גדולה באנגלית, אות קטנה באנגלית ומספר.</p>
     <input type="password" id="ieDevPassword" autocomplete="new-password">
     <label>GitHub Token</label>
     <input type="password" id="ieDevToken" placeholder="github_pat_..." autocomplete="off">
@@ -1391,6 +1394,12 @@
       document.body.classList.toggle('edit-mode', on);
       footerAdminLink.textContent = on ? 'חזרה לתצוגת האתר' : 'ניהול';
     }
+    // ---------- Password strength ----------
+    var PW_RULE_MSG = 'הסיסמה חייבת להיות באורך 10 תווים לפחות, ולכלול אות גדולה באנגלית, אות קטנה באנגלית ומספר.';
+    function isStrongPassword(pw){
+      return pw.length >= 10 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /\d/.test(pw);
+    }
+
     // ---------- Change password ----------
     var footerPwLink = document.getElementById('footerPwLink');
     if (footerPwLink) footerPwLink.addEventListener('click', function(e){
@@ -1407,7 +1416,7 @@
       var cur = ieEl('iePwCurrent').value, pw = ieEl('iePwNew').value, pw2 = ieEl('iePwNew2').value;
       if (!conn) { ieShowStatus('iePwStatus', 'error', 'יש להתחבר מחדש.'); return; }
       if (!cur || !pw || !pw2) { ieShowStatus('iePwStatus', 'error', 'יש למלא את כל השדות.'); return; }
-      if (pw.length < 8) { ieShowStatus('iePwStatus', 'error', 'הסיסמה החדשה צריכה להיות באורך 8 תווים לפחות.'); return; }
+      if (!isStrongPassword(pw)) { ieShowStatus('iePwStatus', 'error', PW_RULE_MSG); return; }
       if (pw !== pw2) { ieShowStatus('iePwStatus', 'error', 'אימות הסיסמה אינו תואם.'); return; }
       var btn = ieEl('iePwSaveBtn');
       btn.disabled = true;
@@ -1449,7 +1458,7 @@
       var password = ieEl('ieDevPassword').value;
       var token = ieEl('ieDevToken').value.trim();
       if (!username || !password || !token) { ieShowStatus('ieDevStatus', 'error', 'יש למלא שם משתמש, סיסמה וטוקן.'); return; }
-      if (password.length < 8) { ieShowStatus('ieDevStatus', 'error', 'הסיסמה צריכה להיות באורך 8 תווים לפחות.'); return; }
+      if (!isStrongPassword(password)) { ieShowStatus('ieDevStatus', 'error', PW_RULE_MSG); return; }
       var btn = ieEl('ieDevSaveBtn');
       btn.disabled = true;
       ieShowStatus('ieDevStatus', 'info', 'בודק את הטוקן…');
@@ -1476,6 +1485,12 @@
     });
 
     ieEl('ieLoginCancelBtn').addEventListener('click', function(){ ieEl('ieLoginOverlay').hidden = true; });
+    ieEl('ieForgotLink').addEventListener('click', function(e){
+      e.preventDefault();
+      ieEl('ieLoginOverlay').hidden = true;
+      ieShowStatus('ieDevStatus', 'info', 'איפוס סיסמה: יש להזין שם משתמש, סיסמה חדשה והטוקן של האתר. את הטוקן יש אצל המפתח או בעלת הריפו ב-GitHub.');
+      ieEl('ieDevOverlay').hidden = false;
+    });
 
     ['ieUsername', 'iePassword'].forEach(function(id){
       ieEl(id).addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); ieEl('ieLoginBtn').click(); } });
