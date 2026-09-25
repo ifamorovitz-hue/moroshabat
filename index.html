@@ -366,6 +366,7 @@
   .add-deal-btn{ display:none; }
   body.edit-mode .add-deal-btn{ display:inline-flex; }
 
+  body:not(.edit-mode) .edit-only{ display:none; }
   body:not(.edit-mode) .edit-pencil, body:not(.edit-mode) .pkg-admin-actions{ display:none; }
 
   .ie-overlay{ position:fixed; inset:0; background:rgba(10,25,20,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
@@ -770,7 +771,7 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a></span></span>
     </div>
   </div>
 </footer>
@@ -818,6 +819,24 @@
     <div class="ie-actions">
       <button type="button" class="ie-btn" id="ieTextSaveBtn">שמירה</button>
       <button type="button" class="ie-btn secondary" id="ieTextCancelBtn">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- Change password popup ---------- -->
+<div class="ie-overlay" id="iePwOverlay" hidden>
+  <div class="ie-modal">
+    <h3>שינוי סיסמה</h3>
+    <div id="iePwStatus"></div>
+    <label>סיסמה נוכחית</label>
+    <input type="password" id="iePwCurrent" autocomplete="current-password">
+    <label>סיסמה חדשה (לפחות 8 תווים)</label>
+    <input type="password" id="iePwNew" autocomplete="new-password">
+    <label>אימות סיסמה חדשה</label>
+    <input type="password" id="iePwNew2" autocomplete="new-password">
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="iePwSaveBtn">שמירה</button>
+      <button type="button" class="ie-btn secondary" id="iePwCancelBtn">ביטול</button>
     </div>
   </div>
 </div>
@@ -1372,6 +1391,51 @@
       document.body.classList.toggle('edit-mode', on);
       footerAdminLink.textContent = on ? 'חזרה לתצוגת האתר' : 'ניהול';
     }
+    // ---------- Change password ----------
+    var footerPwLink = document.getElementById('footerPwLink');
+    if (footerPwLink) footerPwLink.addEventListener('click', function(e){
+      e.preventDefault();
+      ['iePwCurrent', 'iePwNew', 'iePwNew2'].forEach(function(id){ ieEl(id).value = ''; });
+      ieShowStatus('iePwStatus', '', '');
+      ieEl('iePwOverlay').hidden = false;
+    });
+    ieEl('iePwCancelBtn').addEventListener('click', function(){ ieEl('iePwOverlay').hidden = true; });
+    ['iePwCurrent', 'iePwNew', 'iePwNew2'].forEach(function(id){
+      ieEl(id).addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); ieEl('iePwSaveBtn').click(); } });
+    });
+    ieEl('iePwSaveBtn').addEventListener('click', function(){
+      var cur = ieEl('iePwCurrent').value, pw = ieEl('iePwNew').value, pw2 = ieEl('iePwNew2').value;
+      if (!conn) { ieShowStatus('iePwStatus', 'error', 'יש להתחבר מחדש.'); return; }
+      if (!cur || !pw || !pw2) { ieShowStatus('iePwStatus', 'error', 'יש למלא את כל השדות.'); return; }
+      if (pw.length < 8) { ieShowStatus('iePwStatus', 'error', 'הסיסמה החדשה צריכה להיות באורך 8 תווים לפחות.'); return; }
+      if (pw !== pw2) { ieShowStatus('iePwStatus', 'error', 'אימות הסיסמה אינו תואם.'); return; }
+      var btn = ieEl('iePwSaveBtn');
+      btn.disabled = true;
+      ieShowStatus('iePwStatus', 'info', 'שומר…');
+      var salt = crypto.getRandomValues(new Uint8Array(16));
+      var iv = crypto.getRandomValues(new Uint8Array(12));
+      var username, vault;
+      fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/' + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' })
+        .then(function(r){ return r.json(); })
+        .then(function(v){
+          username = v.username;
+          return ieDecryptVault(cur, v).catch(function(){ throw new Error('הסיסמה הנוכחית שגויה.'); });
+        })
+        .then(function(){ return ieDeriveKey(pw, salt.buffer); })
+        .then(function(key){ return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(conn))); })
+        .then(function(cipher){
+          vault = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher), username: username };
+          return ghGetFile(VAULT_PATH);
+        })
+        .then(function(f){ return ghPutFile(VAULT_PATH, b64EncodeUnicode(JSON.stringify(vault, null, 2)), 'שינוי סיסמת ניהול', f.sha); })
+        .then(function(){
+          ieShowStatus('iePwStatus', 'ok', 'הסיסמה עודכנה.');
+          setTimeout(function(){ ieEl('iePwOverlay').hidden = true; }, 900);
+        })
+        .catch(function(err){ ieShowStatus('iePwStatus', 'error', err.message); })
+        .finally(function(){ btn.disabled = false; });
+    });
+
     // ---------- Developer settings: create/replace the encrypted admin vault ----------
     var footerDevLink = document.getElementById('footerDevLink');
     if (footerDevLink) footerDevLink.addEventListener('click', function(e){
