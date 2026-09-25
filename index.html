@@ -154,7 +154,6 @@
     filter:brightness(1.15) saturate(1.12) contrast(1.03);
     transition:opacity .6s ease;
   }
-  @media (prefers-reduced-motion:reduce){ .hero-video{ display:none; } .hero-video-toggle{ display:none; } }
   .hero-copy{
     position:absolute; z-index:2; inset-inline:0; bottom:0; padding:0 24px 72px;
     text-align:center; display:flex; flex-direction:column; align-items:center;
@@ -610,7 +609,7 @@
   <!-- ---------- HERO ---------- -->
   <section class="hero" style="background-image:url('hero-poster-1.jpg');">
     <button type="button" class="hero-video-toggle" id="heroVideoToggle" aria-pressed="false">השהיית הסרטון</button>
-    <video class="hero-video" autoplay="" muted="" playsinline="" preload="auto" disablepictureinpicture="" disableremoteplayback="" poster="hero-poster-1.jpg">
+    <video class="hero-video" muted="" playsinline="" preload="auto" disablepictureinpicture="" disableremoteplayback="" poster="hero-poster-1.jpg">
       <source src="hero-1.mp4" type="video/mp4">
     </video>
     <div class="hero-copy">
@@ -1061,14 +1060,17 @@
   var v = document.querySelector('.hero-video');
   if (!v) return;
   var clips = [['hero-1.mp4', 'hero-poster-1.jpg'], ['hero-2.mp4', 'hero-poster-2.jpg'], ['hero-3.mp4', 'hero-poster-3.jpg']], i = 0;
-  setTimeout(function(){
-    if (!v.paused) return;
-    var btn = document.getElementById('heroVideoToggle');
-    var p = v.play();
-    if (p && p.catch) p.catch(function(){
-      if (btn) { btn.textContent = 'הפעלת הסרטון'; btn.setAttribute('aria-pressed', 'true'); }
-    });
-  }, 1500);
+  var toggleBtn = document.getElementById('heroVideoToggle');
+  function showPlayButton(){
+    if (toggleBtn) { toggleBtn.textContent = 'הפעלת הסרטון'; toggleBtn.setAttribute('aria-pressed', 'true'); }
+  }
+  // Phones with "reduce motion" / battery saver (common on Samsung) get the poster and a play button instead of autoplay.
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) showPlayButton();
+  else {
+    var startPlay = v.play();
+    if (startPlay && startPlay.catch) startPlay.catch(showPlayButton);
+  }
   v.addEventListener('ended', function(){
     i = (i + 1) % clips.length;
     v.style.opacity = 0;
