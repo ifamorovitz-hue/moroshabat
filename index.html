@@ -1824,6 +1824,9 @@
       if (editBtn) { e.preventDefault(); openDealEditor(editBtn.getAttribute('data-edit-deal')); }
     });
     ieEl('ieDealCancelBtn').addEventListener('click', function(){ ieEl('ieDealOverlay').hidden = true; });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && !ieEl('ieDealOverlay').hidden) ieEl('ieDealOverlay').hidden = true;
+    });
     ieEl('ie_imageFile').addEventListener('change', function(e){
       var file = e.target.files[0];
       pendingImageFile = file || null;
