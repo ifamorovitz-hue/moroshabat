@@ -501,6 +501,8 @@
   .ie-toggle-btn input{ position:absolute; opacity:0; }
   .ie-toggle-btn:has(input:checked){ border-color:#168077; background:#eef3f1; color:#24636c; }
   .ie-hint{ font-size:.8rem; color:var(--muted); margin-top:4px; }
+  .ie-paste-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:10px; }
+  .ie-paste-row .ie-hint{ margin:0; }
   .ie-img-preview{ width:100%; max-width:220px; border-radius:10px; margin-top:8px; display:block; }
   .ie-info-box{ background:#e6eeea; border-radius:12px; padding:14px 16px; margin:12px 0 4px; font-size:.86rem; color:#163c43; }
   .ie-info-box p{ margin:0 0 8px; }
@@ -1445,6 +1447,7 @@
     <img id="ieImgPreview" class="ie-img-preview" alt="">
     <label>בחירת תמונה חדשה</label>
     <input type="file" id="ieImgFile" accept="image/*">
+    <p class="ie-hint">אפשר גם להדביק תמונה עם Ctrl+V (Cmd+V במק).</p>
     <div class="ie-actions">
       <button type="button" class="ie-btn" id="ieImgSaveBtn">שמירה</button>
       <button type="button" class="ie-btn secondary" id="ieImgCancelBtn">ביטול</button>
@@ -1547,6 +1550,10 @@
     <label>תמונה *</label>
     <img id="ie_imagePreview" class="ie-img-preview" hidden>
     <input type="file" id="ie_imageFile" accept="image/*">
+    <div class="ie-paste-row">
+      <button type="button" class="ie-btn secondary" id="iePasteImgBtn">הדבקת תמונה מהלוח</button>
+      <span class="ie-hint">או להדביק ישירות עם Ctrl+V (Cmd+V במק)</span>
+    </div>
 
     <div style="display:flex; align-items:center; gap:8px; margin-top:14px;">
       <input type="checkbox" id="ie_active" checked style="width:auto;">
@@ -2488,11 +2495,14 @@
       ieEl('ieImgTitle').textContent = 'החלפת ' + f.label;
       ieEl('ieImgPreview').src = ieEl(f.id).src;
       ieEl('ieImgFile').value = '';
+      pastedImgFile = null;
       ieShowStatus('ieImgStatus', '', '');
       ieEl('ieImgOverlay').hidden = false;
     }
     ieEl('ieImgCancelBtn').addEventListener('click', function(){ ieEl('ieImgOverlay').hidden = true; });
+    var pastedImgFile = null;
     ieEl('ieImgFile').addEventListener('change', function(){
+      pastedImgFile = null;
       var file = this.files[0];
       if (file) ieEl('ieImgPreview').src = URL.createObjectURL(file);
     });
@@ -2518,7 +2528,7 @@
     }
     ieEl('ieImgSaveBtn').addEventListener('click', function(){
       if (!currentImgField) return;
-      var file = ieEl('ieImgFile').files[0];
+      var file = pastedImgFile || ieEl('ieImgFile').files[0];
       if (!file) { ieShowStatus('ieImgStatus', 'error', 'יש לבחור תמונה.'); return; }
       var field = currentImgField;
       var btn = ieEl('ieImgSaveBtn');
@@ -3037,6 +3047,53 @@
     ieEl('ieDealCancelBtn').addEventListener('click', function(){ ieEl('ieDealOverlay').hidden = true; });
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && !ieEl('ieDealOverlay').hidden) ieEl('ieDealOverlay').hidden = true;
+    });
+    function setDealImageFromClipboard(file){
+      resizeImage(file, 1600).then(function(f){
+        pendingImageFile = f;
+        ieEl('ie_imageFile').value = '';
+        var reader = new FileReader();
+        reader.onload = function(){ ieEl('ie_imagePreview').src = reader.result; ieEl('ie_imagePreview').hidden = false; };
+        reader.readAsDataURL(f);
+        ieShowStatus('ieDealStatus', 'ok', 'התמונה הודבקה.');
+      }).catch(function(){ ieShowStatus('ieDealStatus', 'error', 'לא הצלחתי לקרוא את התמונה שהודבקה.'); });
+    }
+    function imageFromClipboardEvent(e){
+      var items = (e.clipboardData && e.clipboardData.items) || [];
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].kind === 'file' && items[i].type.indexOf('image/') === 0) return items[i].getAsFile();
+      }
+      return null;
+    }
+    document.addEventListener('paste', function(e){
+      var dealOpen = !ieEl('ieDealOverlay').hidden, imgOpen = !ieEl('ieImgOverlay').hidden;
+      if (!dealOpen && !imgOpen) return;
+      var file = imageFromClipboardEvent(e);
+      if (!file) return;
+      e.preventDefault();
+      if (dealOpen) setDealImageFromClipboard(file);
+      else {
+        resizeImage(file, 1600).then(function(f){
+          pastedImgFile = f; ieEl('ieImgFile').value = '';
+          ieEl('ieImgPreview').src = URL.createObjectURL(f);
+          ieShowStatus('ieImgStatus', 'ok', 'התמונה הודבקה. לחצו על שמירה.');
+        });
+      }
+    });
+    ieEl('iePasteImgBtn').addEventListener('click', function(){
+      if (!navigator.clipboard || !navigator.clipboard.read) {
+        ieShowStatus('ieDealStatus', 'info', 'הדפדפן לא מאפשר הדבקה בכפתור. אפשר ללחוץ Ctrl+V (Cmd+V במק) בחלון הזה.');
+        return;
+      }
+      navigator.clipboard.read().then(function(items){
+        for (var i = 0; i < items.length; i++) {
+          var type = items[i].types.filter(function(t){ return t.indexOf('image/') === 0; })[0];
+          if (type) return items[i].getType(type).then(function(blob){ setDealImageFromClipboard(new File([blob], 'pasted.png', { type: blob.type })); });
+        }
+        ieShowStatus('ieDealStatus', 'error', 'בלוח אין תמונה. יש להעתיק תמונה ואז ללחוץ שוב.');
+      }).catch(function(){
+        ieShowStatus('ieDealStatus', 'info', 'אין הרשאה לקרוא מהלוח. אפשר ללחוץ Ctrl+V (Cmd+V במק) בחלון הזה.');
+      });
     });
     ieEl('ie_imageFile').addEventListener('change', function(e){
       var file = e.target.files[0];
