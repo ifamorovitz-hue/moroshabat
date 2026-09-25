@@ -2282,29 +2282,109 @@
       }
       if (!out.priceNote) { if (/לזוג/.test(text)) out.priceNote = 'לזוג'; else if (/לאדם|לנפש|למבוגר/.test(text)) out.priceNote = 'לאדם'; }
 
-      // Tag
-      if (/קרוז|שייט|הפלגה/.test(text)) out.tag = 'קרוז';
-      else if (/כשר/.test(text)) out.tag = 'כשר למהדרין';
-      else if (/סופ.?ש|סוף שבוע/.test(text)) out.tag = 'סופ"ש';
-      else if (/מבצע/.test(text)) out.tag = 'מבצע';
+      // Clean lines (drop markdown asterisks)
+      var clean = lines.map(function(l){ return l.replace(/^\*+|\*+$/g, '').replace(/\*/g, '').trim(); }).filter(Boolean);
+      out.title = clean[0].replace(/^(כותרת|שם החבילה|שם)\s*[:\-]\s*/, '').replace(/#+/g, '').trim();
 
-      // Title, note, tiers, description
-      out.title = lines[0].replace(/^(כותרת|שם החבילה|שם)\s*[:\-]\s*/, '').replace(/[*#]+/g, '').trim();
-      var body = [];
-      lines.slice(1).forEach(function(l){
+      var DAYS = '(ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)';
+      var info = { direct: false, breakfast: false, lodging: false, times: [], bags: '', weekdays: '', hotels: [], notes: [], extra: [] };
+      var nextIsAlt = false, lastHotel = null;
+      var numReG = new RegExp(numRe.source, 'g');
+      clean.slice(1).forEach(function(l){
         var plain = l.replace(/^[-•*\s]+/, '');
+        var noDate = l.replace(numReG, ' ');
+        var priceHere = new RegExp(priceRe.source).exec(noDate);
+        var wd = new RegExp(DAYS + '\\s+עד\\s+' + DAYS).exec(l);
+        if (wd) info.weekdays = wd[1] + ' עד ' + wd[2];
         if (/^(הערה|הערות)\s*[:\-]/.test(plain)) { out.note = plain.replace(/^(הערה|הערות)\s*[:\-]\s*/, ''); return; }
-        var hasDate = new RegExp(numRe.source).test(l) || /\d{1,2}\s*[-–]\s*\d{1,2}\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)/.test(l);
-        var hasPrice = new RegExp(priceRe.source).test(l.replace(new RegExp(numRe.source, 'g'), ' '));
+        if (/^ט\.?\s?ל\.?\s?ח\.?$/.test(plain)) { info.notes.push('טעות לעולם חוזרת (ט.ל.ח)'); return; }
+        if (/להזמנות|052-?\d|05\d-?\d{7}/.test(plain) && !priceHere) return;
+        if (/^אופציה\s+נוספת/.test(plain)) { nextIsAlt = true; return; }
+        var hm = /^(?:מלון|Hotel)\s+(.+)$/i.exec(plain);
+        if (hm) { lastHotel = { name: hm[1].replace(/\s+/g, ' ').trim(), room: '', alt: nextIsAlt, price: '' }; info.hotels.push(lastHotel); nextIsAlt = false; return; }
+        if (/^חדר\s+/.test(plain) && lastHotel && !priceHere) { lastHotel.room = plain.replace(/^חדר\s+/, '').replace(/\s+/g, ' '); return; }
+        if (priceHere && lastHotel && lastHotel.alt) { lastHotel.price = plain; return; }
+        if (priceHere && lastHotel && !lastHotel.alt && lastHotel !== info.hotels[0]) { lastHotel.price = plain; return; }
+        if (/טיסות?\s+ישירות/.test(plain)) { info.direct = true; return; }
+        if (/^\d{1,2}:\d{2}$/.test(plain)) { info.times.push(plain); return; }
+        if (/^לינה/.test(plain)) { info.lodging = true; if (/א\.?\s?בוקר|ארוחת\s+בוקר/.test(plain)) info.breakfast = true; return; }
+        if (/תיק\s*גב|מזוודה/.test(plain)) {
+          var bp = /תיק\s*גב\s+עד\s+(\d+)/.exec(plain), sp = /מזוודה\s+עד\s+(\d+)/.exec(plain);
+          var parts = [];
+          if (bp) parts.push('תיק גב עד ' + bp[1] + ' ק"ג');
+          if (sp) parts.push('מזוודה עד ' + sp[1] + ' ק"ג');
+          info.bags = parts.length ? parts.join(' ו') : plain.replace(/^המחיר כולל\s*/, '');
+          return;
+        }
+        if (/באחריות|בכפוף|כפוף|אחריות/.test(plain)) { info.notes.push(plain.replace(/!+/g, '').trim()); return; }
+        var hasDate = numReG.test(l) || /\d{1,2}\s*[-–]\s*\d{1,2}\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)/.test(l);
+        numReG.lastIndex = 0;
         var isBullet = /^[-•*]/.test(l);
-        if (hasPrice && isBullet && best && l.indexOf(best.num) === -1) { out.tiers.push(plain); return; }
-        if ((hasDate || hasPrice) && plain.length < 70) return;
+        if (priceHere && isBullet && best && l.indexOf(best.num) === -1) { out.tiers.push(plain); return; }
+        if ((hasDate || priceHere) && plain.length < 70) return;
         if (/^\d+\s*(ימים|לילות)/.test(plain) && plain.length < 40) return;
-        body.push(l);
+        info.extra.push(l);
       });
-      out.desc = body.join('\n');
-      var first = body[0] || '';
-      out.cardDesc = first.length > 180 ? first.slice(0, 177).replace(/\s+\S*$/, '') + '…' : first;
+
+      // Tag: always filled
+      var all = text;
+      if (/קרוז|שייט|הפלגה/.test(all)) out.tag = 'קרוז';
+      else if (/כשר/.test(all)) out.tag = 'כשר למהדרין';
+      else if (/חול\s*המועד|סוכות|פסח|ראש\s*השנה|חנוכה|חג|חגים|שבועות|יום כיפור/.test(all)) out.tag = 'חגים';
+      else if (/סופ.?ש|סוף שבוע/.test(all)) out.tag = 'סופ"ש';
+      else if (/מבצע/.test(all)) out.tag = 'מבצע';
+      else out.tag = 'חבילת נופש';
+
+      // Marketing copy built from the detected facts
+      var ROOM_WORDS = [[/prem?i?er\s+room/ig, 'חדר פרימייר'], [/king\s+room/ig, 'חדר קינג'], [/sea\s*view/ig, 'נוף לים'], [/balcony/ig, 'מרפסת'], [/exclusive\s+access/ig, 'גישה בלעדית'], [/infeniti|infinity/ig, 'בריכת אינפיניטי']];
+      var describeRoom = function(r){
+        if (!r) return '';
+        var bits = [];
+        ROOM_WORDS.forEach(function(rw){ if (rw[0].test(r)) bits.push(rw[1]); rw[0].lastIndex = 0; });
+        return bits.length ? bits.filter(function(x, i){ return bits.indexOf(x) === i; }).join(', ') : r;
+      };
+      var included = [];
+      if (info.direct) included.push('טיסות ישירות' + (info.times.length ? ' (שעות טיסה: ' + info.times.join(' | ') + ')' : ''));
+      if (info.lodging || info.breakfast || info.hotels.length) included.push('לינה' + (info.breakfast ? ' כולל ארוחת בוקר' : ''));
+      if (info.bags) included.push(info.bags);
+      var feats = [];
+      if (info.direct) feats.push('טיסות ישירות');
+      if (info.lodging || info.hotels.length) feats.push(info.breakfast ? 'לינה וארוחת בוקר' : 'לינה');
+      if (info.bags) feats.push('מזוודה כלולה');
+      var featSentence = feats.length ? 'חבילה מסודרת ומפנקת הכוללת ' + feats.join(', ').replace(/, ([^,]*)$/, ' ו$1') + '. כל מה שצריך כדי לצאת לחופשה בראש שקט.' : '';
+      var firstExtra = info.extra[0] || '';
+      var cardParts = [];
+      if (firstExtra) cardParts.push(firstExtra);
+      if (featSentence) cardParts.push(featSentence);
+      if (!cardParts.length) cardParts.push('חופשה מסודרת ומפנקת, בליווי אישי של יפעת מהתכנון ועד החזרה הביתה.');
+      var cardDesc = cardParts.join(' ');
+      out.cardDesc = cardDesc.length > 200 ? cardDesc.slice(0, 197).replace(/\s+\S*$/, '') + '…' : cardDesc;
+
+      var d = [];
+      d.push(out.title + (info.weekdays ? ' (בימים ' + info.weekdays + ')' : '') + ': חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.');
+      if (included.length) d.push('מה כלול בחבילה:\n' + included.map(function(x){ return '• ' + x; }).join('\n'));
+      if (info.hotels.length) {
+        d.push('המלונות:\n' + info.hotels.map(function(h){
+          var room = describeRoom(h.room);
+          return '• ' + (h.alt ? 'אפשרות נוספת: ' : '') + h.name + (room ? ', ' + room : '');
+        }).join('\n'));
+      }
+      if (info.extra.length > (firstExtra ? 1 : 0) || (info.extra.length && !firstExtra)) {
+        d.push(info.extra.slice(firstExtra ? 1 : 0).join('\n'));
+      } else if (firstExtra) {
+        d.push(firstExtra);
+      }
+      d.push('רוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.');
+      out.desc = d.filter(Boolean).join('\n\n');
+
+      info.hotels.forEach(function(h){
+        if (h.price) {
+          var pr = new RegExp(priceRe.source).exec(h.price.replace(numReG, ' '));
+          numReG.lastIndex = 0;
+          if (pr) out.tiers.push(h.name + ': ' + h.price.replace(/\s+/g, ' '));
+        }
+      });
+      if (!out.note && info.notes.length) out.note = info.notes.join('. ');
       return out;
     }
     function openParseDialog(){
