@@ -1033,7 +1033,7 @@
               '<span class="pkg-price">' + escapeHtml(d.price) + '</span>' +
               '<span class="pkg-price-note">' + escapeHtml(d.priceNote) + '</span>' +
             '</span>' +
-            '<span class="pkg-dates">' + escapeHtml(d.dates) + '</span>' +
+            '<span class="pkg-dates"><bdi dir="ltr">' + escapeHtml(d.dates) + '</bdi></span>' +
           '</div>' +
           '<a href="#" class="pkg-cta deal-open-link" data-deal="' + escapeHtml(d.id) + '">לפרטים ורכישה &gt;</a>' +
         '</div>';
@@ -1059,6 +1059,7 @@
         // recomputed on every visit, so "this year" always reflects
         // today not the year the admin happened to save it in.
         if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
+        else d.dates = String(d.dates || '').replace(/\u2013/g, '-');
         DEALS[d.id] = d;
         pkgGrid.appendChild(renderPkgCard(d));
       });
@@ -1091,7 +1092,7 @@
       var body = '';
       body += '<span class="deal-modal-tag">' + escapeHtml(d.tag) + '</span>';
       body += '<h3>' + escapeHtml(d.title) + '</h3>';
-      body += '<p class="deal-modal-dates">' + escapeHtml(d.dates) + '</p>';
+      body += '<p class="deal-modal-dates"><bdi dir="ltr">' + escapeHtml(d.dates) + '</bdi></p>';
       body += '<p class="deal-modal-desc">' + escapeHtmlNl(d.desc) + '</p>';
 
       if (d.itinerary) {
@@ -1173,7 +1174,7 @@
     }
     function formatDateRange(fromIso, toIso, note){
       var range = '';
-      if (fromIso && toIso) range = formatDatePart(fromIso) + '–' + formatDatePart(toIso);
+      if (fromIso && toIso) range = formatDatePart(fromIso) + '-' + formatDatePart(toIso);
       else if (fromIso) range = formatDatePart(fromIso);
       else if (toIso) range = formatDatePart(toIso);
       if (note) range = range ? (range + ' (' + note + ')') : note;
@@ -1719,14 +1720,19 @@
     }
     function updateIeDateRangeLabel(){
       var btn = ieEl('ieDateRangeBtn');
-      if (selDateFrom && selDateTo) btn.textContent = fullDateLabel(selDateFrom) + '  –  ' + fullDateLabel(selDateTo);
-      else if (selDateFrom) btn.textContent = fullDateLabel(selDateFrom) + '  –  …';
+      if (selDateFrom && selDateTo) btn.textContent = '\u2066' + fullDateLabel(selDateFrom) + ' - ' + fullDateLabel(selDateTo) + '\u2069';
+      else if (selDateFrom) btn.textContent = '\u2066' + fullDateLabel(selDateFrom) + ' - …' + '\u2069';
       else btn.textContent = 'בחירת טווח תאריכים';
     }
     function updateIeDatesPreview(){
       var text = formatDateRange(selDateFrom, selDateTo, '');
-      if (text && selDateFrom && selDateTo) text += ' · ' + nightsLabel(nightsBetween(selDateFrom, selDateTo));
-      ieEl('ieDatesPreview').textContent = text ? ('כך זה יוצג באתר: ' + text) : '';
+      var pv = ieEl('ieDatesPreview');
+      pv.innerHTML = '';
+      if (!text) return;
+      var range = formatDateRange(selDateFrom, selDateTo, '');
+      pv.appendChild(document.createTextNode('כך זה יוצג באתר: '));
+      var b = document.createElement('bdi'); b.dir = 'ltr'; b.textContent = range; pv.appendChild(b);
+      if (selDateFrom && selDateTo) pv.appendChild(document.createTextNode(' · ' + nightsLabel(nightsBetween(selDateFrom, selDateTo))));
     }
     ieEl('ieDateRangeBtn').addEventListener('click', function(e){
       e.stopPropagation();
