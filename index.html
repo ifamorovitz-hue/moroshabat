@@ -13,7 +13,7 @@
     --paper:#ffffff;
     --ink:#0b2b27;
     --ink-soft:#0e3733;
-    --teal:#0c8479;
+    --teal:#0a7a70;
     --teal-dark:#0a6b62;
     --green:#0e3d38;
     --yellow:#ffd400;
@@ -58,10 +58,13 @@
   ul{margin:0;padding:0;list-style:none;}
   button,input,select,textarea{font-family:inherit;font-size:1rem;}
 
-  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
-    outline:2px solid var(--yellow);
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+    outline:3px solid var(--yellow);
     outline-offset:3px;
+    box-shadow:0 0 0 6px var(--ink);
   }
+  .skip-link{ position:fixed; top:-60px; inset-inline-start:12px; z-index:1000; background:var(--yellow); color:var(--yellow-ink); padding:12px 20px; border-radius:8px; font-weight:800; text-decoration:none; transition:top .15s ease; }
+  .skip-link:focus{ top:12px; }
 
   .wrap{ max-width:1240px; margin:0 auto; padding-inline:24px; }
   @media (min-width:900px){ .wrap{ padding-inline:44px; } }
@@ -123,7 +126,7 @@
   footer .logo-mark{ background:var(--ink); color:var(--yellow); box-shadow:none; }
   footer .logo-text strong{ color:var(--ink); }
   footer .logo-text strong .lg-light{ color:var(--ink); }
-  footer .logo-text .logo-tag{ color:var(--ink); opacity:.65; }
+  footer .logo-text .logo-tag{ color:#3d3800; }
   .nav-links{ display:flex; align-items:center; gap:30px; }
   .nav-links a{ text-decoration:none; color:var(--muted-on-ink); font-size:.88rem; font-weight:500; transition:color .2s ease; }
   .nav-links a:hover{ color:var(--cream); }
@@ -149,7 +152,7 @@
     width:100%; height:100%; object-fit:cover;
     filter:brightness(1.15) saturate(1.12) contrast(1.03);
   }
-  @media (prefers-reduced-motion:reduce){ .hero-video{ display:none; } }
+  @media (prefers-reduced-motion:reduce){ .hero-video{ display:none; } .hero-video-toggle{ display:none; } }
   .hero-copy{
     position:absolute; z-index:2; inset-inline:0; bottom:0; padding:0 24px 72px;
     text-align:center; display:flex; flex-direction:column; align-items:center;
@@ -171,7 +174,7 @@
   .intro{ background:var(--teal); color:var(--cream); padding-block:96px; }
   .intro-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
   .intro h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.8rem); color:var(--cream); }
-  .intro p{ margin-top:20px; color:var(--muted-on-ink); max-width:46ch; font-size:1.02rem; }
+  .intro p{ margin-top:20px; color:rgba(255,255,255,.95); max-width:46ch; font-size:1.02rem; }
   .intro p + p{ margin-top:14px; }
   .intro-photos{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:14px; aspect-ratio:1/1; }
   .intro-photos img{ width:100%; height:100%; object-fit:cover; border-radius:var(--radius); }
@@ -211,14 +214,14 @@
   .why{ background:var(--teal); color:var(--cream); padding-block:100px; }
   .why-head{ text-align:center; max-width:640px; margin:0 auto 48px; }
   .why-head h2{ color:var(--cream); font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
-  .why-head p{ margin-top:14px; color:var(--muted-on-ink); }
+  .why-head p{ margin-top:14px; color:rgba(255,255,255,.95); }
   .why-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
   @media (max-width:960px){ .why-grid{ grid-template-columns:1fr 1fr; } }
   @media (max-width:560px){ .why-grid{ grid-template-columns:1fr; } }
-  .why-card{ background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18); border-radius:var(--radius); padding:28px 24px; }
+  .why-card{ background:rgba(0,0,0,.14); border:1px solid rgba(255,255,255,.28); border-radius:var(--radius); padding:28px 24px; }
   .why-card .num{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:8px; background:var(--yellow); color:var(--yellow-ink); font-weight:800; font-size:1rem; margin-bottom:18px; }
   .why-card h3{ color:var(--cream); font-size:1.08rem; }
-  .why-card p{ margin-top:10px; color:var(--muted-on-ink); font-size:.9rem; }
+  .why-card p{ margin-top:10px; color:rgba(255,255,255,.95); font-size:.9rem; }
 
   /* ---------- Testimonials ---------- */
   .how{ background:var(--paper); padding-block:100px; }
@@ -309,6 +312,7 @@
   .sticky-bar .sb-phone{ display:flex; align-items:center; gap:20px; }
   .sticky-bar .sb-phone a{ color:var(--cream); text-decoration:none; font-weight:600; }
   .sticky-bar .btn{ padding:9px 18px; font-size:.8rem; }
+  .sticky-bar .sb-phone a.btn{ color:var(--yellow-ink); }
   @media (max-width:560px){ .sticky-bar span:first-child{ display:none; } }
 
   /* ---------- Footer (yellow band) ---------- */
@@ -413,6 +417,10 @@
   .ie-toggle-btn:has(input:checked){ border-color:#0c8479; background:#eef3f1; color:#0a6b62; }
   .ie-hint{ font-size:.8rem; color:var(--muted); margin-top:4px; }
   .ie-img-preview{ width:100%; max-width:220px; border-radius:10px; margin-top:8px; display:block; }
+  .ie-info-box{ background:#eef6f4; border-radius:12px; padding:14px 16px; margin:12px 0 4px; font-size:.86rem; color:#12302c; }
+  .ie-info-box p{ margin:0 0 8px; }
+  .ie-info-box ul{ margin:0 0 12px; padding-inline-start:20px; list-style:disc; }
+  .ie-info-box .ie-btn{ display:inline-block; text-decoration:none; }
   .ie-inline{ display:flex; align-items:center; gap:8px; }
   .ie-inline input{ flex:1; min-width:0; }
   .ie-suffix{ font-weight:700; color:#0a6b62; white-space:nowrap; }
@@ -438,6 +446,31 @@
   .ie-list-remove{ background:none; border:none; color:#c0392b; font-size:1.1rem; cursor:pointer; }
   .ie-add-row{ background:none; border:1px dashed var(--line); color:#0a6b62; font-weight:700; font-size:.82rem; padding:8px; border-radius:8px; width:100%; cursor:pointer; }
 
+  /* ---------- Accessibility widget ---------- */
+  .a11y-fab{ position:fixed; z-index:250; left:14px; bottom:88px; width:52px; height:52px; border-radius:50%; border:2px solid #fff; background:#0b2b27; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.35); }
+  .a11y-fab svg{ width:30px; height:30px; }
+  .a11y-panel{ position:fixed; z-index:251; left:14px; bottom:150px; width:min(320px,calc(100vw - 28px)); max-height:calc(100vh - 180px); overflow-y:auto; background:#fff; color:#12302c; border-radius:14px; box-shadow:0 20px 50px rgba(0,0,0,.35); padding:16px; }
+  .a11y-panel[hidden]{ display:none; }
+  .a11y-panel h2{ font-size:1.05rem; margin:0 0 12px; color:#12302c; }
+  .a11y-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .a11y-btn{ background:#eef6f4; color:#12302c; border:2px solid transparent; border-radius:10px; padding:10px 8px; font-weight:700; font-size:.85rem; cursor:pointer; text-align:center; }
+  .a11y-btn[aria-pressed="true"]{ background:#0a6b62; color:#fff; }
+  .a11y-reset{ grid-column:1/-1; background:#fff; border-color:#0a6b62; }
+  .a11y-panel a{ display:block; margin-top:12px; color:#0a6b62; font-weight:700; font-size:.88rem; }
+  .hero-video-toggle{ position:absolute; z-index:5; bottom:20px; inset-inline-start:20px; background:rgba(11,43,39,.85); color:#fff; border:1.5px solid #fff; border-radius:999px; padding:8px 16px; font-weight:700; font-size:.82rem; cursor:pointer; }
+  html.a11y-f1{ font-size:112.5%; } html.a11y-f2{ font-size:125%; } html.a11y-f3{ font-size:150%; }
+  html.a11y-gray{ filter:grayscale(1); }
+  html.a11y-links a{ text-decoration:underline !important; text-underline-offset:3px; }
+  html.a11y-font, html.a11y-font *{ font-family:Arial,"Segoe UI",sans-serif !important; letter-spacing:normal !important; }
+  html.a11y-nomotion *, html.a11y-nomotion *::before, html.a11y-nomotion *::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  html.a11y-focus *:focus{ outline:4px solid #ffd400 !important; outline-offset:3px !important; box-shadow:0 0 0 8px #000 !important; }
+  html.a11y-contrast body *:not(img):not(video):not(svg):not(path){ background-color:#000 !important; color:#fff !important; border-color:#fff !important; box-shadow:none !important; text-shadow:none !important; }
+  html.a11y-contrast body{ background:#000 !important; }
+  html.a11y-contrast a, html.a11y-contrast a *{ color:#ffff00 !important; }
+  html.a11y-contrast .btn, html.a11y-contrast button{ background-color:#ffff00 !important; color:#000 !important; }
+  html.a11y-contrast .a11y-btn[aria-pressed="true"]{ outline:3px solid #ffff00 !important; }
+  @media (max-width:560px){ .a11y-fab{ bottom:82px; } }
+
   /* ---------- Mobile: admin editing UI ---------- */
   @media (hover:none){
     body.edit-mode .edit-pencil, body.edit-mode .pkg-admin-actions{ opacity:1; }
@@ -455,6 +488,7 @@
 </style>
 </head>
 <body>
+<a class="skip-link" href="#top">דלג לתוכן הראשי</a>
 
 <div id="publicSite">
 <header class="site-nav" id="siteNav">
@@ -490,9 +524,10 @@
   </div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
   <!-- ---------- HERO ---------- -->
   <section class="hero" style="background-image:url('hero-poster.jpg');">
+    <button type="button" class="hero-video-toggle" id="heroVideoToggle" aria-pressed="false">השהיית הסרטון</button>
     <video class="hero-video" autoplay="" muted="" loop="" playsinline="" disablepictureinpicture="" disableremoteplayback="" poster="hero-poster.jpg">
       <source src="hero.mp4" type="video/mp4">
     </video>
@@ -845,10 +880,83 @@
       </a>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a></span></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a></span></span>
     </div>
   </div>
 </footer>
+
+
+<!-- ---------- Accessibility widget ---------- -->
+<button type="button" class="a11y-fab" id="a11yFab" aria-label="תפריט נגישות" aria-expanded="false" aria-controls="a11yPanel">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="4" r="2"/><path d="M4 8.5l1-1.7c3.6 1.4 10.4 1.4 14 0l1 1.7c-1.5.7-3.2 1.1-4.7 1.3v3.3l1.9 7.6-1.9.5-1.8-6.6h-1.2l-1.8 6.6-1.9-.5L9.7 13V9.8C8.2 9.6 6 9.2 4 8.5z"/></svg>
+</button>
+<div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="הגדרות נגישות" hidden>
+  <h2>נגישות</h2>
+  <div class="a11y-grid">
+    <button type="button" class="a11y-btn" id="a11yFontUp">הגדלת טקסט</button>
+    <button type="button" class="a11y-btn" id="a11yFontDown">הקטנת טקסט</button>
+    <button type="button" class="a11y-btn" data-a11y="contrast" aria-pressed="false">ניגודיות גבוהה</button>
+    <button type="button" class="a11y-btn" data-a11y="gray" aria-pressed="false">גווני אפור</button>
+    <button type="button" class="a11y-btn" data-a11y="links" aria-pressed="false">הדגשת קישורים</button>
+    <button type="button" class="a11y-btn" data-a11y="font" aria-pressed="false">פונט קריא</button>
+    <button type="button" class="a11y-btn" data-a11y="nomotion" aria-pressed="false">עצירת אנימציות</button>
+    <button type="button" class="a11y-btn" data-a11y="focus" aria-pressed="false">הדגשת מיקוד</button>
+    <button type="button" class="a11y-btn a11y-reset" id="a11yReset">איפוס הגדרות</button>
+  </div>
+  <a href="accessibility.html">הצהרת נגישות</a>
+</div>
+<script>
+(function(){
+  var KEY = 'moroshabatA11y';
+  var root = document.documentElement;
+  var state = { font: 0, contrast: false, gray: false, links: false, fontface: false, nomotion: false, focus: false };
+  var map = { contrast: 'a11y-contrast', gray: 'a11y-gray', links: 'a11y-links', font: 'a11y-font', nomotion: 'a11y-nomotion', focus: 'a11y-focus' };
+  var video = document.querySelector('.hero-video');
+  var videoBtn = document.getElementById('heroVideoToggle');
+  var fab = document.getElementById('a11yFab');
+  var panel = document.getElementById('a11yPanel');
+
+  function load(){ try { var v = JSON.parse(localStorage.getItem(KEY)); if (v) Object.assign(state, v); } catch(e){} }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+  function setVideo(paused){
+    if (!video) return;
+    if (paused) video.pause(); else { var p = video.play(); if (p && p.catch) p.catch(function(){}); }
+    videoBtn.setAttribute('aria-pressed', String(paused));
+    videoBtn.textContent = paused ? 'הפעלת הסרטון' : 'השהיית הסרטון';
+  }
+  function apply(){
+    root.classList.remove('a11y-f1', 'a11y-f2', 'a11y-f3');
+    if (state.font > 0) root.classList.add('a11y-f' + state.font);
+    Object.keys(map).forEach(function(k){
+      root.classList.toggle(map[k], !!state[k === 'font' ? 'fontface' : k]);
+      var b = panel.querySelector('[data-a11y="' + k + '"]');
+      if (b) b.setAttribute('aria-pressed', String(!!state[k === 'font' ? 'fontface' : k]));
+    });
+    if (state.nomotion) setVideo(true);
+  }
+  function open(o){
+    panel.hidden = !o;
+    fab.setAttribute('aria-expanded', String(o));
+    if (o) panel.querySelector('button').focus(); else fab.focus();
+  }
+  fab.addEventListener('click', function(){ open(panel.hidden); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !panel.hidden) open(false); });
+  document.getElementById('a11yFontUp').addEventListener('click', function(){ state.font = Math.min(3, state.font + 1); save(); apply(); });
+  document.getElementById('a11yFontDown').addEventListener('click', function(){ state.font = Math.max(0, state.font - 1); save(); apply(); });
+  panel.querySelectorAll('[data-a11y]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-a11y'); var sk = k === 'font' ? 'fontface' : k;
+      state[sk] = !state[sk]; save(); apply();
+    });
+  });
+  document.getElementById('a11yReset').addEventListener('click', function(){
+    state = { font: 0, contrast: false, gray: false, links: false, fontface: false, nomotion: false, focus: false };
+    save(); apply(); setVideo(false);
+  });
+  if (videoBtn) videoBtn.addEventListener('click', function(){ setVideo(!video.paused); });
+  load(); apply();
+})();
+</script>
 
 <div class="sticky-bar">
   <span>לתכנון אישי של הטיול הבא שלכם</span>
@@ -922,6 +1030,17 @@
   <div class="ie-modal">
     <h3>הגדרות מפתחים</h3>
     <p class="ie-hint">להגדרה ראשונית או להחלפת טוקן שפג. בוחרים שם משתמש וסיסמה למנהלת, ומדביקים GitHub Fine-grained Token עם הרשאת Contents: Read and write על הריפו moroshabat בלבד (נוצר בבעלות בעלת הריפו ב-github.com/settings/personal-access-tokens/new). הסיסמה מצפינה את הטוקן, והגרסה המוצפנת נשמרת בריפו.</p>
+    <div class="ie-info-box">
+      <p><strong>מה זה טוקן?</strong> מפתח גישה סודי שמאפשר לאתר לשמור שינויים בשם יפעת ב-GitHub. אפשר לחשוב עליו כסיסמה של האתר מול GitHub. הוא נשמר מוצפן בעזרת סיסמת הניהול.</p>
+      <p><strong>מתי צריך לחדש אותו?</strong></p>
+      <ul>
+        <li>פעם בשנה בערך, כשתוקפו פג.</li>
+        <li>כשהכניסה לניהול מפסיקה לעבוד או שמופיעה הודעת שגיאה.</li>
+        <li>כשהטוקן נמחק או הוחלף ב-GitHub.</li>
+        <li>כשצריך לאפס סיסמה שנשכחה.</li>
+      </ul>
+      <a class="ie-btn" href="token-guide.html" target="_blank" rel="noopener">פתיחת מדריך חידוש הטוקן</a>
+    </div>
     <div id="ieDevStatus"></div>
     <label>שם משתמש</label>
     <input type="text" id="ieDevUsername" autocomplete="off">
@@ -1216,14 +1335,19 @@
     function openDealModal(id){
       renderDealModal(id);
       if (dealModalOverlay) {
+        lastFocusBeforeModal = document.activeElement;
         dealModalOverlay.hidden = false;
         document.body.style.overflow = 'hidden';
+        dealModalOverlay.setAttribute('aria-label', (DEALS[id] && DEALS[id].title) || 'פרטי חבילה');
+        if (dealModalCloseBtn) dealModalCloseBtn.focus();
       }
     }
+    var lastFocusBeforeModal = null;
     function closeDealModal(){
       if (dealModalOverlay) {
         dealModalOverlay.hidden = true;
         document.body.style.overflow = '';
+        if (lastFocusBeforeModal && lastFocusBeforeModal.focus) lastFocusBeforeModal.focus();
       }
     }
 
@@ -1242,6 +1366,13 @@
     }
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && dealModalOverlay && !dealModalOverlay.hidden) closeDealModal();
+      if (e.key === 'Tab' && dealModalOverlay && !dealModalOverlay.hidden) {
+        var f = dealModalOverlay.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
     document.addEventListener('click', function(e){
       var cta = e.target.closest && e.target.closest('#dealCtaLink');

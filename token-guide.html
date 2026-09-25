@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>מדריך חידוש טוקן הגישה moroshabat</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap">
+<style>
+  :root{ --ink:#0b2b27; --teal:#0a6b62; --yellow:#ffd400; --muted:#3f5a55; --line:#dbe5e2; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Heebo',Arial,sans-serif; color:var(--ink); background:#f4f7f6; line-height:1.7; }
+  a:focus-visible,button:focus-visible{ outline:3px solid var(--yellow); outline-offset:3px; box-shadow:0 0 0 6px var(--ink); }
+  header{ background:var(--ink); padding:16px 24px; }
+  header a{ color:#fff; text-decoration:none; font-weight:800; }
+  main{ max-width:780px; margin:0 auto; padding:32px 20px 80px; }
+  h1{ font-size:2rem; margin:0 0 8px; }
+  h2{ font-size:1.4rem; margin:40px 0 6px; }
+  .lead{ color:var(--muted); font-size:1.05rem; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+  .chips span{ border:1px solid var(--line); background:#fff; border-radius:999px; padding:4px 14px; font-size:.88rem; color:var(--muted); }
+  .note{ background:#e9f1ef; border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:18px 0; color:var(--ink); }
+  .warn{ background:#fbeee8; border-color:#f0d3c6; color:#7a2f16; }
+  ol.steps{ list-style:none; margin:14px 0 0; padding:0; counter-reset:s; }
+  ol.steps > li{ counter-increment:s; position:relative; background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 68px 16px 18px; margin-bottom:12px; }
+  ol.steps > li::before{ content:counter(s); position:absolute; inset-inline-start:auto; right:16px; top:14px; width:36px; height:36px; border-radius:50%; border:2px solid var(--teal); color:var(--teal); font-weight:800; display:flex; align-items:center; justify-content:center; }
+  ol.steps h3{ margin:0 0 4px; font-size:1.08rem; }
+  ol.steps p{ margin:4px 0; color:var(--muted); }
+  .btn{ display:inline-block; background:var(--teal); color:#fff; text-decoration:none; font-weight:800; border-radius:10px; padding:10px 18px; margin:8px 0; }
+  code{ background:#eef2f1; border-radius:6px; padding:1px 8px; direction:ltr; unicode-bidi:embed; }
+  details{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 18px; margin-bottom:10px; }
+  summary{ font-weight:700; cursor:pointer; }
+  details p{ color:var(--muted); margin:8px 0 2px; }
+  @media print{ header{ display:none; } body{ background:#fff; } }
+</style>
+</head>
+<body>
+<header><a href="index.html">MOROSHABAT · חזרה לאתר</a></header>
+<main>
+  <h1>חידוש טוקן הגישה</h1>
+  <p class="lead">טוקן הגישה מאפשר לאתר לשמור שינויים בשם יפעת. כשהוא פג תוקף, הכניסה לניהול מפסיקה לעבוד, וזה המדריך ליצירת טוקן חדש והזנתו מחדש.</p>
+  <div class="chips"><span>לא דורש ידע טכני</span><span>פעם בשנה</span><span>כ-3 דקות</span></div>
+
+  <div class="note"><strong>מתי עושים את זה?</strong> פעם בשנה, או בכל פעם שמופיעה הודעת שגיאה בהתחברות לניהול. אין נזק אם עושים את זה מוקדם מדי, טוקן חדש פשוט מחליף את הישן.</div>
+
+  <h2>חלק 1: יצירת טוקן חדש ב-GitHub</h2>
+  <p class="lead">נכנסים לחשבון ה-GitHub של יפעת (בעלת הריפו) ויוצרים מפתח גישה חדש ששייך רק לאתר moroshabat.</p>
+  <ol class="steps">
+    <li><h3>פותחים את דף היצירה</h3><p>לוחצים על הכפתור, ואם מבקשים להתחבר, מתחברים עם חשבון ה-GitHub.</p><a class="btn" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">יצירת טוקן חדש</a></li>
+    <li><h3>נותנים שם לטוקן</h3><p>בשדה <code>Token name</code> כותבים שם שכולל את השנה כדי לזהות אותו בעתיד, למשל <code>moroshabat-2027</code>.</p></li>
+    <li><h3>בוחרים תוקף ארוך</h3><p>בשדה <code>Expiration</code> בוחרים את האפשרות הארוכה ביותר (בדרך כלל שנה), כדי שיישאר תקף כמה שיותר זמן.</p></li>
+    <li><h3>מגבילים לריפו של האתר בלבד</h3><p>בשדה <code>Repository access</code> בוחרים <code>Only select repositories</code>, ואז ברשימה בוחרים את <code>moroshabat</code> בלבד. כך הטוקן לא נותן גישה לשום דבר אחר בחשבון.</p></li>
+    <li><h3>נותנים הרשאת עריכה לקבצים</h3><p>ב-<code>Repository permissions</code> מחפשים את השורה <code>Contents</code> ובתפריט שלצידה בוחרים <code>Read and write</code>.</p></li>
+    <li><h3>יוצרים את הטוקן</h3><p>גוללים עד הסוף ולוחצים על הכפתור הירוק <code>Generate token</code>.</p></li>
+    <li><h3>מעתיקים אותו מיד</h3><p>הטוקן (מתחיל ב-<code>github_pat_</code>) מוצג פעם אחת בלבד. מעתיקים אותו לפני שסוגרים או עוברים לדף אחר.</p><div class="note warn">אם עזבת את הדף בלי להעתיק, מתחילים את חלק 1 מחדש. שום נזק לא נגרם.</div></li>
+  </ol>
+
+  <h2>חלק 2: עדכון הטוקן באתר</h2>
+  <p class="lead">מכניסים את הטוקן החדש כדי שיחליף את הישן.</p>
+  <ol class="steps">
+    <li><h3>גוללים לתחתית האתר</h3><p>בשורה התחתונה מופיע הקישור הקטן "הגדרות מפתחים". לוחצים עליו.</p></li>
+    <li><h3>ממלאים את הפרטים</h3><p>שם משתמש וסיסמה: אפשר להזין את אותם שם משתמש וסיסמה כמו תמיד (סיסמה של 8 תווים לפחות, עם אות גדולה באנגלית, אות קטנה באנגלית ומספר). בשדה <code>GitHub Token</code> מדביקים את הטוקן החדש שהועתק בחלק 1.</p></li>
+    <li><h3>שומרים</h3><p>לוחצים על "שמירה". הודעה ירוקה אומרת שהצליח והכניסה תקינה לשנה נוספת. הודעה אדומה אומרת שכדאי לוודא שהועתק הטוקן המלא, ולנסות שוב.</p></li>
+  </ol>
+
+  <h2>שאלות נפוצות</h2>
+  <details><summary>שכחתי להעתיק את הטוקן, מה עכשיו?</summary><p>אין בעיה. חוזרים לחלק 1 ויוצרים טוקן חדש. הטוקן הישן שנוצר בטעות פשוט לא ישמש לשום דבר.</p></details>
+  <details><summary>האם מישהו אחר יכול להשתמש בטוקן הזה?</summary><p>הוא מוגבל אך ורק לאתר moroshabat (בזכות שלב 4), והוא נשמר מוצפן. גם מי שיראה אותו לא יכול לעשות איתו כלום בלי הסיסמה של הניהול.</p></details>
+  <details><summary>משהו לא עובד או שנתקעתי</summary><p>אפשר תמיד לפנות לאוראל לעזרה.</p></details>
+</main>
+</body>
+</html>
