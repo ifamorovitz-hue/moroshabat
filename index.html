@@ -420,6 +420,21 @@
   .ie-list-item input{ flex:1; }
   .ie-list-remove{ background:none; border:none; color:#c0392b; font-size:1.1rem; cursor:pointer; }
   .ie-add-row{ background:none; border:1px dashed var(--line); color:#0a6b62; font-weight:700; font-size:.82rem; padding:8px; border-radius:8px; width:100%; cursor:pointer; }
+
+  /* ---------- Mobile: admin editing UI ---------- */
+  @media (hover:none){
+    body.edit-mode .edit-pencil, body.edit-mode .pkg-admin-actions{ opacity:1; }
+    .edit-pencil{ width:32px; height:32px; }
+    .edit-pencil svg{ width:15px; height:15px; }
+  }
+  @media (max-width:560px){
+    .edit-pencil{ top:-14px; inset-inline-end:2px; }
+    .ie-overlay{ padding:10px; align-items:flex-end; }
+    .ie-modal{ padding:20px 18px; max-height:92vh; }
+    .ie-row{ flex-direction:column; gap:0; }
+    .ie-actions{ flex-wrap:wrap; }
+    .ie-modal input[type=text], .ie-modal input[type=password], .ie-modal input[type=number], .ie-modal textarea{ font-size:16px; }
+  }
 </style>
 </head>
 <body>
