@@ -801,7 +801,6 @@
 <div class="admin-bar">
   <span><b>מצב עריכה פעיל</b> לחצו על העיפרון ליד כל טקסט, או על החבילות, כדי לערוך</span>
   <div class="admin-bar-actions">
-    <a href="admin.html">לוח ניהול מלא</a>
     <button type="button" class="secondary" id="iePreviewBtn">חזרה לתצוגה רגילה</button>
     <button type="button" id="ieLogoutBtn">יציאה</button>
   </div>
@@ -821,7 +820,6 @@
       <button type="button" class="ie-btn" id="ieLoginBtn">התחברות</button>
       <button type="button" class="ie-btn secondary" id="ieLoginCancelBtn">ביטול</button>
     </div>
-    <p class="ie-hint">להגדרה ראשונית או להחלפת טוקן, יש להשתמש ב<a href="admin.html">לוח הניהול המלא</a>.</p>
   </div>
 </div>
 
@@ -1269,7 +1267,7 @@
       return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
     }
 
-    // ---------- base64 + crypto (matches admin.html's vault format) ----------
+    // ---------- base64 + crypto (vault format) ----------
     function b64EncodeUnicode(str){
       return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(_, p1){
         return String.fromCharCode('0x' + p1);
