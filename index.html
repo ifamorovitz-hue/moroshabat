@@ -1163,6 +1163,21 @@
   </div>
 </div>
 
+<!-- ---------- Paste-to-create deal popup ---------- -->
+<div class="ie-overlay" id="ieParseOverlay" hidden>
+  <div class="ie-modal ie-modal-wide">
+    <h3>הוספת חבילה מטקסט</h3>
+    <p class="ie-hint">מדביקים כאן את כל פרטי החבילה, והמערכת תמלא את הטופס לבד. כדאי שהטקסט יכלול: כותרת בשורה הראשונה, תאריכים (למשל 10.02.27-17.02.27), מחיר עם מטבע ולאדם או לזוג, ותיאור. אחר כך אפשר לבדוק ולערוך כל שדה, ולהוסיף תמונה.</p>
+    <div id="ieParseStatus"></div>
+    <textarea id="ieParseText" style="min-height:220px;" placeholder="הפלגה קסומה לבהאמס&#10;שייט על ה-Norwegian Joy מיאמי, האי הפרטי ונאסאו&#10;31.01.27-05.02.27&#10;החל מ-$477 לאדם"></textarea>
+    <div class="ie-actions">
+      <button type="button" class="ie-btn" id="ieParseGoBtn">אישור</button>
+      <button type="button" class="ie-btn secondary" id="ieParseManualBtn">מילוי ידני</button>
+      <button type="button" class="ie-btn secondary" id="ieParseCancelBtn">ביטול</button>
+    </div>
+  </div>
+</div>
+
 <!-- ---------- Deal editor popup ---------- -->
 <div class="ie-overlay" id="ieDealOverlay" hidden>
   <div class="ie-modal ie-modal-wide">
@@ -2210,7 +2225,113 @@
     ieEl('ieAddTierRow').addEventListener('click', function(){ ieTiersList.push(''); renderIeTiers(); });
 
     // ---------- Deal editor open/save/delete ----------
-    function openDealEditor(dealId){
+    // ---------- Paste-to-create: heuristic parser ----------
+    var HEB_MONTH_NAMES = { 'ינואר':1,'פברואר':2,'מרץ':3,'מרס':3,'אפריל':4,'מאי':5,'יוני':6,'יולי':7,'אוגוסט':8,'ספטמבר':9,'אוקטובר':10,'נובמבר':11,'דצמבר':12 };
+    var CUR_WORDS = { '₪':'₪', 'שקל':'₪', 'שקלים':'₪', 'ש"ח':'₪', 'שח':'₪', '$':'$', 'דולר':'$', '€':'€', 'אירו':'€', 'יורו':'€' };
+    function guessYear(m, d){
+      var y = calToday.getFullYear();
+      return new Date(y, m - 1, d) < calToday ? y + 1 : y;
+    }
+    function toIsoParts(d, m, y){
+      d = +d; m = +m;
+      if (d < 1 || d > 31 || m < 1 || m > 12) return null;
+      if (y == null) y = guessYear(m, d); else { y = +y; if (y < 100) y += 2000; }
+      return { d: d, m: m, y: y };
+    }
+    function parseDealText(text){
+      var out = { title: '', tag: '', dateFrom: '', dateTo: '', price: '', currency: '', priceNote: '', cardDesc: '', desc: '', note: '', tiers: [] };
+      var lines = text.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
+      if (!lines.length) return out;
+
+      // Dates: numeric d.m[.y] first, else "10-17 בפברואר [2027]"
+      var found = [];
+      var numRe = /(\d{1,2})[.\/](\d{1,2})(?:[.\/](\d{2,4}))?/g, m;
+      while ((m = numRe.exec(text)) !== null) { var p = toIsoParts(m[1], m[2], m[3]); if (p) found.push(p); }
+      if (found.length < 2) {
+        var hebRe = /(\d{1,2})\s*[-–]\s*(\d{1,2})\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)(?:\s+(\d{2,4}))?/;
+        var h = hebRe.exec(text);
+        if (h) {
+          var mo = HEB_MONTH_NAMES[h[3]];
+          found = [toIsoParts(h[1], mo, h[4]), toIsoParts(h[2], mo, h[4])].filter(Boolean);
+        }
+      }
+      if (found.length >= 2) {
+        // A year written on only one side applies to both sides.
+        var a = found[0], b = found[1];
+        var iso = function(x){ return x.y + '-' + pad2(x.m) + '-' + pad2(x.d); };
+        if (iso(b) < iso(a) && b.y === a.y) b.y += 1;
+        out.dateFrom = iso(a); out.dateTo = iso(b);
+      }
+
+      // Price: look at text with date-like numbers removed
+      var noDates = text.replace(numRe, ' ');
+      var priceRe = /(₪|\$|€)\s*([\d,]+(?:\.\d+)?)|([\d,]+(?:\.\d+)?)\s*(₪|\$|€|שקלים|שקל|ש"ח|שח|דולר|אירו|יורו)/g;
+      var pm, best = null;
+      while ((pm = priceRe.exec(noDates)) !== null) {
+        var num = (pm[2] || pm[3]).replace(/,/g, '');
+        var cur = CUR_WORDS[pm[1] || pm[4]];
+        var before = noDates.slice(Math.max(0, pm.index - 8), pm.index);
+        var cand = { num: num, cur: cur, line: noDates.slice(noDates.lastIndexOf('\n', pm.index) + 1, noDates.indexOf('\n', pm.index) === -1 ? undefined : noDates.indexOf('\n', pm.index)), fromWord: /החל\s*מ/.test(before) };
+        if (!best || (cand.fromWord && !best.fromWord)) best = cand;
+      }
+      if (best) {
+        out.price = best.num; out.currency = best.cur;
+        var scope = best.line || '';
+        if (/לזוג/.test(scope)) out.priceNote = 'לזוג';
+        else if (/לאדם|לנפש|למבוגר/.test(scope)) out.priceNote = 'לאדם';
+      }
+      if (!out.priceNote) { if (/לזוג/.test(text)) out.priceNote = 'לזוג'; else if (/לאדם|לנפש|למבוגר/.test(text)) out.priceNote = 'לאדם'; }
+
+      // Tag
+      if (/קרוז|שייט|הפלגה/.test(text)) out.tag = 'קרוז';
+      else if (/כשר/.test(text)) out.tag = 'כשר למהדרין';
+      else if (/סופ.?ש|סוף שבוע/.test(text)) out.tag = 'סופ"ש';
+      else if (/מבצע/.test(text)) out.tag = 'מבצע';
+
+      // Title, note, tiers, description
+      out.title = lines[0].replace(/^(כותרת|שם החבילה|שם)\s*[:\-]\s*/, '').replace(/[*#]+/g, '').trim();
+      var body = [];
+      lines.slice(1).forEach(function(l){
+        var plain = l.replace(/^[-•*\s]+/, '');
+        if (/^(הערה|הערות)\s*[:\-]/.test(plain)) { out.note = plain.replace(/^(הערה|הערות)\s*[:\-]\s*/, ''); return; }
+        var hasDate = new RegExp(numRe.source).test(l) || /\d{1,2}\s*[-–]\s*\d{1,2}\s*ב?(ינואר|פברואר|מרץ|מרס|אפריל|מאי|יוני|יולי|אוגוסט|ספטמבר|אוקטובר|נובמבר|דצמבר)/.test(l);
+        var hasPrice = new RegExp(priceRe.source).test(l.replace(new RegExp(numRe.source, 'g'), ' '));
+        var isBullet = /^[-•*]/.test(l);
+        if (hasPrice && isBullet && best && l.indexOf(best.num) === -1) { out.tiers.push(plain); return; }
+        if ((hasDate || hasPrice) && plain.length < 70) return;
+        if (/^\d+\s*(ימים|לילות)/.test(plain) && plain.length < 40) return;
+        body.push(l);
+      });
+      out.desc = body.join('\n');
+      var first = body[0] || '';
+      out.cardDesc = first.length > 180 ? first.slice(0, 177).replace(/\s+\S*$/, '') + '…' : first;
+      return out;
+    }
+    function openParseDialog(){
+      ieEl('ieParseText').value = '';
+      ieShowStatus('ieParseStatus', '', '');
+      ieEl('ieParseOverlay').hidden = false;
+      ieEl('ieParseText').focus();
+    }
+    ieEl('ieParseCancelBtn').addEventListener('click', function(){ ieEl('ieParseOverlay').hidden = true; });
+    ieEl('ieParseManualBtn').addEventListener('click', function(){ ieEl('ieParseOverlay').hidden = true; openDealEditor(null); });
+    ieEl('ieParseGoBtn').addEventListener('click', function(){
+      var text = ieEl('ieParseText').value.trim();
+      if (!text) { ieShowStatus('ieParseStatus', 'error', 'יש להדביק את פרטי החבילה.'); return; }
+      var r = parseDealText(text);
+      ieEl('ieParseOverlay').hidden = true;
+      var prefill = {
+        title: r.title, tag: r.tag, dateFrom: r.dateFrom, dateTo: r.dateTo,
+        price: r.price ? formatPrice(r.price, r.currency) : '', priceNote: r.priceNote,
+        cardDesc: r.cardDesc, desc: r.desc, note: r.note, priceTiers: r.tiers
+      };
+      openDealEditor(null, prefill);
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && !ieEl('ieParseOverlay').hidden) ieEl('ieParseOverlay').hidden = true;
+    });
+
+    function openDealEditor(dealId, prefill){
       editingDealId = dealId;
       pendingImageFile = null;
       ieShowStatus('ieDealStatus', '', '');
@@ -2220,6 +2341,7 @@
         tag: '', title: '', image: '', imageAlt: '', meta: '', cardDesc: '', price: '', priceNote: '',
         dates: '', dateFrom: '', dateTo: '', dateNote: '', desc: '', note: '', priceTiers: []
       };
+      if (prefill && !dealId) Object.keys(prefill).forEach(function(k){ if (prefill[k]) d[k] = prefill[k]; });
       ieEl('ieCalPopover').hidden = true;
       ieEl('ieDealTitle').textContent = dealId ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
       ieEl('ie_title').value = d.title || '';
@@ -2243,8 +2365,9 @@
       renderIeTiers();
       ieEl('ieDealDeleteBtn').style.display = dealId ? '' : 'none';
       ieEl('ieDealOverlay').hidden = false;
+      if (prefill && !dealId) ieShowStatus('ieDealStatus', 'info', 'הטופס מולא אוטומטית מהטקסט. כדאי לעבור על כל שדה, ולהוסיף תמונה לפני השמירה.');
     }
-    ieEl('ieAddDealBtn').addEventListener('click', function(){ openDealEditor(null); });
+    ieEl('ieAddDealBtn').addEventListener('click', openParseDialog);
     document.addEventListener('click', function(e){
       var editBtn = e.target.closest && e.target.closest('[data-edit-deal]');
       if (editBtn) { e.preventDefault(); openDealEditor(editBtn.getAttribute('data-edit-deal')); }
