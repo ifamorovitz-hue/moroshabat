@@ -344,6 +344,8 @@
   .form-toggle input:checked + span{ background:var(--yellow); border-color:var(--yellow); color:var(--yellow-ink); }
   .form-toggle input:focus-visible + span{ outline:3px solid var(--yellow); outline-offset:3px; box-shadow:0 0 0 6px var(--ink); }
   .form-date-btn{ width:100%; text-align:right; background:rgba(255,255,255,.06); border:1px solid var(--line-on-ink); color:var(--cream); padding:12px 14px; border-radius:8px; font-family:inherit; font-size:1rem; cursor:pointer; }
+  #fcMonthPick{ width:100%; background:rgba(255,255,255,.06); border:1px solid var(--line-on-ink); color:var(--cream); padding:12px 14px; border-radius:8px; font-family:inherit; font-size:1rem; }
+  #fcMonthPick option{ color:var(--ink); }
   .form-date-btn.placeholder{ color:rgba(255,255,255,.6); }
   .fc-cal{ margin-top:10px; color:var(--ink); }
   .fc-cal *{ color:inherit; }
@@ -976,7 +978,7 @@
           <legend>מתי טסים?</legend>
           <div class="form-toggle">
             <label><input type="radio" name="dateMode" value="exact" checked><span>תאריכים מדויקים</span></label>
-            <label><input type="radio" name="dateMode" value="month"><span>עוד לא בטוחים, רק חודש</span></label>
+            <label><input type="radio" name="dateMode" value="month"><span>גמישים, חודש מועדף</span></label>
           </div>
           <button type="button" class="form-date-btn" id="fcDateBtn" aria-haspopup="dialog" aria-expanded="false">בחרו תאריכים</button>
           <div class="ie-cal-popover fc-cal" id="fcCalPopover" hidden>
@@ -992,6 +994,7 @@
             <div class="ie-cal-grid" id="fcCalGrid"></div>
             <p class="fc-hint" id="fcHint"></p>
           </div>
+          <select id="fcMonthPick" aria-label="חודש מועדף" hidden></select>
           <p class="form-error" id="dateError" role="alert" hidden>יש לבחור תאריכים.</p>
         </fieldset>
         <div class="form-two">
@@ -1475,7 +1478,7 @@
           e.preventDefault();
           fc.err.textContent = form.dateMode.value === 'month' ? 'יש לבחור חודש.' : 'יש לבחור תאריך יציאה ותאריך חזרה.';
           fc.err.hidden = false;
-          fc.btn.focus();
+          (form.dateMode.value === 'month' ? document.getElementById('fcMonthPick') : fc.btn).focus();
           return;
         }
 
@@ -1486,7 +1489,7 @@
         var travelers = (form.travelers.value || '').trim();
         var budget = (form.budget.value || '').trim();
         var dateLine = form.dateMode.value === 'month'
-          ? 'חודש משוער: ' + fc.months[fc.month.m] + ' ' + fc.month.y
+          ? 'חודש מועדף: ' + fc.months[fc.month.m] + ' ' + fc.month.y
           : 'תאריכים: ' + fc.fmt(fc.from) + ' - ' + fc.fmt(fc.to);
 
         // Build the WhatsApp message and set the href synchronously, right
@@ -1520,6 +1523,20 @@
       var fcGrid = document.getElementById('fcCalGrid'), fcErr = document.getElementById('dateError'), fcHint = document.getElementById('fcHint');
       function fcIso(y, m, d){ return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0'); }
       function fcFmt(iso){ var b = iso.split('-'); return b[2] + '.' + b[1] + '.' + b[0].slice(-2); }
+      var monthPick = document.getElementById('fcMonthPick');
+      (function(){
+        var ph = document.createElement('option'); ph.value = ''; ph.textContent = 'בחרו חודש מועדף'; monthPick.appendChild(ph);
+        for (var k = 0; k < 18; k++) {
+          var dt = new Date(fcToday.getFullYear(), fcToday.getMonth() + k, 1), o = document.createElement('option');
+          o.value = dt.getFullYear() + '-' + dt.getMonth(); o.textContent = FC_MONTHS[dt.getMonth()] + ' ' + dt.getFullYear();
+          monthPick.appendChild(o);
+        }
+      })();
+      monthPick.addEventListener('change', function(){
+        fcErr.hidden = true;
+        if (!this.value) { fcMonth = null; return; }
+        var b = this.value.split('-'); fcMonth = { y: +b[0], m: +b[1] };
+      });
       function fcMode(){ return form.dateMode.value === 'month' ? 'month' : 'exact'; }
       function fcUpdateBtn(){
         var txt = 'בחרו תאריכים';
@@ -1590,6 +1607,8 @@
       document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !fcPop.hidden) { fcClose(); fcBtn.focus(); } });
       function syncDateMode(){
         fcFrom = fcTo = null; fcMonth = null; fcErr.hidden = true; fcClose(); fcUpdateBtn();
+        var isMonth = fcMode() === 'month';
+        monthPick.hidden = !isMonth; fcBtn.hidden = isMonth; monthPick.value = '';
       }
       form.querySelectorAll('input[name="dateMode"]').forEach(function(r){ r.addEventListener('change', syncDateMode); });
       // Budget: choosing per person / per couple is required once an amount is typed
