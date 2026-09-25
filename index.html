@@ -2387,6 +2387,58 @@
       if (!out.note && info.notes.length) out.note = info.notes.join('. ');
       return out;
     }
+    // ---------- Auto destination photo (Openverse, CC0 / public domain only) ----------
+    var DEST_QUERIES = [["אתונה","Athens Greece"],["סנטוריני","Santorini"],["כרתים","Crete Greece"],["רודוס","Rhodes Greece"],["יוון","Greece islands"],["דובאי","Dubai skyline"],["אבו דאבי","Abu Dhabi"],["רומא","Rome Italy"],["ונציה","Venice Italy"],["פירנצה","Florence Italy"],["מילאנו","Milan"],["נאפולי","Naples Italy"],["סיציליה","Sicily"],["איטליה","Italy landscape"],["ברצלונה","Barcelona"],["מדריד","Madrid"],["מיורקה","Mallorca"],["ספרד","Spain"],["פריז","Paris"],["לונדון","London"],["אמסטרדם","Amsterdam"],["ברלין","Berlin"],["פראג","Prague"],["בודפשט","Budapest"],["וינה","Vienna Austria"],["זלצבורג","Salzburg"],["שוויץ","Switzerland Alps"],["קפריסין","Cyprus"],["איסטנבול","Istanbul"],["אנטליה","Antalya"],["טורקיה","Turkey"],["באקו","Baku Azerbaijan"],["טביליסי","Tbilisi Georgia"],["גאורגיה","Georgia Caucasus"],["ארמניה","Armenia"],["מלדיביים","Maldives"],["סיישל","Seychelles"],["מאוריציוס","Mauritius"],["פוקט","Phuket Thailand"],["בנגקוק","Bangkok"],["תאילנד","Thailand beach"],["באלי","Bali"],["יפן","Japan"],["טוקיו","Tokyo"],["סינגפור","Singapore"],["וייטנאם","Vietnam"],["הודו","India"],["ניו יורק","New York City"],["מיאמי","Miami"],["קנקון","Cancun"],["בהאמס","Bahamas"],["קריביים","Caribbean beach"],["ליסבון","Lisbon"],["פורטוגל","Portugal"],["מרוקו","Morocco"],["שארם","Sharm el Sheikh"],["מצרים","Egypt"],["פטרה","Petra Jordan"],["ירדן","Jordan"],["דוברובניק","Dubrovnik"],["קרואטיה","Croatia"],["מונטנגרו","Montenegro"],["אלבניה","Albania"],["קרקוב","Krakow"],["פולין","Poland"],["רומניה","Romania"],["בולגריה","Bulgaria"],["נורבגיה","Norway fjord"],["איסלנד","Iceland"],["קופנהגן","Copenhagen"],["אירלנד","Ireland"],["סקי","ski resort snow"],["אילת","Eilat"]];
+    function destinationQuery(title, text, tag){
+      var hays = [title, text];
+      for (var h = 0; h < hays.length; h++) {
+        for (var i = 0; i < DEST_QUERIES.length; i++) if (hays[h].indexOf(DEST_QUERIES[i][0]) >= 0) return DEST_QUERIES[i][1];
+      }
+      var low = text.toLowerCase();
+      for (var j = 0; j < DEST_QUERIES.length; j++) { if (low.indexOf(DEST_QUERIES[j][1].split(' ')[0].toLowerCase()) >= 0) return DEST_QUERIES[j][1]; }
+      if (tag === 'קרוז') return 'cruise ship ocean';
+      return 'tropical beach resort';
+    }
+    function findDestinationImage(query){
+      var base = 'https://api.openverse.org/v1/images/?license=cc0,pdm&category=photograph&page_size=15&q=' + encodeURIComponent(query);
+      var tries = [base + '&aspect_ratio=wide&size=large', base + '&aspect_ratio=wide', base];
+      var bad = /map|flag|logo|drawing|illustration|painting|poster|vector|icon|sketch|engraving|stamp/i;
+      var chain = Promise.resolve(null);
+      tries.forEach(function(url){
+        chain = chain.then(function(found){
+          if (found) return found;
+          return fetch(url).then(function(r){ return r.json(); }).then(function(d){
+            var list = (d.results || []).filter(function(x){ return x.width >= 1000 && !bad.test(x.title || ''); });
+            return list[0] || null;
+          }).catch(function(){ return null; });
+        });
+      });
+      return chain;
+    }
+    function downloadAsFile(item){
+      return fetch(item.url).then(function(r){ if (!r.ok) throw new Error('x'); return r.blob(); })
+        .catch(function(){ return fetch(item.thumbnail).then(function(r){ return r.blob(); }); })
+        .then(function(blob){ return resizeImage(new File([blob], 'destination.jpg', { type: blob.type || 'image/jpeg' }), 1600); });
+    }
+    var autoImageToken = 0;
+    function autoPickImage(title, text, tag){
+      var token = ++autoImageToken;
+      ieShowStatus('ieDealStatus', 'info', 'הטופס מולא אוטומטית מהטקסט. מחפש תמונה מתאימה ליעד…');
+      findDestinationImage(destinationQuery(title, text, tag)).then(function(item){
+        if (!item) throw new Error('none');
+        return downloadAsFile(item);
+      }).then(function(file){
+        if (token !== autoImageToken || ieEl('ieDealOverlay').hidden || pendingImageFile) return;
+        pendingImageFile = file;
+        var reader = new FileReader();
+        reader.onload = function(){ ieEl('ie_imagePreview').src = reader.result; ieEl('ie_imagePreview').hidden = false; };
+        reader.readAsDataURL(file);
+        ieShowStatus('ieDealStatus', 'ok', 'נבחרה אוטומטית תמונה מתאימה ליעד (ללא זכויות יוצרים). אפשר להחליף אותה בכל רגע. כדאי לעבור על שאר השדות לפני השמירה.');
+      }).catch(function(){
+        if (token === autoImageToken) ieShowStatus('ieDealStatus', 'error', 'הטופס מולא מהטקסט, אבל לא נמצאה תמונה אוטומטית. יש לבחור תמונה ידנית.');
+      });
+    }
+
     function openParseDialog(){
       ieEl('ieParseText').value = '';
       ieShowStatus('ieParseStatus', '', '');
@@ -2406,6 +2458,7 @@
         cardDesc: r.cardDesc, desc: r.desc, note: r.note, priceTiers: r.tiers
       };
       openDealEditor(null, prefill);
+      autoPickImage(r.title, text, r.tag);
     });
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && !ieEl('ieParseOverlay').hidden) ieEl('ieParseOverlay').hidden = true;
@@ -2445,7 +2498,6 @@
       renderIeTiers();
       ieEl('ieDealDeleteBtn').style.display = dealId ? '' : 'none';
       ieEl('ieDealOverlay').hidden = false;
-      if (prefill && !dealId) ieShowStatus('ieDealStatus', 'info', 'הטופס מולא אוטומטית מהטקסט. כדאי לעבור על כל שדה, ולהוסיף תמונה לפני השמירה.');
     }
     ieEl('ieAddDealBtn').addEventListener('click', openParseDialog);
     document.addEventListener('click', function(e){
