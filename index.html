@@ -2065,7 +2065,10 @@
 
       imageStep.then(function(){
         var list = dealsCache.data.slice();
-        if (!existing) { d.order = 1; list.forEach(function(x){ x.order = (x.order || 0) + 1; }); }
+        if (!existing) {
+          d.order = 1;
+          list.slice().sort(function(a, b){ return (a.order || 0) - (b.order || 0); }).forEach(function(x, i){ x.order = i + 2; });
+        }
         if (existing) {
           var idx = list.findIndex(function(x){ return x.id === existing.id; });
           list[idx] = d;
