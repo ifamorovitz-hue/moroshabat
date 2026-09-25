@@ -1350,7 +1350,7 @@
         // recomputed on every visit, so "this year" always reflects
         // today not the year the admin happened to save it in.
         if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
-        else d.dates = String(d.dates || '').replace(/\u2013/g, '-');
+        else d.dates = String(d.dates || '').replace(/\u2013/g, '-').replace(/\//g, '.');
         DEALS[d.id] = d;
         pkgGrid.appendChild(renderPkgCard(d));
       });
@@ -1473,7 +1473,7 @@
       var bits = iso.split('-');
       var y = parseInt(bits[0], 10), m = bits[1], day = bits[2];
       var thisYear = new Date().getFullYear();
-      return y === thisYear ? (day + '/' + m) : (day + '/' + m + '/' + String(y).slice(-2));
+      return y === thisYear ? (day + '.' + m) : (day + '.' + m + '.' + String(y).slice(-2));
     }
     function formatDateRange(fromIso, toIso, note){
       var range = '';
@@ -1592,7 +1592,7 @@
     }
     function fullDateLabel(iso){
       var d = parseIsoDate(iso);
-      return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+      return pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + '.' + d.getFullYear();
     }
 
     // ---------- base64 + crypto (vault format) ----------
