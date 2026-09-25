@@ -63,6 +63,7 @@
     outline-offset:3px;
     box-shadow:0 0 0 6px var(--ink);
   }
+  #contactForm{ scroll-margin-top:110px; }
   .skip-link{ position:fixed; top:-60px; inset-inline-start:12px; z-index:1000; background:var(--yellow); color:var(--yellow-ink); padding:12px 20px; border-radius:8px; font-weight:800; text-decoration:none; transition:top .15s ease; }
   .skip-link:focus{ top:12px; }
 
@@ -570,7 +571,7 @@
     <div class="hero-copy">
       <h1 id="c-heroTitle">בחרו את החופשה הבאה שלכם</h1>
       <div class="hero-actions">
-        <a href="#contact" class="btn">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>
+        <a href="#contactForm" class="btn">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>
       </div>
       <ul class="trust-row">
         <li id="c-trust1">ליווי אישי</li>
@@ -875,7 +876,7 @@
     <img src="pkg-pool.jpg" alt="יעד נופש">
     <div class="cta-band-copy">
       <h2>מוכנים להזמין את<br>הטיול הבא שלכם?</h2>
-      <a href="#contact" class="btn">ספרו לי על החופשה שלכם <span class="btn-arrow">←</span></a>
+      <a href="#contactForm" class="btn">ספרו לי על החופשה שלכם <span class="btn-arrow">←</span></a>
     </div>
   </section>
 
@@ -1420,7 +1421,7 @@
         }).join('') + '</div>';
       }
       if (d.note) body += '<p class="deal-note">' + escapeHtmlNl(d.note) + '</p>';
-      body += '<a href="#contact" class="btn" id="dealCtaLink">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>';
+      body += '<a href="#contactForm" class="btn" id="dealCtaLink">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>';
 
       dealModalImg.src = d.image;
       dealModalImg.alt = d.title;
@@ -1446,6 +1447,10 @@
       }
     }
 
+    document.addEventListener('click', function(e){
+      var toForm = e.target.closest && e.target.closest('a[href="#contactForm"]');
+      if (toForm) setTimeout(function(){ var n = document.getElementById('name-input'); if (n) n.focus({ preventScroll: true }); }, 500);
+    });
     document.addEventListener('click', function(e){
       var link = e.target.closest && e.target.closest('.deal-open-link');
       if (link) {
