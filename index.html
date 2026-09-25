@@ -508,6 +508,20 @@
   .ie-list-remove{ background:none; border:none; color:#c0392b; font-size:1.1rem; cursor:pointer; }
   .ie-add-row{ background:none; border:1px dashed var(--line); color:#24636c; font-weight:700; font-size:.82rem; padding:8px; border-radius:8px; width:100%; cursor:pointer; }
 
+  /* ---------- eSIMo coupon popup ---------- */
+  .promo-overlay{ position:fixed; inset:0; z-index:400; background:rgba(22,60,67,.6); display:flex; align-items:center; justify-content:center; padding:20px; }
+  .promo-overlay[hidden]{ display:none; }
+  .promo-card{ position:relative; background:var(--paper); color:var(--text); border-radius:18px; max-width:440px; width:100%; padding:34px 30px 26px; text-align:center; box-shadow:0 30px 70px -20px rgba(0,0,0,.5); max-height:92vh; overflow-y:auto; }
+  .promo-close{ position:absolute; top:12px; inset-inline-start:12px; width:36px; height:36px; border-radius:50%; border:0; background:var(--mint); color:var(--ink); font-size:1.1rem; cursor:pointer; }
+  .promo-emoji{ font-size:2.4rem; line-height:1; margin-bottom:10px; }
+  .promo-card h2{ font-size:1.35rem; color:var(--ink); line-height:1.35; }
+  .promo-card p{ margin:12px 0 0; color:var(--muted); font-size:.98rem; }
+  .promo-code{ display:flex; align-items:center; justify-content:center; gap:10px; margin:20px 0 6px; padding:12px 14px; border:2px dashed var(--teal); border-radius:12px; background:#fff; }
+  .promo-code strong{ font-size:1.45rem; letter-spacing:.14em; color:var(--ink); direction:ltr; }
+  .promo-copy{ border:0; background:var(--teal-dark); color:#fff; font-weight:700; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:.85rem; }
+  .promo-cta{ display:block; margin-top:16px; background:var(--yellow); color:var(--yellow-ink); font-weight:800; text-decoration:none; border-radius:999px; padding:14px 20px; }
+  .promo-skip{ margin-top:12px; background:none; border:0; color:var(--muted); text-decoration:underline; cursor:pointer; font-size:.9rem; }
+
   /* ---------- Accessibility widget ---------- */
   .a11y-fab{ position:fixed; z-index:250; left:14px; bottom:88px; width:52px; height:52px; border-radius:50%; border:2px solid #fff; background:#163c43; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.35); }
   .a11y-fab svg{ width:30px; height:30px; }
@@ -1034,6 +1048,61 @@
   </div>
 </footer>
 
+
+<!-- ---------- eSIMo coupon popup ---------- -->
+<div class="promo-overlay" id="promoOverlay" role="dialog" aria-modal="true" aria-labelledby="promoTitle" hidden>
+  <div class="promo-card">
+    <button type="button" class="promo-close" id="promoClose" aria-label="סגירה">✕</button>
+    <div class="promo-emoji" aria-hidden="true">😃</div>
+    <h2 id="promoTitle">מעולם לא היה כל כך משתלם וקל לגלוש באינטרנט בחו"ל!</h2>
+    <p>קבלו ממני קופון הנחה של <bdi dir="ltr">$2.00</bdi> לרכישה הראשונה באפליקציית eSIMo. השתמשו בקוד הזה בזמן התשלום. בשביל זה יש חברים!</p>
+    <div class="promo-code"><strong id="promoCode">IFAM556</strong><button type="button" class="promo-copy" id="promoCopy">העתקת הקוד</button></div>
+    <a class="promo-cta" id="promoCta" href="https://esimo.sng.link/Dfwtk/7kw2/zyec" target="_blank" rel="noopener sponsored">לקבלת ההנחה באפליקציית eSIMo</a>
+    <button type="button" class="promo-skip" id="promoSkip">אולי בפעם אחרת</button>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('promoOverlay');
+  var seen = false;
+  try { seen = sessionStorage.getItem('moroshabatPromoSeen') === '1' || !!localStorage.getItem('moroshabatMode'); } catch(e){}
+  if (seen) return;
+  var lastFocus = null;
+  function close(){
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+    try { sessionStorage.setItem('moroshabatPromoSeen', '1'); } catch(e){}
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function open(){
+    lastFocus = document.activeElement;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.getElementById('promoCta').focus();
+  }
+  document.getElementById('promoClose').addEventListener('click', close);
+  document.getElementById('promoSkip').addEventListener('click', close);
+  document.getElementById('promoCta').addEventListener('click', function(){ try { sessionStorage.setItem('moroshabatPromoSeen', '1'); } catch(e){} });
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+  document.getElementById('promoCopy').addEventListener('click', function(){
+    var btn = this, code = document.getElementById('promoCode').textContent;
+    var done = function(){ btn.textContent = 'הועתק!'; setTimeout(function(){ btn.textContent = 'העתקת הקוד'; }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
+    else done();
+  });
+  document.addEventListener('keydown', function(e){
+    if (overlay.hidden) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'Tab') {
+      var f = overlay.querySelectorAll('a[href], button:not([disabled])');
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  setTimeout(open, 700);
+})();
+</script>
 
 <!-- ---------- Accessibility widget ---------- -->
 <button type="button" class="a11y-fab" id="a11yFab" aria-label="תפריט נגישות" aria-expanded="false" aria-controls="a11yPanel">
