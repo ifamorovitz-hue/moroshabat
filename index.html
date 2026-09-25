@@ -405,11 +405,12 @@
   .footer-grid strong{ display:block; font-size:1.12rem; font-weight:800; }
   .footer-grid a{ text-decoration:none; color:var(--yellow-ink); }
   .social-icons{ display:flex; gap:12px; justify-content:center; }
-  .social-icons a{
+  .social-icons a, .social-icons button{
+    border:0; padding:0; cursor:pointer;
     width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--yellow);
     display:flex; align-items:center; justify-content:center; transition:transform .2s ease;
   }
-  .social-icons a:hover{ transform:translateY(-3px); }
+  .social-icons a:hover, .social-icons button:hover{ transform:translateY(-3px); }
   .social-icons svg{ width:18px; height:18px; }
   .footer-bottom{ margin-top:44px; padding-top:20px; border-top:1px solid rgba(36,29,0,.18); display:flex; justify-content:center; flex-wrap:wrap; gap:10px; font-size:.78rem; opacity:.75; }
   @media (max-width:700px){ .footer-grid{ grid-template-columns:1fr; gap:26px; } }
@@ -1068,6 +1069,9 @@
       <a href="https://wa.me/+972528403104?text=%D7%90%D7%94%D7%9C%D7%9F" target="_blank" rel="noopener" aria-label="וואטסאפ" id="c-linkWaDirect3">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5a8.4 8.4 0 0 0-7.2 12.7L3.5 20.5l4.4-1.3A8.4 8.4 0 1 0 12 3.5zm4.9 11.9c-.2.6-1.2 1.1-1.7 1.2-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.8-4.5-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.7 1.7.8 1.8.1.2.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.4.2.5.3.1.2.1.6-.1 1.2z"/></svg>
       </a>
+      <button type="button" class="social-share" id="siteShareBtn" aria-label="שיתוף האתר">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+      </button>
     </div>
     <div class="footer-bottom">
       <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a> · <a href="#" id="footerLogoutLink" style="color:inherit;">התנתקות</a></span></span>
@@ -1138,8 +1142,9 @@
     overlay.hidden = true;
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  function openMenu(d, url, text){
+  function openMenu(d, url, text, heading){
     current = { d: d, url: url, text: text };
+    document.getElementById('shareTitle').textContent = heading || 'שיתוף החבילה';
     var enc = encodeURIComponent;
     document.getElementById('shareSub').textContent = d.title;
     document.getElementById('shWa').href = 'https://wa.me/?text=' + enc(text + '\n' + url);
@@ -1163,6 +1168,14 @@
       navigator.share({ title: d.title, text: text, url: url }).catch(function(err){ if (err && err.name !== 'AbortError') openMenu(d, url, text); });
     } else openMenu(d, url, text);
   }, true);
+  document.getElementById('siteShareBtn').addEventListener('click', function(){
+    var d = { title: 'moroshabat יפעת מורוביץ נסיעות' };
+    var url = location.origin + location.pathname;
+    var text = 'moroshabat יפעת מורוביץ נסיעות: חופשות בהתאמה אישית';
+    if (navigator.share) {
+      navigator.share({ title: d.title, text: text, url: url }).catch(function(err){ if (err && err.name !== 'AbortError') openMenu(d, url, text, 'שיתוף האתר'); });
+    } else openMenu(d, url, text, 'שיתוף האתר');
+  });
   document.getElementById('shareClose').addEventListener('click', closeMenu);
   overlay.addEventListener('click', function(e){ if (e.target === overlay) closeMenu(); });
   document.getElementById('shCopy').addEventListener('click', function(){
