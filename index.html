@@ -221,6 +221,17 @@
   .why-card p{ margin-top:10px; color:var(--muted-on-ink); font-size:.9rem; }
 
   /* ---------- Testimonials ---------- */
+  .how{ background:var(--paper); padding-block:100px; }
+  .how-head{ text-align:center; max-width:640px; margin:0 auto 48px; }
+  .how-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
+  .how-head p{ margin-top:14px; color:var(--muted); }
+  .how-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  @media (max-width:960px){ .how-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .how-grid{ grid-template-columns:1fr; } }
+  .how-step{ background:var(--mint); border-radius:var(--radius); padding:28px 24px; }
+  .how-step .num{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:var(--teal-dark); color:#fff; font-weight:800; margin-bottom:18px; }
+  .how-step h3{ font-size:1.08rem; }
+  .how-step p{ margin-top:10px; color:var(--muted); font-size:.9rem; }
   .testimonials{ background:var(--mint); padding-block:100px; }
   .testimonials-head{ text-align:center; max-width:640px; margin:0 auto; }
   .testimonials-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
@@ -457,6 +468,7 @@
     <nav class="nav-links" aria-label="ניווט ראשי">
       <a href="#packages">חבילות</a>
       <a href="#why">למה איתי</a>
+      <a href="#how">איך זה עובד</a>
       <a href="#about">אודות</a>
       <a href="#contact">יצירת קשר</a>
     </nav>
@@ -469,6 +481,7 @@
   <div class="wrap nav-mobile-panel" id="navMobilePanel">
     <a href="#packages">חבילות</a>
     <a href="#why">למה איתי</a>
+      <a href="#how">איך זה עובד</a>
     <a href="#about">אודות</a>
     <a href="#contact">יצירת קשר</a>
   </div>
@@ -561,25 +574,35 @@
     </div>
   </section>
 
-  <!-- ---------- CTA BAND ---------- -->
-  <section class="cta-band">
-    <img src="pkg-pool.jpg" alt="יעד נופש">
-    <div class="cta-band-copy">
-      <h2>מוכנים להזמין את<br>הטיול הבא שלכם?</h2>
-      <a href="#contact" class="btn">ספרו לי על החופשה שלכם <span class="btn-arrow">←</span></a>
-    </div>
-  </section>
-
-  <!-- ---------- ABOUT ---------- -->
-  <section class="about" id="about">
-    <div class="wrap about-grid">
-      <div class="img-slot about-img"><img id="c-aboutImage" src="about-yifat.webp" alt="יפעת מורוביץ"></div>
-      <div class="about-copy">
-        <span class="eyebrow">אודות</span>
-        <h2 id="c-aboutTitle" style="font-size:1.9rem;margin-bottom:20px;">כמה מילים עליי</h2>
-        <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
-        <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
-        <p class="credentials" id="c-aboutCredentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
+  <!-- ---------- HOW IT WORKS ---------- -->
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="how-head">
+        <span class="eyebrow">איך זה עובד</span>
+        <h2 id="c-howTitle">ארבעה שלבים פשוטים לחופשה שלכם</h2>
+        <p id="c-howSubtitle">מהרעיון הראשון ועד שאתם חוזרים הביתה.</p>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <span class="num">1</span>
+          <h3 id="c-how1Title">מספרים לי מה אתם מחפשים</h3>
+          <p id="c-how1Text">לאן, מתי, מי נוסע ומה התקציב. שיחה קצרה בוואטסאפ מספיקה.</p>
+        </div>
+        <div class="how-step">
+          <span class="num">2</span>
+          <h3 id="c-how2Title">אני בונה עבורכם הצעה</h3>
+          <p id="c-how2Text">טיסות, מלון והעברות שמתאימים לטעם ולתקציב שלכם, עם מחיר ברור מראש.</p>
+        </div>
+        <div class="how-step">
+          <span class="num">3</span>
+          <h3 id="c-how3Title">סוגרים הכול במקום אחד</h3>
+          <p id="c-how3Text">אתם מאשרים ואני מטפלת בכל ההזמנות, בלי לפתוח עשרה טאבים.</p>
+        </div>
+        <div class="how-step">
+          <span class="num">4</span>
+          <h3 id="c-how4Title">אני איתכם גם במהלך החופשה</h3>
+          <p id="c-how4Text">אם משהו משתנה בדרך, יש לכם למי לפנות.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -717,6 +740,32 @@
       </div>
     </div>
   </section>
+
+  <!-- ---------- ABOUT ---------- -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <div class="img-slot about-img"><img id="c-aboutImage" src="about-yifat.webp" alt="יפעת מורוביץ"></div>
+      <div class="about-copy">
+        <span class="eyebrow">אודות</span>
+        <h2 id="c-aboutTitle" style="font-size:1.9rem;margin-bottom:20px;">כמה מילים עליי</h2>
+        <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
+        <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
+        <p class="credentials" id="c-aboutCredentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CTA BAND ---------- -->
+  <section class="cta-band">
+    <img src="pkg-pool.jpg" alt="יעד נופש">
+    <div class="cta-band-copy">
+      <h2>מוכנים להזמין את<br>הטיול הבא שלכם?</h2>
+      <a href="#contact" class="btn">ספרו לי על החופשה שלכם <span class="btn-arrow">←</span></a>
+    </div>
+  </section>
+
+
+
 
   <!-- ---------- CONTACT ---------- -->
   <section class="contact" id="contact">
@@ -1258,6 +1307,16 @@
       }
       setText('c-trust1', c.trust1);
       setText('c-trust2', c.trust2);
+      setText('c-howTitle', c.howTitle);
+      setText('c-howSubtitle', c.howSubtitle);
+      setText('c-how1Title', c.how1Title);
+      setText('c-how1Text', c.how1Text);
+      setText('c-how2Title', c.how2Title);
+      setText('c-how2Text', c.how2Text);
+      setText('c-how3Title', c.how3Title);
+      setText('c-how3Text', c.how3Text);
+      setText('c-how4Title', c.how4Title);
+      setText('c-how4Text', c.how4Text);
       setText('c-aboutTitle', c.aboutTitle);
       setText('c-aboutText1', c.aboutText1);
       setText('c-aboutText2', c.aboutText2);
@@ -1578,6 +1637,16 @@
       { id: 'c-why3Text', key: 'why3Text', label: 'כרטיס 3 טקסט' },
       { id: 'c-why4Title', key: 'why4Title', label: 'כרטיס 4 כותרת' },
       { id: 'c-why4Text', key: 'why4Text', label: 'כרטיס 4 טקסט' },
+      { id: 'c-howTitle', key: 'howTitle', label: 'כותרת מדור איך זה עובד' },
+      { id: 'c-howSubtitle', key: 'howSubtitle', label: 'תיאור מדור איך זה עובד' },
+      { id: 'c-how1Title', key: 'how1Title', label: 'שלב 1 כותרת' },
+      { id: 'c-how1Text', key: 'how1Text', label: 'שלב 1 טקסט' },
+      { id: 'c-how2Title', key: 'how2Title', label: 'שלב 2 כותרת' },
+      { id: 'c-how2Text', key: 'how2Text', label: 'שלב 2 טקסט' },
+      { id: 'c-how3Title', key: 'how3Title', label: 'שלב 3 כותרת' },
+      { id: 'c-how3Text', key: 'how3Text', label: 'שלב 3 טקסט' },
+      { id: 'c-how4Title', key: 'how4Title', label: 'שלב 4 כותרת' },
+      { id: 'c-how4Text', key: 'how4Text', label: 'שלב 4 טקסט' },
       { id: 'c-aboutTitle', key: 'aboutTitle', label: 'כותרת מדור אודות' },
       { id: 'c-aboutText1', key: 'aboutText1', label: 'אודות פסקה ראשונה' },
       { id: 'c-aboutText2', key: 'aboutText2', label: 'אודות פסקה שנייה' },
@@ -1996,7 +2065,7 @@
 
       imageStep.then(function(){
         var list = dealsCache.data.slice();
-        if (!existing && d.order <= 1) list.forEach(function(x){ x.order = (x.order || 0) + 1; });
+        if (!existing) { d.order = 1; list.forEach(function(x){ x.order = (x.order || 0) + 1; }); }
         if (existing) {
           var idx = list.findIndex(function(x){ return x.id === existing.id; });
           list[idx] = d;
