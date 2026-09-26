@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 5,
+    "order": 6,
     "tag": "קרוז",
     "title": "הפלגה קסומה לבהאמס",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "vienna-sukkot",
     "active": true,
-    "order": 6,
+    "order": 7,
     "tag": "כשר למהדרין",
     "title": "סוכות כשר בוינה",
     "image": "pkg-vienna.jpg",
@@ -75,7 +75,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 7,
+    "order": 8,
     "tag": "קרוז",
     "title": "קרוז סוכות 2027 בים התיכון",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -133,7 +133,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 8,
+    "order": 9,
     "tag": "קרוז",
     "title": "קרוז קלאסי באירופה",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -166,7 +166,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 9,
+    "order": 10,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -190,7 +190,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 10,
+    "order": 11,
     "tag": "סופ״ש",
     "title": "סופש אמצע דצמבר בבאקו",
     "image": "pkg-baku.webp",
@@ -232,7 +232,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -252,7 +252,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -272,7 +272,7 @@
     "imageAlt": "🚢 קרוז חלומי במזרח הים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -294,6 +294,26 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-muip7v1g0p9r",
+    "title": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
+    "tag": "חופשה משפחתית",
+    "meta": "4 לילות",
+    "dateFrom": "2026-12-06",
+    "dateTo": "2026-12-10",
+    "dateNote": "",
+    "dates": "06.12-10.12",
+    "price": "4,203 ₪",
+    "priceNote": "לאדם",
+    "cardDesc": "חוגגים את חג האורות בחופשה משפחתית בלתי נשכחת בדובאי – מזג אוויר מושלם, מלונות יוקרה, פארקי מים ואטרקציות לכל המשפחה! חבילה מסודרת ומפנקת הכוללת טיסות ישירות ומזוודה כלולה. כל מה שצריך כדי לצאת…",
+    "desc": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨ (בימים ראשון עד חמישי): חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\nמה כלול בחבילה:\n• טיסות ישירות\n• 🧳 כבודה כוללת: תיק גב (עד 7 ק\"ג) + מזוודה נשלחת (עד 20 ק\"ג) לכל נוסע!\n\n👨‍👩‍👧‍👦 הרכב: זוג + 2 ילדים (עד גיל 12)\n• הלוך: 10:40\n• חזור: 20:25\n🏨 אפשרויות לינה יוקרתיות (על בסיס ארוחת בוקר):\n🌊 Grand Hyatt Dubai Resort & Waterpark\nאירוח בחדר Family Room הכולל כניסה חופשית לפארק המים של המלון!\n👑 Atlantis, The Palm\nאירוח בחדר Ocean Queen Room במלון האייקוני!\n📲 לפרטים נוספים והבטחת מקומות:\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "עיכובים בטיסה באחריות חברת התעופה בלבד | ט.ל.ח",
+    "active": true,
+    "imageAlt": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
+    "priceTiers": [],
+    "image": "uploads/1790445828581-destination.jpg",
     "order": 1
   }
 ]
