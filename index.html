@@ -563,7 +563,8 @@
   .a11y-btn[aria-pressed="true"]{ background:#24636c; color:#fff; }
   .a11y-reset{ grid-column:1/-1; background:#fff; border-color:#24636c; }
   .a11y-panel a{ display:block; margin-top:12px; color:#24636c; font-weight:700; font-size:.88rem; }
-  .hero-video-toggle{ position:absolute; z-index:5; bottom:20px; inset-inline-start:20px; background:rgba(11,43,39,.85); color:#fff; border:1.5px solid #fff; border-radius:999px; padding:8px 16px; font-weight:700; font-size:.82rem; cursor:pointer; }
+  .hero-video-toggle{ position:absolute; z-index:5; bottom:20px; inset-inline-start:20px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:rgba(11,43,39,.85); color:#fff; border:1.5px solid #fff; border-radius:50%; cursor:pointer; }
+  .hero-video-toggle svg{ width:16px; height:16px; }
   html.a11y-f1{ font-size:112.5%; } html.a11y-f2{ font-size:125%; } html.a11y-f3{ font-size:150%; }
   html.a11y-gray{ filter:grayscale(1); }
   html.a11y-links a{ text-decoration:underline !important; text-underline-offset:3px; }
@@ -633,7 +634,7 @@
 <main id="top" tabindex="-1">
   <!-- ---------- HERO ---------- -->
   <section class="hero" style="background-image:url('hero-poster-1.jpg');">
-    <button type="button" class="hero-video-toggle" id="heroVideoToggle" aria-pressed="false">השהיית הסרטון</button>
+    <button type="button" class="hero-video-toggle" id="heroVideoToggle" aria-pressed="false" aria-label="השהיית הסרטון"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
     <video class="hero-video" muted="" playsinline="" preload="auto" disablepictureinpicture="" disableremoteplayback="" poster="hero-poster-1.jpg">
       <source src="hero-1.mp4" type="video/mp4">
     </video>
@@ -1090,8 +1091,9 @@
   if (!v) return;
   var clips = [['hero-1.mp4', 'hero-poster-1.jpg'], ['hero-2.mp4', 'hero-poster-2.jpg'], ['hero-3.mp4', 'hero-poster-3.jpg']], i = 0;
   var toggleBtn = document.getElementById('heroVideoToggle');
+  var PLAY_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>', PAUSE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
   function showPlayButton(){
-    if (toggleBtn) { toggleBtn.textContent = 'הפעלת הסרטון'; toggleBtn.setAttribute('aria-pressed', 'true'); }
+    if (toggleBtn) { toggleBtn.innerHTML = PLAY_ICON; toggleBtn.setAttribute('aria-pressed', 'true'); toggleBtn.setAttribute('aria-label', 'הפעלת הסרטון'); }
   }
   // Phones with "reduce motion" / battery saver (common on Samsung) get the poster and a play button instead of autoplay.
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1305,7 +1307,10 @@
     if (!video) return;
     if (paused) video.pause(); else { var p = video.play(); if (p && p.catch) p.catch(function(){}); }
     videoBtn.setAttribute('aria-pressed', String(paused));
-    videoBtn.textContent = paused ? 'הפעלת הסרטון' : 'השהיית הסרטון';
+    videoBtn.setAttribute('aria-label', paused ? 'הפעלת הסרטון' : 'השהיית הסרטון');
+    videoBtn.innerHTML = paused
+      ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
   }
   function apply(){
     root.classList.remove('a11y-f1', 'a11y-f2', 'a11y-f3');
