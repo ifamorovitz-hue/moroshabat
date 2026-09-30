@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 10,
+    "order": 11,
     "tag": "קרוז",
     "title": "הפלגה קסומה לבהאמס",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "vienna-sukkot",
     "active": true,
-    "order": 11,
+    "order": 12,
     "tag": "כשר למהדרין",
     "title": "סוכות כשר בוינה",
     "image": "pkg-vienna.jpg",
@@ -75,7 +75,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 12,
+    "order": 13,
     "tag": "קרוז",
     "title": "קרוז סוכות 2027 בים התיכון",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -133,7 +133,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 13,
+    "order": 14,
     "tag": "קרוז",
     "title": "קרוז קלאסי באירופה",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -166,7 +166,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 14,
+    "order": 15,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -190,7 +190,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 15,
+    "order": 16,
     "tag": "סופ״ש",
     "title": "סופש אמצע דצמבר בבאקו",
     "image": "pkg-baku.webp",
@@ -232,7 +232,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 9
+    "order": 10
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -252,7 +252,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 8
+    "order": 9
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -272,7 +272,7 @@
     "imageAlt": "🚢 קרוז חלומי במזרח הים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 7
+    "order": 8
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -294,7 +294,7 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
-    "order": 6
+    "order": 7
   },
   {
     "id": "deal-muip7v1g0p9r",
@@ -314,7 +314,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
     "priceTiers": [],
     "image": "uploads/1790445828581-destination.jpg",
-    "order": 5
+    "order": 6
   },
   {
     "id": "deal-mujq3byddkjo",
@@ -334,7 +334,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית מופלאה בבודפשט המושלגת! 🇭🇺🎄",
     "priceTiers": [],
     "image": "uploads/1790507763014-destination.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-mulalnyyx7nv",
@@ -354,7 +354,7 @@
     "imageAlt": "🍁✨ מסיימים את החגים בקרלובי וארי – חופשת ספא ויוקרה קלאסית! 🇨🇿🧖‍♀️",
     "priceTiers": [],
     "image": "uploads/1790602676891-destination.jpg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-mumlxwjwwibc",
@@ -374,7 +374,7 @@
     "imageAlt": "🏛️🇬🇷 ספונטניים? סופ\"ש מושלם ואורבני באתונה! 🇬🇷✨",
     "priceTiers": [],
     "image": "uploads/1790682189837-destination.jpg",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-muocdsut6wd5",
@@ -394,6 +394,26 @@
     "imageAlt": "🎄 קפצו לאגדה אירופאית: מסלול שווקי חג המולד הקסום – פראג & וינה! 🎅✨",
     "priceTiers": [],
     "image": "uploads/1790787067735-img.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-muoddu7b7951",
+    "title": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨",
+    "tag": "קרוז",
+    "meta": "10 לילות",
+    "dateFrom": "2027-06-05",
+    "dateTo": "2027-06-15",
+    "dateNote": "",
+    "dates": "05.06.27-15.06.27",
+    "price": "$4,687",
+    "priceNote": "לזוג",
+    "cardDesc": "מוכנים לחוויה בלתי נשכחת על האונייה המרהיבה Mariner of the Seas? 🚢",
+    "desc": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨: חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\nעולים על הסיפון ל-10 לילות של פינוק, נופים עוצרי נשימה ויעדים מהממים ביותר באירופה!\n📍 מסלול ההפלגה הקסום:\n🇪🇸 ברצלונה, ספרד – נקודת ההזנקה שלכם!\n🌊 יום שיוט ופינוק על האונייה\n🇮🇹 סיציליה, איטליה\n🌊 יום שיוט\n🇬🇷 סנטוריני, יוון – הנופים האייקוניים והשקיעות\n🇬🇷 אתונה (פיראוס), יוון – היסטוריה ותרבות\n🇬🇷 רודוס, יוון\n🇬🇷 מיקונוס, יוון – סמטאות ציוריות ואווירה קסומה\n🌊 יום שיוט\n🇭🇷 ספליט, קרואטיה\n🇮🇹 רוונה, איטליה – נקודת הסיום\n💰 מחיר מיוחד:\n✈️ החבילה המלאה:\nכמובן שניתן לצרף טיסות מותאמות ולילות במלונות נבחרים ביעדים לפני ואחרי ההפלגה – לראש שקט וחופשה מושלמת מ-א' ועד ת'!\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "",
+    "active": true,
+    "imageAlt": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨",
+    "priceTiers": [],
+    "image": "uploads/1790788749096-img.jpg",
     "order": 1
   }
 ]
