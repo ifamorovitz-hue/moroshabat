@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 12,
+    "order": 13,
     "tag": "קרוז",
     "title": "הפלגה קסומה לבהאמס",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "vienna-sukkot",
     "active": true,
-    "order": 13,
+    "order": 14,
     "tag": "כשר למהדרין",
     "title": "סוכות כשר בוינה",
     "image": "pkg-vienna.jpg",
@@ -75,7 +75,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 14,
+    "order": 15,
     "tag": "קרוז",
     "title": "קרוז סוכות 2027 בים התיכון",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -133,7 +133,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 15,
+    "order": 16,
     "tag": "קרוז",
     "title": "קרוז קלאסי באירופה",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -166,7 +166,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 16,
+    "order": 17,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -190,7 +190,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 17,
+    "order": 18,
     "tag": "סופ״ש",
     "title": "סופש אמצע דצמבר בבאקו",
     "image": "pkg-baku.webp",
@@ -232,7 +232,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 11
+    "order": 12
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -252,7 +252,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 10
+    "order": 11
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -272,7 +272,7 @@
     "imageAlt": "🚢 קרוז חלומי במזרח הים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 9
+    "order": 10
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -294,7 +294,7 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
-    "order": 8
+    "order": 9
   },
   {
     "id": "deal-muip7v1g0p9r",
@@ -314,7 +314,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
     "priceTiers": [],
     "image": "uploads/1790445828581-destination.jpg",
-    "order": 7
+    "order": 8
   },
   {
     "id": "deal-mujq3byddkjo",
@@ -334,7 +334,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית מופלאה בבודפשט המושלגת! 🇭🇺🎄",
     "priceTiers": [],
     "image": "uploads/1790507763014-destination.jpg",
-    "order": 6
+    "order": 7
   },
   {
     "id": "deal-mulalnyyx7nv",
@@ -354,7 +354,7 @@
     "imageAlt": "🍁✨ מסיימים את החגים בקרלובי וארי – חופשת ספא ויוקרה קלאסית! 🇨🇿🧖‍♀️",
     "priceTiers": [],
     "image": "uploads/1790602676891-destination.jpg",
-    "order": 5
+    "order": 6
   },
   {
     "id": "deal-mumlxwjwwibc",
@@ -374,7 +374,7 @@
     "imageAlt": "🏛️🇬🇷 ספונטניים? סופ\"ש מושלם ואורבני באתונה! 🇬🇷✨",
     "priceTiers": [],
     "image": "uploads/1790682189837-destination.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-muocdsut6wd5",
@@ -394,7 +394,7 @@
     "imageAlt": "🎄 קפצו לאגדה אירופאית: מסלול שווקי חג המולד הקסום – פראג & וינה! 🎅✨",
     "priceTiers": [],
     "image": "uploads/1790787067735-img.jpg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-muoddu7b7951",
@@ -414,7 +414,7 @@
     "imageAlt": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790788749096-img.jpg",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-mupqi0agcoan",
@@ -437,6 +437,28 @@
       "מחיר: החל מ-8,992 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1790871244792-savoy-seychelles-resort-spa.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-muqx7gn9w4le",
+    "title": "סוף אוקטובר בזנזיבר המדהימה",
+    "tag": "חבילת נופש",
+    "meta": "7 לילות",
+    "dateFrom": "2026-10-27",
+    "dateTo": "2026-11-03",
+    "dateNote": "",
+    "dates": "27.10-03.11",
+    "price": "8,167 ₪",
+    "priceNote": "לאדם",
+    "cardDesc": "הכל כלול חבילה מסודרת ומפנקת הכוללת טיסות ישירות, לינה ומזוודה כלולה. כל מה שצריך כדי לצאת לחופשה בראש שקט.",
+    "desc": "סוף אוקטובר בזנזיבר המדהימה (בימים שלישי עד שלישי): חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\nמה כלול בחבילה:\n• טיסות ישירות (שעות טיסה: 11:10 | 19:05)\n• לינה\n• תיק גב עד 5 ק\"ג ומזוודה עד 23 ק\"ג\n\nהמלונות:\n• Hotel Riu Jambo - All Inclusive, נוף לים\n• אפשרות נוספת: Royal Zanzibar Beach Resort\n\nלהצטרפות לדילים החמים שלנו לחצו כאן : https://bit.ly/3YL9hh5\nלדף הפייסבוק שלי -\nhttps://bit.ly/41uxARE\nהערוץ שלי - https://whatsapp.com/channel/0029VaeZ9IJ6WaKlaZsNjd1i\n✈️⭐️\nSuperior Room חדר\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "עיכובים בטיסה באחריות חברת התעופה בלבד. טעות לעולם חוזרת (ט.ל.ח)",
+    "active": true,
+    "imageAlt": "סוף אוקטובר בזנזיבר המדהימה",
+    "priceTiers": [
+      "Royal Zanzibar Beach Resort: החל מ 8,330 ש\"ח לאדם בחדר"
+    ],
+    "image": "uploads/1790942976262-destination.jpg",
     "order": 1
   }
 ]
