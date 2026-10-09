@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 19,
+    "order": 20,
     "tag": "קרוז",
     "title": "הפלגה קסומה לבהאמס",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "vienna-sukkot",
     "active": true,
-    "order": 20,
+    "order": 21,
     "tag": "כשר למהדרין",
     "title": "סוכות כשר בוינה",
     "image": "pkg-vienna.jpg",
@@ -75,7 +75,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 21,
+    "order": 22,
     "tag": "קרוז",
     "title": "קרוז סוכות 2027 בים התיכון",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -133,7 +133,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 22,
+    "order": 23,
     "tag": "קרוז",
     "title": "קרוז קלאסי באירופה",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -166,7 +166,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 23,
+    "order": 24,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -190,7 +190,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 24,
+    "order": 25,
     "tag": "סופ״ש",
     "title": "סופש אמצע דצמבר בבאקו",
     "image": "pkg-baku.webp",
@@ -232,7 +232,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 18
+    "order": 19
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -252,7 +252,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 17
+    "order": 18
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -272,7 +272,7 @@
     "imageAlt": "🚢 קרוז חלומי במזרח הים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 16
+    "order": 17
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -294,7 +294,7 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
-    "order": 15
+    "order": 16
   },
   {
     "id": "deal-muip7v1g0p9r",
@@ -314,7 +314,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
     "priceTiers": [],
     "image": "uploads/1790445828581-destination.jpg",
-    "order": 14
+    "order": 15
   },
   {
     "id": "deal-mujq3byddkjo",
@@ -334,7 +334,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית מופלאה בבודפשט המושלגת! 🇭🇺🎄",
     "priceTiers": [],
     "image": "uploads/1790507763014-destination.jpg",
-    "order": 13
+    "order": 14
   },
   {
     "id": "deal-mulalnyyx7nv",
@@ -354,7 +354,7 @@
     "imageAlt": "🍁✨ מסיימים את החגים בקרלובי וארי – חופשת ספא ויוקרה קלאסית! 🇨🇿🧖‍♀️",
     "priceTiers": [],
     "image": "uploads/1790602676891-destination.jpg",
-    "order": 12
+    "order": 13
   },
   {
     "id": "deal-mumlxwjwwibc",
@@ -374,7 +374,7 @@
     "imageAlt": "🏛️🇬🇷 ספונטניים? סופ\"ש מושלם ואורבני באתונה! 🇬🇷✨",
     "priceTiers": [],
     "image": "uploads/1790682189837-destination.jpg",
-    "order": 11
+    "order": 12
   },
   {
     "id": "deal-muocdsut6wd5",
@@ -394,7 +394,7 @@
     "imageAlt": "🎄 קפצו לאגדה אירופאית: מסלול שווקי חג המולד הקסום – פראג & וינה! 🎅✨",
     "priceTiers": [],
     "image": "uploads/1790787067735-img.jpg",
-    "order": 10
+    "order": 11
   },
   {
     "id": "deal-muoddu7b7951",
@@ -414,7 +414,7 @@
     "imageAlt": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790788749096-img.jpg",
-    "order": 9
+    "order": 10
   },
   {
     "id": "deal-mupqi0agcoan",
@@ -437,7 +437,7 @@
       "מחיר: החל מ-8,992 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1790871244792-savoy-seychelles-resort-spa.jpg",
-    "order": 8
+    "order": 9
   },
   {
     "id": "deal-muqx7gn9w4le",
@@ -459,7 +459,7 @@
       "Royal Zanzibar Beach Resort: החל מ 8,330 ש\"ח לאדם בחדר"
     ],
     "image": "uploads/1790942976262-destination.jpg",
-    "order": 7
+    "order": 8
   },
   {
     "id": "deal-musgmav6eape",
@@ -484,7 +484,7 @@
       "חדר מרפסת (זוג + 2 ילדים): החל מ-3,700$"
     ],
     "image": "uploads/1791036047491-img.jpg",
-    "order": 6
+    "order": 7
   },
   {
     "id": "deal-muwm8qx9x54v",
@@ -504,7 +504,7 @@
     "imageAlt": "🛍️ בלאק פריידי באתונה מפנק! 🛍️",
     "priceTiers": [],
     "image": "uploads/1791287357518-destination.jpg",
-    "order": 5
+    "order": 6
   },
   {
     "id": "deal-muwmc7tg1sj1",
@@ -527,7 +527,7 @@
       "מחיר: החל מ-3,769 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791287519380-destination.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-mux0qj9vlthb",
@@ -549,7 +549,7 @@
       "מחיר: החל מ-3,938 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791312159824-img.jpeg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-muzc1usoj40g",
@@ -569,7 +569,7 @@
     "imageAlt": "🚨 דקה 90! סופ\"ש ראשון עד חמישי בסלוניקי הקסומה! 🚨",
     "priceTiers": [],
     "image": "uploads/1791451638313-destination.jpg",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-mv14321u9vo7",
@@ -589,6 +589,26 @@
     "imageAlt": "🚢 דקה 90! קרוז חלומי לאיים הקנריים עם Norwegian Cruise Line! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1791559189795-11.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-mv1434wy7uyv",
+    "title": "🚢 דקה 90! קרוז חלומי לאיים הקנריים עם Norwegian Cruise Line! 🌊✨",
+    "tag": "קרוז",
+    "meta": "11 לילות",
+    "dateFrom": "2026-11-09",
+    "dateTo": "2026-11-20",
+    "dateNote": "",
+    "dates": "09.11-20.11",
+    "price": "$2,430",
+    "priceNote": "לזוג",
+    "cardDesc": "מפליגים לחוות את הקסם של האיים הקנריים, פורטוגל, ספרד, צרפת ואנגליה באונייה היוקרתית Norwegian Star! 🏝️⚓",
+    "desc": "🚢 דקה 90! קרוז חלומי לאיים הקנריים עם Norwegian Cruise Line! 🌊✨: חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\n🗺️ מסלול ההפלגה המרהיב:\n📍 ליסבון (פורטוגל) 🚢\n📍 יום כיף בים 🌊\n📍 לאס פאלמאס (גראן קנריה) 🌴\n📍 סנטה קרוז דה טנריף 🌋\n📍 סנטה קרוז דה לה פלמה 🌿\n📍 פונשאל (מדיירה) 🌺\n📍 יום כיף בים 🌊\n📍 פורטו (פורטוגל) 🍷\n📍 לה קורוניה (ספרד) 🏰\n📍 יום כיף בים 🌊\n📍 לה האבר (צרפת) 🥐\n📍 לונדון (אנגליה) 🇬🇧\n🛏️ אירוח בחדר יוקרתי:\n• חדר עם מרפסת בקומה גבוהה!\n💡 ניתן להשלים דרכי את החבילה המלאה כולל טיסות ומלונות לפני/אחרי ההפלגה לראש שקט לחלוטין!\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "",
+    "active": true,
+    "imageAlt": "🚢 דקה 90! קרוז חלומי לאיים הקנריים עם Norwegian Cruise Line! 🌊✨",
+    "priceTiers": [],
+    "image": "uploads/1791559193506-11.jpg",
     "order": 1
   }
 ]
