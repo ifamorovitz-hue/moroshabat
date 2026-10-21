@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 30,
+    "order": 31,
     "tag": "קרוז",
     "title": "הפלגה קסומה לבהאמס",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 31,
+    "order": 32,
     "tag": "קרוז",
     "title": "קרוז סוכות 2027 בים התיכון",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -108,7 +108,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 32,
+    "order": 33,
     "tag": "קרוז",
     "title": "קרוז קלאסי באירופה",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -141,7 +141,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 33,
+    "order": 34,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -165,7 +165,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 34,
+    "order": 35,
     "tag": "סופ״ש",
     "title": "סופש אמצע דצמבר בבאקו",
     "image": "pkg-baku.webp",
@@ -207,7 +207,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 29
+    "order": 30
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -227,7 +227,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 28
+    "order": 29
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -247,7 +247,7 @@
     "imageAlt": "🚢 קרוז חלומי במזרח הים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 27
+    "order": 28
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -269,7 +269,7 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
-    "order": 26
+    "order": 27
   },
   {
     "id": "deal-muip7v1g0p9r",
@@ -289,7 +289,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית קסומה ומפנקת בדובאי! 🕎✨",
     "priceTiers": [],
     "image": "uploads/1790445828581-destination.jpg",
-    "order": 25
+    "order": 26
   },
   {
     "id": "deal-mujq3byddkjo",
@@ -309,7 +309,7 @@
     "imageAlt": "🕯️✨ חופשת חנוכה משפחתית מופלאה בבודפשט המושלגת! 🇭🇺🎄",
     "priceTiers": [],
     "image": "uploads/1790507763014-destination.jpg",
-    "order": 24
+    "order": 25
   },
   {
     "id": "deal-mulalnyyx7nv",
@@ -329,7 +329,7 @@
     "imageAlt": "🍁✨ מסיימים את החגים בקרלובי וארי – חופשת ספא ויוקרה קלאסית! 🇨🇿🧖‍♀️",
     "priceTiers": [],
     "image": "uploads/1790602676891-destination.jpg",
-    "order": 23
+    "order": 24
   },
   {
     "id": "deal-mumlxwjwwibc",
@@ -349,7 +349,7 @@
     "imageAlt": "🏛️🇬🇷 ספונטניים? סופ\"ש מושלם ואורבני באתונה! 🇬🇷✨",
     "priceTiers": [],
     "image": "uploads/1790682189837-destination.jpg",
-    "order": 22
+    "order": 23
   },
   {
     "id": "deal-muocdsut6wd5",
@@ -369,7 +369,7 @@
     "imageAlt": "🎄 קפצו לאגדה אירופאית: מסלול שווקי חג המולד הקסום – פראג & וינה! 🎅✨",
     "priceTiers": [],
     "image": "uploads/1790787067735-img.jpg",
-    "order": 21
+    "order": 22
   },
   {
     "id": "deal-muoddu7b7951",
@@ -389,7 +389,7 @@
     "imageAlt": "🚢 חופשת החלומות של הקיץ: הפלגת יוקרה בים התיכון עם Royal Caribbean! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1790788749096-img.jpg",
-    "order": 20
+    "order": 21
   },
   {
     "id": "deal-mupqi0agcoan",
@@ -412,7 +412,7 @@
       "מחיר: החל מ-8,992 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1790871244792-savoy-seychelles-resort-spa.jpg",
-    "order": 19
+    "order": 20
   },
   {
     "id": "deal-muqx7gn9w4le",
@@ -434,7 +434,7 @@
       "Royal Zanzibar Beach Resort: החל מ 8,330 ש\"ח לאדם בחדר"
     ],
     "image": "uploads/1790942976262-destination.jpg",
-    "order": 18
+    "order": 19
   },
   {
     "id": "deal-musgmav6eape",
@@ -459,7 +459,7 @@
       "חדר מרפסת (זוג + 2 ילדים): החל מ-3,700$"
     ],
     "image": "uploads/1791036047491-img.jpg",
-    "order": 17
+    "order": 18
   },
   {
     "id": "deal-muwm8qx9x54v",
@@ -479,7 +479,7 @@
     "imageAlt": "🛍️ בלאק פריידי באתונה מפנק! 🛍️",
     "priceTiers": [],
     "image": "uploads/1791287357518-destination.jpg",
-    "order": 16
+    "order": 17
   },
   {
     "id": "deal-muwmc7tg1sj1",
@@ -502,7 +502,7 @@
       "מחיר: החל מ-3,769 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791287519380-destination.jpg",
-    "order": 15
+    "order": 16
   },
   {
     "id": "deal-mux0qj9vlthb",
@@ -524,7 +524,7 @@
       "מחיר: החל מ-3,938 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791312159824-img.jpeg",
-    "order": 14
+    "order": 15
   },
   {
     "id": "deal-muzc1usoj40g",
@@ -544,7 +544,7 @@
     "imageAlt": "🚨 דקה 90! סופ\"ש ראשון עד חמישי בסלוניקי הקסומה! 🚨",
     "priceTiers": [],
     "image": "uploads/1791451638313-destination.jpg",
-    "order": 13
+    "order": 14
   },
   {
     "id": "deal-mv14321u9vo7",
@@ -564,7 +564,7 @@
     "imageAlt": "🚢 דקה 90! קרוז חלומי לאיים הקנריים עם Norwegian Cruise Line! 🌊✨",
     "priceTiers": [],
     "image": "uploads/1792243917366-pasted.jpg",
-    "order": 12
+    "order": 13
   },
   {
     "id": "deal-mv1647lw9o50",
@@ -584,7 +584,7 @@
     "imageAlt": "❄️ חופשה חורפית ורומנטית בזלצבורג הקסומה! 🇦🇹✨",
     "priceTiers": [],
     "image": "uploads/1792231964346-pasted.jpg",
-    "order": 11
+    "order": 12
   },
   {
     "id": "deal-mv3smiqjw5ki",
@@ -604,7 +604,7 @@
     "imageAlt": "🛍️ בלאק פריידי בבוקרשט – חופשת שופינג ובילויים מטריפה! 🇷🇴✨",
     "priceTiers": [],
     "image": "uploads/1791721341020-destination.jpg",
-    "order": 10
+    "order": 11
   },
   {
     "id": "deal-mv6tkisom9xt",
@@ -624,7 +624,7 @@
     "imageAlt": "🏛️ ספונטניים? סופ\"ש קסום באתונה במרחק נגיעה! 🇬🇷✈️",
     "priceTiers": [],
     "image": "uploads/1791904325928-destination.jpg",
-    "order": 9
+    "order": 10
   },
   {
     "id": "deal-mv6tmhdkt60k",
@@ -644,7 +644,7 @@
     "imageAlt": "✨ דצמבר – בלי לחשוב פעמיים! ✨",
     "priceTiers": [],
     "image": "uploads/1791904894970-img.jpg",
-    "order": 8
+    "order": 9
   },
   {
     "id": "deal-mv815qxvdij6",
@@ -664,7 +664,7 @@
     "imageAlt": "🇦🇹 סופ\"ש הבא אתם בוינה הקסומה! ✈️🥨",
     "priceTiers": [],
     "image": "uploads/1791977539748-destination.jpg",
-    "order": 7
+    "order": 8
   },
   {
     "id": "deal-mva0diee3h9i",
@@ -684,7 +684,7 @@
     "imageAlt": "🌴🚢 פסח בקריביים: מפליגים באחת האוניות המטורפות בעולם! 🚢🌴",
     "priceTiers": [],
     "image": "uploads/1792231757981-pasted.jpg",
-    "order": 6
+    "order": 7
   },
   {
     "id": "deal-mvb03cimn6tc",
@@ -704,7 +704,7 @@
     "imageAlt": "🚢✨ סוכות 2027: הפלגת חלומות במערב הים התיכון עם Legend of the Seas! 🌊🏰",
     "priceTiers": [],
     "image": "uploads/1792232125749-pasted.jpg",
-    "order": 5
+    "order": 6
   },
   {
     "id": "deal-mvb3b9aj9lfo",
@@ -724,7 +724,7 @@
     "imageAlt": "🏝️☀️ סופ\"ש הבא אתם בזנזיבר – למי מתאים לברוח לגן עדן? 🏖️🍹",
     "priceTiers": [],
     "image": "uploads/1792232391568-pasted.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-mvf7cf3thfja",
@@ -744,7 +744,7 @@
     "imageAlt": "✨ שבוע הבא בזלצבורג הקסומה! ✨",
     "priceTiers": [],
     "image": "uploads/1792411191930-pasted.jpg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-mvi0verlvksz",
@@ -764,7 +764,7 @@
     "imageAlt": "🎄✨ חג המולד ברומא – חוויה קסומה שלא תשכחו! ✨🎄",
     "priceTiers": [],
     "image": "uploads/1792581719170-destination.jpg",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-mvi3qgt5gyae",
@@ -784,6 +784,26 @@
     "imageAlt": "🚢 סוגרים את השנה בסטייל – חגיגת סוף שנה בים הקריבי! 🌴✨",
     "priceTiers": [],
     "image": "uploads/1792586527386-destination.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-mvi94ql2s854",
+    "title": "🚢✨ קרוז חלומי בקריביים המזרחיים על האונייה החדשה והמרהיבה Norwegian Aqua! ✨🏝️",
+    "tag": "קרוז",
+    "meta": "7 לילות",
+    "dateFrom": "2027-04-11",
+    "dateTo": "2027-04-18",
+    "dateNote": "",
+    "dates": "11.04.27-18.04.27",
+    "price": "$2,968",
+    "priceNote": "לזוג",
+    "cardDesc": "חולמים על חופשה טרופית שבה קמים כל בוקר מול אי קסום אחר? הצטרפו להפלגה מפנקת של 7 לילות בלב הקריביים על האונייה החדשה מבית NCL! 🌊☀️",
+    "desc": "🚢✨ קרוז חלומי בקריביים המזרחיים על האונייה החדשה והמרהיבה Norwegian Aqua! ✨🏝️: חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\n🏝️ מסלול ההפלגה הקסום:\n🚢 יציאה ממיאמי\n🌊 יום כיף ופינוקים בים\n🇩🇴 פוארטו פלאטה (הרפובליקה הדומיניקנית)\n🇻🇮 סנט תומאס\n🇻🇬 טורטולה (איי הבתולה הבריטיים)\n🌊 יום כיף ופינוקים בים\n🏝️ גרייט סטירופ קיי (האי הפרטי והפרטי לחלוטין של NCL בבהאמאס!)\n🚢 חזרה למיאמי\n💵 מחיר מיוחד לזוג:\n💡 להשלמת החוויה: ניתן להוסיף טיסות, העברות ומלונות במיאמי לפני/אחרי ההפלגה בהתאמה אישית.\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "",
+    "active": true,
+    "imageAlt": "🚢✨ קרוז חלומי בקריביים המזרחיים על האונייה החדשה והמרהיבה Norwegian Aqua! ✨🏝️",
+    "priceTiers": [],
+    "image": "uploads/1792595591319-pasted.jpg",
     "order": 1
   }
 ]
