@@ -3424,15 +3424,20 @@
     function parseShareId(v){
       v = String(v || '').trim();
       var m = /\/share\/([A-Za-z0-9_-]+)/.exec(v);
-      return m ? m[1] : (/^[A-Za-z0-9_-]{8,}$/.test(v) ? v : '');
+      if (!m) return '';
+      var r = /\/analytics\/([a-z]{2,3})\//.exec(v);
+      return (r ? r[1] : 'us') + '/' + m[1];
     }
+    function shareBase(){ return UMAMI_APP + '/analytics/' + conn.umamiShare.split('/')[0]; }
     function resolveShare(force){
       if (shareCtx && !force) return Promise.resolve(shareCtx);
-      return fetch(UMAMI_APP + '/api/share/' + encodeURIComponent(conn.umamiShare), { headers: { 'Accept': 'application/json' } }).then(function(r){
+      return fetch(shareBase() + '/api/share/' + encodeURIComponent(conn.umamiShare.split('/')[1]), { headers: { 'Accept': 'application/json' } }).then(function(r){
         if (!r.ok) throw new Error('auth');
         return r.json();
       }).then(function(d){
         if (!d || !d.token || !d.websiteId) throw new Error('auth');
+        var mine = contentCache && contentCache.data.umamiWebsiteId;
+        if (mine && d.websiteId !== mine) throw new Error('other-site');
         shareCtx = { websiteId: d.websiteId, token: d.token };
         return shareCtx;
       });
@@ -3440,7 +3445,7 @@
     function umamiGet(path, params, retried){
       var q = Object.keys(params || {}).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
       return resolveShare().then(function(ctx){
-        var url = UMAMI_APP + '/api/websites/' + encodeURIComponent(ctx.websiteId) + path + (q ? '?' + q : '');
+        var url = shareBase() + '/api/websites/' + encodeURIComponent(ctx.websiteId) + path + (q ? '?' + q : '');
         return fetch(url, { headers: { 'x-umami-share-token': ctx.token, 'Accept': 'application/json' } }).then(function(r){
           if ((r.status === 401 || r.status === 403) && !retried) { shareCtx = null; return umamiGet(path, params, true); }
           if (r.status === 401 || r.status === 403) throw new Error('auth');
@@ -3459,8 +3464,8 @@
         '<p class="sub">הנתונים נאספים בשירות חינמי ואנונימי בשם Umami. כדי להציג אותם כאן צריך להעתיק לינק שיתוף לקריאה בלבד:</p>' +
         '<ol>' +
         '<li>נכנסים ל-<a href="https://cloud.umami.is" target="_blank" rel="noopener">cloud.umami.is</a> ופותחים את האתר moroshabat.</li>' +
-        '<li>נכנסים ל-Settings של האתר (סמל ההגדרות), ובכרטיסיה Share URL מפעילים את האפשרות.</li>' +
-        '<li>מעתיקים את הקישור שמופיע (נראה כמו <b dir="ltr">cloud.umami.is/share/...</b>) ומדביקים כאן.</li>' +
+        '<li>נכנסים ל-Settings של האתר (סמל ההגדרות), ובכרטיסיה Share URL מפעילים את האפשרות ומסמנים שכל האזורים יוצגו (סקירה, אירועים ועוד).</li>' +
+        '<li>מעתיקים את הקישור שמופיע (חייב להכיל <b dir="ltr">/share/</b>) ומדביקים כאן. זה לא הקישור שמופיע כשאת נכנסת לאתר רגיל.</li>' +
         '</ol>' +
         '<p class="sub">הקישור מאפשר רק לצפות בנתונים, לא לשנות. הוא נשמר מוצפן, ורק מי שמחוברת לניהול יכולה להשתמש בו כאן.</p>' +
         (message ? '<div class="ie-status error">' + statsEsc(message) + '</div>' : '') +
@@ -3472,7 +3477,7 @@
     }
     function saveStatsSetup(){
       var id = parseShareId(ieEl('statsShareLink').value);
-      if (!id) { ieShowStatus('statsSetupStatus', 'error', 'הקישור לא נראה תקין. הוא אמור להכיל /share/ ואחריו מזהה ארוך.'); return; }
+      if (!id) { ieShowStatus('statsSetupStatus', 'error', 'זה לא קישור שיתוף. הוא אמור להכיל /share/ ואחריו מזהה ארוך. קישור שמכיל /websites/ הוא קישור פרטי שדורש התחברות.'); return; }
       var btn = ieEl('statsSetupSave'); btn.disabled = true;
       ieShowStatus('statsSetupStatus', 'info', 'בודק ושומר…');
       var prev = conn.umamiShare;
@@ -3488,6 +3493,7 @@
       }).then(loadStats).catch(function(err){
         conn.umamiShare = prev; shareCtx = null;
         var msg = err && err.message === 'relogin' ? 'כדי לשמור יש להתנתק (קישור "התנתקות" בתחתית), להתחבר שוב ולנסות שוב.'
+          : err && err.message === 'other-site' ? 'הקישור הזה שייך לאתר אחר ב-Umami, לא ל-moroshabat. כדאי להעתיק את קישור השיתוף מההגדרות של האתר הנכון.'
           : err && err.message === 'auth' ? 'הקישור לא התקבל. כדאי לוודא ששיתוף (Share URL) מופעל באתר, ולהעתיק שוב.'
           : 'השמירה נכשלה: ' + (err && err.message);
         ieShowStatus('statsSetupStatus', 'error', msg);
