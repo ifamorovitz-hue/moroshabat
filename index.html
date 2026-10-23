@@ -635,7 +635,17 @@
 <script>
 (function(){
   var queue = [], started = false;
-  function isAdminDevice(){ try { return !!localStorage.getItem('moroshabatMode'); } catch(e){ return false; } }
+  try {
+    var nt = new URLSearchParams(location.search).get('notrack');
+    if (nt === '1') localStorage.setItem('moroshabatNoTrack', '1');
+    else if (nt === '0') localStorage.setItem('moroshabatNoTrack', '0');
+  } catch(e){}
+  function isAdminDevice(){
+    try {
+      var f = localStorage.getItem('moroshabatNoTrack');
+      return f === '1' || (f === null && !!localStorage.getItem('moroshabatMode'));
+    } catch(e){ return false; }
+  }
   window.moroTrack = function(name){
     if (!name || isAdminDevice()) return;
     name = String(name).slice(0, 50);
@@ -2269,7 +2279,10 @@
       ieEl('ieLoginOverlay').hidden = false;
     });
     function setEditView(on){
-      try { localStorage.setItem('moroshabatMode', on ? 'edit' : 'view'); } catch(e){}
+      try {
+        localStorage.setItem('moroshabatMode', on ? 'edit' : 'view');
+        if (localStorage.getItem('moroshabatNoTrack') === null) localStorage.setItem('moroshabatNoTrack', '1');
+      } catch(e){}
       document.body.classList.toggle('edit-mode', on);
       footerAdminLink.textContent = on ? 'חזרה לתצוגת האתר' : 'ניהול';
     }
@@ -3605,11 +3618,25 @@
       if (visits >= 20 && leads === 0) insights.push('היו ' + fmtNum(visits) + ' ביקורים בלי אף פנייה. אולי כדאי להבליט את כפתורי הפנייה.');
       html += '<div class="stats-section"><h3>מסקנות מהירות</h3>' + (insights.length ? '<ul>' + insights.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>' : '<p class="stats-empty">עוד אין מספיק נתונים למסקנות. הנתונים מתחילים להצטבר מרגע שהחיבור הופעל.</p>') + '</div>';
 
-      html += '<p class="stats-note">הנתונים אנונימיים ומגיעים משירות Umami. גולשים עם חוסם פרסומות עלולים לא להיספר, ולכן המספרים מעט נמוכים מהמציאות. הכניסות שלך כמנהלת, מהדפדפן הזה, לא נספרות. <a href="#" id="statsReconfig">שינוי חיבור</a> · <a href="https://cloud.umami.is" target="_blank" rel="noopener">לדשבורד המלא ב-Umami</a></p>';
+      html += '<p class="stats-note">הנתונים אנונימיים ומגיעים משירות Umami. גולשים עם חוסם פרסומות עלולים לא להיספר, ולכן המספרים מעט נמוכים מהמציאות. הכניסות שלך כמנהלת, מהדפדפן הזה, לא נספרות. <a href="#" id="statsReconfig">שינוי חיבור</a> · <a href="https://cloud.umami.is" target="_blank" rel="noopener">לדשבורד המלא ב-Umami</a></p><p class="stats-note" id="statsSelfNote"></p>';
       ieEl('statsBody').innerHTML = html;
       ieEl('statsReconfig').addEventListener('click', function(e){ e.preventDefault(); renderStatsSetup(); });
+      renderSelfNote();
     }
 
+    function selfTracked(){ try { return localStorage.getItem('moroshabatNoTrack') === '0'; } catch(e){ return false; } }
+    function renderSelfNote(){
+      var el = ieEl('statsSelfNote'); if (!el) return;
+      var on = selfTracked();
+      el.innerHTML = (on ? 'הכניסות שלך מהמכשיר הזה <b>נספרות</b> (מצב בדיקה). ' : 'הכניסות שלך מהמכשיר הזה <b>לא נספרות</b>. ') +
+        '<a href="#" id="statsSelfToggle">' + (on ? 'להפסיק לספור אותן' : 'לספור אותן לצורך בדיקה') + '</a>. השינוי נכנס לתוקף בטעינה הבאה של האתר. ' +
+        'במכשיר אחר, למשל הטלפון, אפשר לפתוח פעם אחת את הכתובת עם <span dir="ltr">?notrack=1</span> בסוף כדי שלא יספרו אותך שם.';
+      ieEl('statsSelfToggle').addEventListener('click', function(e){
+        e.preventDefault();
+        try { localStorage.setItem('moroshabatNoTrack', selfTracked() ? '1' : '0'); } catch(err){}
+        renderSelfNote();
+      });
+    }
     function loadStats(){
       if (!statsConfigured()) { renderStatsSetup(); return; }
       var days = parseInt(ieEl('statsRange').value, 10) || 7;
