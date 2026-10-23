@@ -1267,7 +1267,13 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
-  setTimeout(open, 700);
+  function tryOpen(){
+    var busy = document.querySelector('#dealModalOverlay:not([hidden]), #shareOverlay:not([hidden]), #ieLoginOverlay:not([hidden])')
+      || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+    if (busy) { setTimeout(tryOpen, 3000); return; }
+    open();
+  }
+  setTimeout(tryOpen, 10000);
 })();
 </script>
 
