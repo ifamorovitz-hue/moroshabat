@@ -3364,8 +3364,7 @@
     document.addEventListener('pointercancel', finishDrag);
 
     // ---------- Stats dashboard (Umami Cloud API) ----------
-    var UMAMI_API = 'https://api.umami.is/v1';
-    var EV_OPEN = 'חבילה נפתחה: ', EV_SHARE = 'חבילה שותפה: ';
+        var EV_OPEN = 'חבילה נפתחה: ', EV_SHARE = 'חבילה שותפה: ';
     var REF_NAMES = [[/instagram/i, 'אינסטגרם'], [/facebook|fb\.com/i, 'פייסבוק'], [/whatsapp|wa\.me/i, 'וואטסאפ'], [/google/i, 'גוגל'], [/tiktok/i, 'טיקטוק'], [/t\.co|twitter|x\.com/i, 'X (טוויטר)'], [/youtube/i, 'יוטיוב'], [/bing/i, 'Bing']];
     var DEVICE_NAMES = { mobile: 'נייד', desktop: 'מחשב', laptop: 'מחשב נייד', tablet: 'טאבלט' };
 
@@ -3418,54 +3417,79 @@
       try { return new Intl.DisplayNames(['he'], { type: 'region' }).of(String(code).toUpperCase()) || code; } catch(e){ return code; }
     }
 
-    function umamiGet(path, params){
-      var q = Object.keys(params || {}).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
-      var url = UMAMI_API + '/websites/' + encodeURIComponent(contentCache.data.umamiWebsiteId) + path + (q ? '?' + q : '');
-      return fetch(url, { headers: { 'x-umami-api-key': conn.umamiKey, 'Accept': 'application/json' } }).then(function(r){
-        if (r.status === 401 || r.status === 403) throw new Error('auth');
-        if (!r.ok) throw new Error('http ' + r.status);
+    // Umami Cloud's API keys need a paid plan, so the dashboard reads the website's
+    // read-only "Share URL" instead (the same data Umami's public share page shows).
+    var UMAMI_APP = 'https://cloud.umami.is';
+    var shareCtx = null;
+    function parseShareId(v){
+      v = String(v || '').trim();
+      var m = /\/share\/([A-Za-z0-9_-]+)/.exec(v);
+      return m ? m[1] : (/^[A-Za-z0-9_-]{8,}$/.test(v) ? v : '');
+    }
+    function resolveShare(force){
+      if (shareCtx && !force) return Promise.resolve(shareCtx);
+      return fetch(UMAMI_APP + '/api/share/' + encodeURIComponent(conn.umamiShare), { headers: { 'Accept': 'application/json' } }).then(function(r){
+        if (!r.ok) throw new Error('auth');
         return r.json();
+      }).then(function(d){
+        if (!d || !d.token || !d.websiteId) throw new Error('auth');
+        shareCtx = { websiteId: d.websiteId, token: d.token };
+        return shareCtx;
+      });
+    }
+    function umamiGet(path, params, retried){
+      var q = Object.keys(params || {}).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
+      return resolveShare().then(function(ctx){
+        var url = UMAMI_APP + '/api/websites/' + encodeURIComponent(ctx.websiteId) + path + (q ? '?' + q : '');
+        return fetch(url, { headers: { 'x-umami-share-token': ctx.token, 'Accept': 'application/json' } }).then(function(r){
+          if ((r.status === 401 || r.status === 403) && !retried) { shareCtx = null; return umamiGet(path, params, true); }
+          if (r.status === 401 || r.status === 403) throw new Error('auth');
+          if (!r.ok) throw new Error('http ' + r.status);
+          return r.json();
+        });
       });
     }
 
-    function statsConfigured(){ return !!(conn && conn.umamiKey && contentCache && contentCache.data.umamiWebsiteId); }
+    function statsConfigured(){ return !!(conn && conn.umamiShare); }
 
     function renderStatsSetup(message){
-      var cur = (contentCache && contentCache.data.umamiWebsiteId) || '';
       ieEl('statsBody').innerHTML =
         '<div class="stats-section stats-setup">' +
         '<h3>חיבור לנתוני צפייה</h3>' +
-        '<p class="sub">הנתונים נאספים בשירות חינמי ואנונימי בשם Umami. צריך לחבר אותו פעם אחת:</p>' +
+        '<p class="sub">הנתונים נאספים בשירות חינמי ואנונימי בשם Umami. כדי להציג אותם כאן צריך להעתיק לינק שיתוף לקריאה בלבד:</p>' +
         '<ol>' +
-        '<li>נכנסים ל-<a href="https://cloud.umami.is" target="_blank" rel="noopener">cloud.umami.is</a> ופותחים חשבון חינם.</li>' +
-        '<li>לוחצים Add website: שם <b>moroshabat</b>, דומיין <b dir="ltr">ifamorovitz-hue.github.io</b>.</li>' +
-        '<li>בהגדרות האתר (Settings) מעתיקים את <b>Website ID</b>.</li>' +
-        '<li>בפרופיל, Settings ואז API keys, לוחצים Create key ומעתיקים את המפתח (מוצג פעם אחת).</li>' +
+        '<li>נכנסים ל-<a href="https://cloud.umami.is" target="_blank" rel="noopener">cloud.umami.is</a> ופותחים את האתר moroshabat.</li>' +
+        '<li>נכנסים ל-Settings של האתר (סמל ההגדרות), ובכרטיסיה Share URL מפעילים את האפשרות.</li>' +
+        '<li>מעתיקים את הקישור שמופיע (נראה כמו <b dir="ltr">cloud.umami.is/share/...</b>) ומדביקים כאן.</li>' +
         '</ol>' +
+        '<p class="sub">הקישור מאפשר רק לצפות בנתונים, לא לשנות. הוא נשמר מוצפן, ורק מי שמחוברת לניהול יכולה להשתמש בו כאן.</p>' +
         (message ? '<div class="ie-status error">' + statsEsc(message) + '</div>' : '') +
         '<div id="statsSetupStatus"></div>' +
-        '<label for="statsWebsiteId">Website ID</label><input type="text" id="statsWebsiteId" autocomplete="off" value="' + statsEsc(cur) + '">' +
-        '<label for="statsApiKey">API key</label><input type="password" id="statsApiKey" autocomplete="off" placeholder="api_...">' +
+        '<label for="statsShareLink">קישור שיתוף</label><input type="text" id="statsShareLink" autocomplete="off" placeholder="https://cloud.umami.is/share/...">' +
         '<button type="button" class="ie-btn" id="statsSetupSave">שמירה</button>' +
         '</div>';
       ieEl('statsSetupSave').addEventListener('click', saveStatsSetup);
     }
     function saveStatsSetup(){
-      var id = ieEl('statsWebsiteId').value.trim(), key = ieEl('statsApiKey').value.trim();
-      if (!/^[0-9a-f-]{30,}$/i.test(id)) { ieShowStatus('statsSetupStatus', 'error', 'ה-Website ID נראה לא תקין. זו מחרוזת ארוכה עם מקפים.'); return; }
-      if (!key) { ieShowStatus('statsSetupStatus', 'error', 'יש להדביק את מפתח ה-API.'); return; }
+      var id = parseShareId(ieEl('statsShareLink').value);
+      if (!id) { ieShowStatus('statsSetupStatus', 'error', 'הקישור לא נראה תקין. הוא אמור להכיל /share/ ואחריו מזהה ארוך.'); return; }
       var btn = ieEl('statsSetupSave'); btn.disabled = true;
-      ieShowStatus('statsSetupStatus', 'info', 'שומר…');
-      var prevKey = conn.umamiKey;
-      conn.umamiKey = key;
-      saveVaultWithKey().then(function(){
-        var updated = Object.assign({}, contentCache.data, { umamiWebsiteId: id });
-        return ghPutFile(CONTENT_PATH, b64EncodeUnicode(JSON.stringify(updated, null, 2)), 'חיבור לנתוני צפייה', contentCache.sha).then(function(res){
-          contentCache.data = updated; contentCache.sha = res.content.sha;
+      ieShowStatus('statsSetupStatus', 'info', 'בודק ושומר…');
+      var prev = conn.umamiShare;
+      conn.umamiShare = id; shareCtx = null;
+      resolveShare(true).then(function(ctx){
+        return saveVaultWithKey().then(function(){
+          if (contentCache.data.umamiWebsiteId === ctx.websiteId) return;
+          var updated = Object.assign({}, contentCache.data, { umamiWebsiteId: ctx.websiteId });
+          return ghPutFile(CONTENT_PATH, b64EncodeUnicode(JSON.stringify(updated, null, 2)), 'חיבור לנתוני צפייה', contentCache.sha).then(function(res){
+            contentCache.data = updated; contentCache.sha = res.content.sha;
+          });
         });
       }).then(loadStats).catch(function(err){
-        conn.umamiKey = prevKey;
-        var msg = err && err.message === 'relogin' ? 'כדי לשמור יש להתנתק (קישור "התנתקות" בתחתית), להתחבר שוב ולנסות שוב.' : 'השמירה נכשלה: ' + (err && err.message);
+        conn.umamiShare = prev; shareCtx = null;
+        var msg = err && err.message === 'relogin' ? 'כדי לשמור יש להתנתק (קישור "התנתקות" בתחתית), להתחבר שוב ולנסות שוב.'
+          : err && err.message === 'auth' ? 'הקישור לא התקבל. כדאי לוודא ששיתוף (Share URL) מופעל באתר, ולהעתיק שוב.'
+          : 'השמירה נכשלה: ' + (err && err.message);
         ieShowStatus('statsSetupStatus', 'error', msg);
         btn.disabled = false;
       });
@@ -3595,7 +3619,7 @@
         umamiGet('/metrics', Object.assign({ type: 'country', limit: 5 }, base)),
         umamiGet('/active').catch(function(){ return null; })
       ]).then(function(res){ renderStats(res, days); }).catch(function(err){
-        if (err && err.message === 'auth') renderStatsSetup('המפתח או ה-Website ID לא התקבלו. כדאי לבדוק ולהזין שוב.');
+        if (err && err.message === 'auth') renderStatsSetup('הקישור לא התקבל או שהשיתוף כובה ב-Umami. כדאי להעתיק קישור חדש.');
         else ieEl('statsBody').innerHTML = '<p class="stats-empty">לא הצלחתי לטעון את הנתונים כרגע. <button type="button" class="ie-btn secondary" id="statsRetry">ניסיון חוזר</button></p>';
         var rb = document.getElementById('statsRetry'); if (rb) rb.addEventListener('click', loadStats);
       });
