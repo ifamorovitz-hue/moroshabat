@@ -552,6 +552,45 @@
   .promo-skip{ margin-top:14px; background:none; border:0; color:var(--ink); text-decoration:underline; cursor:pointer; font-size:.95rem; }
   @media (max-width:420px){ .promo-card{ padding:26px 18px 22px; } .promo-card h2{ font-size:1.9rem; } .promo-sub{ font-size:1.3rem; } .promo-code{ gap:8px; padding:10px 12px; } .promo-code strong{ font-size:1.25rem; letter-spacing:.1em; } .promo-copy{ padding:10px 12px; font-size:.85rem; } }
 
+  /* ---------- Stats dashboard ---------- */
+  .stats-open-btn{ margin-inline-start:10px; background:transparent; border:2px solid currentColor; color:inherit; box-shadow:none; }
+  .stats-overlay{ position:fixed; inset:0; z-index:410; background:rgba(22,60,67,.6); display:flex; align-items:stretch; justify-content:center; padding:18px; }
+  .stats-overlay[hidden]{ display:none; }
+  .stats-panel{ background:var(--paper); color:var(--text); border-radius:18px; width:100%; max-width:1000px; overflow-y:auto; padding:22px 24px 30px; box-shadow:0 30px 70px -20px rgba(0,0,0,.5); }
+  .stats-head{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .stats-head h2{ font-size:1.5rem; color:var(--ink); }
+  .stats-tools{ display:flex; align-items:center; gap:10px; }
+  .stats-tools select{ padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:.92rem; background:#fff; color:var(--ink); }
+  .stats-close{ width:38px; height:38px; border-radius:50%; border:0; background:var(--mint); color:var(--ink); font-size:1.05rem; cursor:pointer; }
+  .stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px; }
+  @media (max-width:760px){ .stats-grid{ grid-template-columns:1fr 1fr; } }
+  .stat-card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat-card .lbl{ font-size:.82rem; color:var(--muted); }
+  .stat-card .val{ font-size:1.8rem; font-weight:800; color:var(--ink); line-height:1.2; margin-top:4px; }
+  .stat-card .delta{ font-size:.78rem; margin-top:2px; color:var(--muted); }
+  .stat-card .delta.up{ color:#1a7a3a; } .stat-card .delta.down{ color:#b3261e; }
+  .stat-card.accent{ background:var(--teal-dark); border-color:var(--teal-dark); }
+  .stat-card.accent .lbl, .stat-card.accent .val, .stat-card.accent .delta{ color:#fff; }
+  .stats-section{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:16px; }
+  .stats-section h3{ font-size:1.05rem; color:var(--ink); margin-bottom:4px; }
+  .stats-section .sub{ font-size:.82rem; color:var(--muted); margin:0 0 12px; }
+  .stats-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:760px){ .stats-cols{ grid-template-columns:1fr; } }
+  .bar-row{ display:grid; grid-template-columns:minmax(90px,38%) 1fr auto; gap:10px; align-items:center; padding:6px 0; font-size:.9rem; }
+  .bar-row .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink); }
+  .bar-row .bar{ height:10px; background:var(--mint); border-radius:99px; overflow:hidden; }
+  .bar-row .bar i{ display:block; height:100%; background:var(--teal); border-radius:99px; }
+  .bar-row .num{ font-weight:700; color:var(--ink); min-width:2.2em; text-align:end; }
+  .stats-empty{ color:var(--muted); font-size:.9rem; margin:6px 0; }
+  .stats-chart{ width:100%; height:auto; display:block; direction:ltr; }
+  .stats-cold{ margin-top:10px; font-size:.88rem; color:var(--muted); }
+  .stats-cold summary{ cursor:pointer; font-weight:700; color:var(--ink); }
+  .stats-note{ font-size:.8rem; color:var(--muted); margin-top:14px; line-height:1.6; }
+  .stats-setup ol{ padding-inline-start:22px; margin:10px 0 16px; color:var(--muted); line-height:1.9; }
+  .stats-setup label{ display:block; font-weight:700; font-size:.85rem; margin:12px 0 6px; color:var(--ink); }
+  .stats-setup input{ width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:.95rem; direction:ltr; text-align:left; }
+  .stats-setup .ie-btn{ margin-top:14px; }
+
   /* ---------- Accessibility widget ---------- */
   .a11y-fab{ position:fixed; z-index:250; left:14px; bottom:88px; width:52px; height:52px; border-radius:50%; border:2px solid #fff; background:#163c43; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,.35); }
   .a11y-fab svg{ width:30px; height:30px; }
@@ -593,6 +632,29 @@
     .ie-modal input[type=text], .ie-modal input[type=password], .ie-modal input[type=number], .ie-modal textarea{ font-size:16px; }
   }
 </style>
+<script>
+(function(){
+  var queue = [], started = false;
+  function isAdminDevice(){ try { return !!localStorage.getItem('moroshabatMode'); } catch(e){ return false; } }
+  window.moroTrack = function(name){
+    if (!name || isAdminDevice()) return;
+    name = String(name).slice(0, 50);
+    if (window.umami && typeof window.umami.track === 'function') window.umami.track(name);
+    else if (started) queue.push(name);
+  };
+  window.moroInitAnalytics = function(id){
+    if (started || !id || isAdminDevice()) return;
+    started = true;
+    var el = document.createElement('script');
+    el.defer = true;
+    el.src = 'https://cloud.umami.is/script.js';
+    el.setAttribute('data-website-id', id);
+    el.setAttribute('data-domains', 'ifamorovitz-hue.github.io');
+    el.onload = function(){ queue.splice(0).forEach(function(n){ if (window.umami) window.umami.track(n); }); };
+    document.head.appendChild(el);
+  };
+})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#top">דלג לתוכן הראשי</a>
@@ -687,6 +749,7 @@
         </div>
         <p id="c-packagesSubtitle">מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
         <button type="button" class="btn add-deal-btn" id="ieAddDealBtn">+ הוספת חבילה</button>
+        <button type="button" class="btn add-deal-btn stats-open-btn" id="ieStatsBtn">נתוני צפייה</button>
       </div>
 
       <div class="pkg-grid" id="pkgGrid">
@@ -1079,7 +1142,7 @@
       </button>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="terms.html" style="color:inherit;">תקנון</a> · <a href="privacy.html" style="color:inherit;">מדיניות פרטיות</a> · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a> · <a href="#" id="footerLogoutLink" style="color:inherit;">התנתקות</a></span></span>
+      <span>© 2026 moroshabat · יפעת מורוביץ · כל הזכויות שמורות · <a href="terms.html" style="color:inherit;">תקנון</a> · <a href="privacy.html" style="color:inherit;">מדיניות פרטיות</a> · <a href="accessibility.html" style="color:inherit;">הצהרת נגישות</a> · <a href="#" id="footerAdminLink" style="color:inherit;">ניהול</a> · <a href="#" id="footerDevLink" style="color:inherit;">הגדרות מפתחים</a><span class="edit-only"> · <a href="#" id="footerStatsLink" style="color:inherit;">נתוני צפייה</a> · <a href="#" id="footerPwLink" style="color:inherit;">שינוי סיסמה</a> · <a href="#" id="footerLogoutLink" style="color:inherit;">התנתקות</a></span></span>
     </div>
   </div>
 </footer>
@@ -1170,6 +1233,7 @@
     var d = window.__shareDeals && window.__shareDeals[id];
     if (!d) return;
     var url = dealUrl(id), text = dealText(d);
+    window.moroTrack('חבילה שותפה: ' + d.title);
     if (navigator.share) {
       navigator.share({ title: d.title, text: text, url: url }).catch(function(err){ if (err && err.name !== 'AbortError') openMenu(d, url, text); });
     } else openMenu(d, url, text);
@@ -1242,6 +1306,7 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   function open(){
+    window.moroTrack('קופון: הוצג');
     lastFocus = document.activeElement;
     overlay.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -1252,6 +1317,7 @@
   document.getElementById('promoCta').addEventListener('click', function(){ try { sessionStorage.setItem('moroshabatPromoSeen', '1'); } catch(e){} });
   overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
   document.getElementById('promoCopy').addEventListener('click', function(){
+    window.moroTrack('קופון: הועתק');
     var code = document.getElementById('promoCode').textContent, lbl = document.getElementById('promoCopyLabel');
     var done = function(){ lbl.textContent = 'הועתק!'; setTimeout(function(){ lbl.textContent = 'העתקת הקוד'; }, 2000); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
@@ -1397,6 +1463,26 @@
       <button type="button" class="ie-btn" id="ieTextSaveBtn">שמירה</button>
       <button type="button" class="ie-btn secondary" id="ieTextCancelBtn">ביטול</button>
     </div>
+  </div>
+</div>
+
+<!-- ---------- Stats dashboard ---------- -->
+<div class="stats-overlay" id="statsOverlay" role="dialog" aria-modal="true" aria-labelledby="statsTitle" hidden>
+  <div class="stats-panel">
+    <div class="stats-head">
+      <h2 id="statsTitle">נתוני צפייה</h2>
+      <div class="stats-tools">
+        <select id="statsRange" aria-label="טווח זמן">
+          <option value="1">היום</option>
+          <option value="7" selected>7 ימים אחרונים</option>
+          <option value="30">30 ימים אחרונים</option>
+          <option value="90">90 ימים אחרונים</option>
+        </select>
+        <button type="button" class="ie-btn secondary" id="statsRefresh">רענון</button>
+        <button type="button" class="stats-close" id="statsClose" aria-label="סגירה">✕</button>
+      </div>
+    </div>
+    <div id="statsBody"></div>
   </div>
 </div>
 
@@ -1648,6 +1734,7 @@
         if (budget) lines.push('תקציב משוער: ' + Number(budget).toLocaleString('en-US') + ' ₪ ' + (form.budgetFor.value || ''));
         if (message) lines.push('עוד פרטים: ' + message);
         sendBtn.href = 'https://wa.me/+972528403104?text=' + encodeURIComponent(lines.join('\n'));
+        window.moroTrack('טופס: נשלח');
 
         form.reset();
         setTimeout(syncDateMode, 0);
@@ -1888,6 +1975,7 @@
     }
     function openDealModal(id){
       renderDealModal(id);
+      if (DEALS[id]) window.moroTrack('חבילה נפתחה: ' + DEALS[id].title);
       if (dealModalOverlay) {
         lastFocusBeforeModal = document.activeElement;
         dealModalOverlay.hidden = false;
@@ -1981,6 +2069,7 @@
     ];
 
     function applySiteContent(c){
+      if (window.moroInitAnalytics) window.moroInitAnalytics(c.umamiWebsiteId);
       setHtmlNl('c-heroTitle', c.heroTitle);
       var introEl = document.getElementById('c-introTitle');
       if (introEl && c.introTitle != null) introEl.innerHTML = escapeHtmlNl(c.introTitle).replace(/MOROSHABAT/g, '<span class="hi">MOROSHABAT</span>');
@@ -2050,6 +2139,7 @@
     var CONTENT_PATH = 'data/site-content.json';
     var VAULT_PATH = 'data/admin-auth.json';
     var conn = null;
+    var adminKey = null;
     var contentCache = null; // {data, sha}
     var dealsCache = null;   // {data, sha}
     var editModeActive = false;
@@ -2192,7 +2282,7 @@
     var footerLogoutLink = document.getElementById('footerLogoutLink');
     if (footerLogoutLink) footerLogoutLink.addEventListener('click', function(e){
       e.preventDefault();
-      conn = null; contentCache = null; dealsCache = null; editModeActive = false;
+      conn = null; contentCache = null; dealsCache = null; editModeActive = false; adminKey = null;
       sessionClear();
       try { localStorage.removeItem('moroshabatMode'); } catch(err){}
       setEditView(false);
@@ -2238,6 +2328,7 @@
         .then(function(f){ return ghPutFile(VAULT_PATH, b64EncodeUnicode(JSON.stringify(vault, null, 2)), 'שינוי סיסמת ניהול', f.sha); })
         .then(function(){
           sessionSave(newKey);
+          adminKey = newKey;
           ieShowStatus('iePwStatus', 'ok', 'הסיסמה עודכנה.');
           setTimeout(function(){ ieEl('iePwOverlay').hidden = true; }, 900);
         })
@@ -2312,6 +2403,7 @@
         })
         .then(function(res){
           conn = res.c;
+          adminKey = res.key;
           sessionSave(res.key);
           return loadAdminData();
         })
@@ -2363,7 +2455,7 @@
         if (!rec || !rec.key || Date.now() - rec.at > SESSION_MAX_AGE) { if (rec) sessionClear(); return null; }
         return fetch('https://raw.githubusercontent.com/ifamorovitz-hue/moroshabat/main/' + VAULT_PATH + '?t=' + Date.now(), { cache: 'no-store' })
           .then(function(r){ return r.json(); })
-          .then(function(vault){ return decryptWithKey(rec.key, vault); })
+          .then(function(vault){ adminKey = rec.key; return decryptWithKey(rec.key, vault); })
           .then(function(c){ conn = c; return loadAdminData(); })
           .then(function(){
             var mode = null; try { mode = localStorage.getItem('moroshabatMode'); } catch(e){}
@@ -3270,6 +3362,301 @@
     }
     document.addEventListener('pointerup', finishDrag);
     document.addEventListener('pointercancel', finishDrag);
+
+    // ---------- Stats dashboard (Umami Cloud API) ----------
+    var UMAMI_API = 'https://api.umami.is/v1';
+    var EV_OPEN = 'חבילה נפתחה: ', EV_SHARE = 'חבילה שותפה: ';
+    var REF_NAMES = [[/instagram/i, 'אינסטגרם'], [/facebook|fb\.com/i, 'פייסבוק'], [/whatsapp|wa\.me/i, 'וואטסאפ'], [/google/i, 'גוגל'], [/tiktok/i, 'טיקטוק'], [/t\.co|twitter|x\.com/i, 'X (טוויטר)'], [/youtube/i, 'יוטיוב'], [/bing/i, 'Bing']];
+    var DEVICE_NAMES = { mobile: 'נייד', desktop: 'מחשב', laptop: 'מחשב נייד', tablet: 'טאבלט' };
+
+    function statsEsc(v){ return escapeHtml(String(v == null ? '' : v)); }
+    function fmtNum(n){ return Number(n || 0).toLocaleString('he-IL'); }
+    function statVal(x){ return (x && typeof x === 'object') ? Number(x.value || 0) : Number(x || 0); }
+    function statPrev(x){ return (x && typeof x === 'object' && x.prev != null) ? Number(x.prev) : null; }
+    function ratio(n, d){ return d > 0 ? Math.round(n / d * 1000) / 10 : 0; }
+    function fmtDuration(sec){ sec = Math.round(sec || 0); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
+    function deltaHtml(cur, prev){
+      if (prev == null || prev === 0) return '<div class="delta">&nbsp;</div>';
+      var ch = Math.round((cur - prev) / prev * 100);
+      if (ch === 0) return '<div class="delta">ללא שינוי לעומת התקופה הקודמת</div>';
+      return '<div class="delta ' + (ch > 0 ? 'up' : 'down') + '">' + (ch > 0 ? '▲ ' : '▼ ') + Math.abs(ch) + '% לעומת התקופה הקודמת</div>';
+    }
+    function barsHtml(rows, total){
+      if (!rows.length) return '<p class="stats-empty">אין עדיין נתונים.</p>';
+      var max = Math.max.apply(null, rows.map(function(r){ return r.n; })) || 1;
+      return rows.map(function(r){
+        var share = total ? ' (' + Math.round(r.n / total * 100) + '%)' : '';
+        return '<div class="bar-row"><span class="name" title="' + statsEsc(r.name) + '">' + statsEsc(r.name) + '</span><span class="bar"><i style="width:' + Math.max(2, r.n / max * 100) + '%"></i></span><span class="num">' + fmtNum(r.n) + share + '</span></div>';
+      }).join('');
+    }
+    function chartHtml(series, hourly){
+      var pts = (series || []).map(function(p){
+        var x = String(p.x);
+        var label = hourly ? (x.slice(11, 13) + ':00') : (x.slice(8, 10) + '.' + x.slice(5, 7));
+        return { label: label, y: Number(p.y || 0) };
+      });
+      if (!pts.length) return '<p class="stats-empty">אין עדיין נתונים לתקופה.</p>';
+      var W = 760, H = 190, padL = 6, padB = 26, top = 18;
+      var max = Math.max.apply(null, pts.map(function(p){ return p.y; })) || 1;
+      var bw = (W - padL * 2) / pts.length, out = '<svg class="stats-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="גרף ביקורים לפי ' + (hourly ? 'שעה' : 'יום') + '">';
+      var step = Math.ceil(pts.length / 12);
+      pts.forEach(function(p, i){
+        var h = Math.max(p.y ? 3 : 0, p.y / max * (H - padB - top));
+        var x = padL + i * bw + bw * 0.15, w = bw * 0.7;
+        out += '<rect x="' + x.toFixed(1) + '" y="' + (H - padB - h).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3" fill="#168077"/>';
+        if (pts.length <= 16 && p.y) out += '<text x="' + (x + w / 2).toFixed(1) + '" y="' + (H - padB - h - 5).toFixed(1) + '" font-size="11" text-anchor="middle" fill="#163c43" font-weight="700">' + p.y + '</text>';
+        if (i % step === 0) out += '<text x="' + (x + w / 2).toFixed(1) + '" y="' + (H - 8) + '" font-size="10.5" text-anchor="middle" fill="#54696b">' + p.label + '</text>';
+      });
+      return out + '</svg>';
+    }
+    function refName(x){
+      if (!x) return 'כניסה ישירה';
+      for (var i = 0; i < REF_NAMES.length; i++) if (REF_NAMES[i][0].test(x)) return REF_NAMES[i][1];
+      return x;
+    }
+    function countryName(code){
+      try { return new Intl.DisplayNames(['he'], { type: 'region' }).of(String(code).toUpperCase()) || code; } catch(e){ return code; }
+    }
+
+    function umamiGet(path, params){
+      var q = Object.keys(params || {}).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
+      var url = UMAMI_API + '/websites/' + encodeURIComponent(contentCache.data.umamiWebsiteId) + path + (q ? '?' + q : '');
+      return fetch(url, { headers: { 'x-umami-api-key': conn.umamiKey, 'Accept': 'application/json' } }).then(function(r){
+        if (r.status === 401 || r.status === 403) throw new Error('auth');
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.json();
+      });
+    }
+
+    function statsConfigured(){ return !!(conn && conn.umamiKey && contentCache && contentCache.data.umamiWebsiteId); }
+
+    function renderStatsSetup(message){
+      var cur = (contentCache && contentCache.data.umamiWebsiteId) || '';
+      ieEl('statsBody').innerHTML =
+        '<div class="stats-section stats-setup">' +
+        '<h3>חיבור לנתוני צפייה</h3>' +
+        '<p class="sub">הנתונים נאספים בשירות חינמי ואנונימי בשם Umami. צריך לחבר אותו פעם אחת:</p>' +
+        '<ol>' +
+        '<li>נכנסים ל-<a href="https://cloud.umami.is" target="_blank" rel="noopener">cloud.umami.is</a> ופותחים חשבון חינם.</li>' +
+        '<li>לוחצים Add website: שם <b>moroshabat</b>, דומיין <b dir="ltr">ifamorovitz-hue.github.io</b>.</li>' +
+        '<li>בהגדרות האתר (Settings) מעתיקים את <b>Website ID</b>.</li>' +
+        '<li>בפרופיל, Settings ואז API keys, לוחצים Create key ומעתיקים את המפתח (מוצג פעם אחת).</li>' +
+        '</ol>' +
+        (message ? '<div class="ie-status error">' + statsEsc(message) + '</div>' : '') +
+        '<div id="statsSetupStatus"></div>' +
+        '<label for="statsWebsiteId">Website ID</label><input type="text" id="statsWebsiteId" autocomplete="off" value="' + statsEsc(cur) + '">' +
+        '<label for="statsApiKey">API key</label><input type="password" id="statsApiKey" autocomplete="off" placeholder="api_...">' +
+        '<button type="button" class="ie-btn" id="statsSetupSave">שמירה</button>' +
+        '</div>';
+      ieEl('statsSetupSave').addEventListener('click', saveStatsSetup);
+    }
+    function saveStatsSetup(){
+      var id = ieEl('statsWebsiteId').value.trim(), key = ieEl('statsApiKey').value.trim();
+      if (!/^[0-9a-f-]{30,}$/i.test(id)) { ieShowStatus('statsSetupStatus', 'error', 'ה-Website ID נראה לא תקין. זו מחרוזת ארוכה עם מקפים.'); return; }
+      if (!key) { ieShowStatus('statsSetupStatus', 'error', 'יש להדביק את מפתח ה-API.'); return; }
+      var btn = ieEl('statsSetupSave'); btn.disabled = true;
+      ieShowStatus('statsSetupStatus', 'info', 'שומר…');
+      var prevKey = conn.umamiKey;
+      conn.umamiKey = key;
+      saveVaultWithKey().then(function(){
+        var updated = Object.assign({}, contentCache.data, { umamiWebsiteId: id });
+        return ghPutFile(CONTENT_PATH, b64EncodeUnicode(JSON.stringify(updated, null, 2)), 'חיבור לנתוני צפייה', contentCache.sha).then(function(res){
+          contentCache.data = updated; contentCache.sha = res.content.sha;
+        });
+      }).then(loadStats).catch(function(err){
+        conn.umamiKey = prevKey;
+        var msg = err && err.message === 'relogin' ? 'כדי לשמור יש להתנתק (קישור "התנתקות" בתחתית), להתחבר שוב ולנסות שוב.' : 'השמירה נכשלה: ' + (err && err.message);
+        ieShowStatus('statsSetupStatus', 'error', msg);
+        btn.disabled = false;
+      });
+    }
+    function saveVaultWithKey(){
+      if (!adminKey) return Promise.reject(new Error('relogin'));
+      var iv = crypto.getRandomValues(new Uint8Array(12));
+      return ghGetFile(VAULT_PATH).then(function(f){
+        var vault = JSON.parse(b64DecodeUnicode(f.content));
+        return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, adminKey, new TextEncoder().encode(JSON.stringify(conn))).then(function(ct){
+          vault.iv = bufToB64(iv); vault.data = bufToB64(ct);
+          return ghPutFile(VAULT_PATH, b64EncodeUnicode(JSON.stringify(vault, null, 2)), 'עדכון חיבור לנתוני צפייה', f.sha);
+        });
+      }).catch(function(err){
+        if (err && err.name === 'InvalidAccessError') throw new Error('relogin');
+        throw err;
+      });
+    }
+
+    function renderStats(res, days){
+      var stats = res[0] || {}, series = res[1] || {}, evRows = res[2] || [], refs = res[3] || [], devs = res[4] || [], ctry = res[5] || [], active = res[6];
+      var visits = statVal(stats.visits), visitors = statVal(stats.visitors), views = statVal(stats.pageviews);
+      var bounces = statVal(stats.bounces), totalTime = statVal(stats.totaltime);
+      var ev = {};
+      evRows.forEach(function(e){ ev[e.x] = Number(e.y || 0); });
+      function sumPrefix(prefix){ var t = 0; Object.keys(ev).forEach(function(k){ if (k.indexOf(prefix) === 0) t += ev[k]; }); return t; }
+
+      var leadsForm = ev['טופס: נשלח'] || 0, leadsWa = sumPrefix('וואטסאפ: '), leadsPhone = sumPrefix('טלפון: ');
+      var leads = leadsForm + leadsWa + leadsPhone;
+      var activeNow = active ? (active.visitors != null ? active.visitors : (active.x != null ? active.x : 0)) : 0;
+
+      var html = '<div class="stats-grid">' +
+        '<div class="stat-card"><div class="lbl">מבקרים</div><div class="val">' + fmtNum(visitors) + '</div>' + deltaHtml(visitors, statPrev(stats.visitors)) + '</div>' +
+        '<div class="stat-card"><div class="lbl">ביקורים</div><div class="val">' + fmtNum(visits) + '</div>' + deltaHtml(visits, statPrev(stats.visits)) + '</div>' +
+        '<div class="stat-card"><div class="lbl">צפיות בדף</div><div class="val">' + fmtNum(views) + '</div>' + deltaHtml(views, statPrev(stats.pageviews)) + '</div>' +
+        '<div class="stat-card"><div class="lbl">גולשים כרגע</div><div class="val">' + fmtNum(activeNow) + '</div><div class="delta">&nbsp;</div></div>' +
+        '<div class="stat-card accent"><div class="lbl">פניות ליפעת</div><div class="val">' + fmtNum(leads) + '</div><div class="delta">טופס, וואטסאפ וטלפון</div></div>' +
+        '<div class="stat-card accent"><div class="lbl">אחוז פנייה</div><div class="val">' + ratio(leads, visits) + '%</div><div class="delta">מכלל הביקורים</div></div>' +
+        '<div class="stat-card"><div class="lbl">נטישה מיידית</div><div class="val">' + ratio(bounces, visits) + '%</div><div class="delta">ביקור שנגמר בלי פעולה</div></div>' +
+        '<div class="stat-card"><div class="lbl">משך ביקור ממוצע</div><div class="val">' + fmtDuration(visits ? totalTime / visits : 0) + '</div><div class="delta">דקות:שניות</div></div>' +
+        '</div>';
+
+      html += '<div class="stats-section"><h3>ביקורים ' + (days <= 1 ? 'לפי שעה' : 'לפי יום') + '</h3>' + chartHtml(series.sessions, days <= 1) + '</div>';
+
+      var steps = [
+        ['ביקורים באתר', visits],
+        ['הגיעו לחבילות', ev['גלילה: הגיע לחבילות'] || 0],
+        ['פתחו חבילה', sumPrefix(EV_OPEN)],
+        ['התחילו למלא טופס', ev['טופס: התחלה'] || 0],
+        ['פנו ליפעת', leads]
+      ];
+      html += '<div class="stats-section"><h3>מסלול הגולשים</h3><p class="sub">כמה פעולות נרשמו בכל שלב (פעולות, לא אנשים ייחודיים).</p>' +
+        barsHtml(steps.map(function(st){ return { name: st[0], n: st[1] }; }), visits) + '</div>';
+
+      var dealMap = {};
+      function dealRow(suffix){ return dealMap[suffix] || (dealMap[suffix] = { name: suffix, opens: 0, shares: 0 }); }
+      Object.keys(ev).forEach(function(k){
+        if (k.indexOf(EV_OPEN) === 0) dealRow(k.slice(EV_OPEN.length)).opens += ev[k];
+        else if (k.indexOf(EV_SHARE) === 0) dealRow(k.slice(EV_SHARE.length)).shares += ev[k];
+      });
+      ((dealsCache && dealsCache.data) || []).filter(function(d){ return d.active !== false; }).forEach(function(d){ dealRow((EV_OPEN + d.title).slice(0, 50).slice(EV_OPEN.length)); });
+      var dealRows = Object.keys(dealMap).map(function(k){ return dealMap[k]; }).sort(function(a, b){ return (b.opens + b.shares) - (a.opens + a.shares); });
+      var hotRows = dealRows.filter(function(r){ return r.opens || r.shares; }), coldRows = dealRows.filter(function(r){ return !r.opens && !r.shares; });
+      var dealMax = Math.max(hotRows.length ? hotRows[0].opens : 1, 1);
+      html += '<div class="stats-section"><h3>החבילות לפי עניין</h3><p class="sub">פתיחות של פרטי החבילה, ושיתופים.</p>' +
+        (hotRows.length ? hotRows.slice(0, 10).map(function(r){
+          return '<div class="bar-row"><span class="name" title="' + statsEsc(r.name) + '">' + statsEsc(r.name) + '</span><span class="bar"><i style="width:' + (r.opens ? Math.max(2, r.opens / dealMax * 100) : 0) + '%"></i></span><span class="num">' + fmtNum(r.opens) + (r.shares ? ' · שותפה ' + fmtNum(r.shares) : '') + '</span></div>';
+        }).join('') : '<p class="stats-empty">אין עדיין פתיחות של חבילות בתקופה הזו.</p>') +
+        (hotRows.length > 10 ? '<p class="stats-empty">ועוד ' + (hotRows.length - 10) + ' חבילות עם פתיחות.</p>' : '') +
+        (coldRows.length ? '<details class="stats-cold"><summary>' + coldRows.length + ' חבילות בלי פתיחות</summary>' + coldRows.map(function(r){ return '<div class="stats-empty">' + statsEsc(r.name) + '</div>'; }).join('') + '</details>' : '') +
+        '</div>';
+
+      var contactRows = [], otherRows = [];
+      Object.keys(ev).forEach(function(k){
+        if (k.indexOf(EV_OPEN) === 0 || k.indexOf(EV_SHARE) === 0 || k.indexOf('גלילה: ') === 0 || k === 'טופס: התחלה') return;
+        var row = { name: k, n: ev[k] };
+        if (k === 'טופס: נשלח' || k.indexOf('וואטסאפ: ') === 0 || k.indexOf('טלפון: ') === 0) contactRows.push(row); else otherRows.push(row);
+      });
+      var byN = function(a, b){ return b.n - a.n; };
+      html += '<div class="stats-cols">' +
+        '<div class="stats-section"><h3>איך פונים אליך</h3><p class="sub">ערוצי הפנייה שעובדים.</p>' + barsHtml(contactRows.sort(byN), 0) + '</div>' +
+        '<div class="stats-section"><h3>פעולות נוספות</h3><p class="sub">קופון, קבוצה, רשתות ושיתופים.</p>' + barsHtml(otherRows.sort(byN), 0) + '</div>' +
+        '</div>';
+
+      var refTotal = refs.reduce(function(t, r){ return t + Number(r.y || 0); }, 0);
+      var refMap = {};
+      refs.forEach(function(r){ var n = refName(r.x); refMap[n] = (refMap[n] || 0) + Number(r.y || 0); });
+      var refRows = Object.keys(refMap).map(function(k){ return { name: k, n: refMap[k] }; });
+      var direct = visits - refTotal;
+      if (direct > 0) refRows.push({ name: 'כניסה ישירה / לא ידוע', n: direct });
+      refRows.sort(byN);
+      var devTotal = devs.reduce(function(t, r){ return t + Number(r.y || 0); }, 0);
+      var devRows = devs.map(function(r){ return { name: DEVICE_NAMES[r.x] || r.x, n: Number(r.y || 0) }; });
+      var ctryRows = ctry.map(function(r){ return { name: countryName(r.x), n: Number(r.y || 0) }; });
+      html += '<div class="stats-cols">' +
+        '<div class="stats-section"><h3>מאיפה מגיעים</h3>' + barsHtml(refRows.slice(0, 8), visits) + '</div>' +
+        '<div class="stats-section"><h3>באיזה מכשיר</h3>' + barsHtml(devRows, devTotal) + '<h3 style="margin-top:14px">מאילו מדינות</h3>' + barsHtml(ctryRows, 0) + '</div>' +
+        '</div>';
+
+      var insights = [];
+      if (dealRows.length && (dealRows[0].opens + dealRows[0].shares) > 0) insights.push('החבילה שהכי מעניינת את הגולשים: ' + statsEsc(dealRows[0].name) + '.');
+      var cold = dealRows.filter(function(r){ return !r.opens && !r.shares; });
+      if (cold.length && dealRows.length > cold.length) insights.push(cold.length + ' חבילות לא נפתחו אף פעם בתקופה הזו. כדאי לשקול לשנות להן תמונה, כותרת או מחיר.');
+      var mob = devs.filter(function(r){ return r.x === 'mobile'; })[0];
+      if (mob && devTotal) insights.push(Math.round(Number(mob.y) / devTotal * 100) + '% מהגולשים מגיעים מהנייד.');
+      if (visits >= 20 && leads === 0) insights.push('היו ' + fmtNum(visits) + ' ביקורים בלי אף פנייה. אולי כדאי להבליט את כפתורי הפנייה.');
+      html += '<div class="stats-section"><h3>מסקנות מהירות</h3>' + (insights.length ? '<ul>' + insights.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>' : '<p class="stats-empty">עוד אין מספיק נתונים למסקנות. הנתונים מתחילים להצטבר מרגע שהחיבור הופעל.</p>') + '</div>';
+
+      html += '<p class="stats-note">הנתונים אנונימיים ומגיעים משירות Umami. גולשים עם חוסם פרסומות עלולים לא להיספר, ולכן המספרים מעט נמוכים מהמציאות. הכניסות שלך כמנהלת, מהדפדפן הזה, לא נספרות. <a href="#" id="statsReconfig">שינוי חיבור</a> · <a href="https://cloud.umami.is" target="_blank" rel="noopener">לדשבורד המלא ב-Umami</a></p>';
+      ieEl('statsBody').innerHTML = html;
+      ieEl('statsReconfig').addEventListener('click', function(e){ e.preventDefault(); renderStatsSetup(); });
+    }
+
+    function loadStats(){
+      if (!statsConfigured()) { renderStatsSetup(); return; }
+      var days = parseInt(ieEl('statsRange').value, 10) || 7;
+      var end = Date.now(), start;
+      if (days === 1) { var d0 = new Date(); d0.setHours(0, 0, 0, 0); start = d0.getTime(); } else start = end - days * 86400000;
+      var base = { startAt: start, endAt: end };
+      ieEl('statsBody').innerHTML = '<p class="stats-empty">טוען נתונים…</p>';
+      Promise.all([
+        umamiGet('/stats', base),
+        umamiGet('/pageviews', Object.assign({ unit: days <= 1 ? 'hour' : 'day', timezone: 'Asia/Jerusalem' }, base)),
+        umamiGet('/metrics', Object.assign({ type: 'event', limit: 500 }, base)),
+        umamiGet('/metrics', Object.assign({ type: 'referrer', limit: 50 }, base)),
+        umamiGet('/metrics', Object.assign({ type: 'device', limit: 6 }, base)),
+        umamiGet('/metrics', Object.assign({ type: 'country', limit: 5 }, base)),
+        umamiGet('/active').catch(function(){ return null; })
+      ]).then(function(res){ renderStats(res, days); }).catch(function(err){
+        if (err && err.message === 'auth') renderStatsSetup('המפתח או ה-Website ID לא התקבלו. כדאי לבדוק ולהזין שוב.');
+        else ieEl('statsBody').innerHTML = '<p class="stats-empty">לא הצלחתי לטעון את הנתונים כרגע. <button type="button" class="ie-btn secondary" id="statsRetry">ניסיון חוזר</button></p>';
+        var rb = document.getElementById('statsRetry'); if (rb) rb.addEventListener('click', loadStats);
+      });
+    }
+    function openStats(){
+      ieEl('statsOverlay').hidden = false;
+      document.body.style.overflow = 'hidden';
+      loadStats();
+    }
+    function closeStats(){ ieEl('statsOverlay').hidden = true; document.body.style.overflow = ''; }
+    ieEl('ieStatsBtn').addEventListener('click', openStats);
+    ieEl('footerStatsLink').addEventListener('click', function(e){ e.preventDefault(); openStats(); });
+    ieEl('statsClose').addEventListener('click', closeStats);
+    ieEl('statsRefresh').addEventListener('click', loadStats);
+    ieEl('statsRange').addEventListener('change', loadStats);
+    ieEl('statsOverlay').addEventListener('click', function(e){ if (e.target === ieEl('statsOverlay')) closeStats(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !ieEl('statsOverlay').hidden) closeStats(); });
+
+    // ---------- Site analytics events (anonymous, via Umami) ----------
+    var CLICK_NAMES = {
+      'c-talkBtn': 'וואטסאפ: בואו נדבר (שורה תחתונה)',
+      'c-linkWaDirect': 'וואטסאפ: הודעה (יצירת קשר)',
+      'c-linkWaDirect2': 'וואטסאפ: קישור חלופי בטופס',
+      'c-linkWaDirect3': 'וואטסאפ: אייקון בתחתית',
+      'c-linkPhone': 'טלפון: מדור יצירת קשר',
+      'c-linkPhone2': 'טלפון: שורה תחתונה',
+      'c-linkWaGroup': 'קבוצת וואטסאפ: יצירת קשר',
+      'c-linkWaGroup2': 'קבוצת וואטסאפ: מדור הקהילה',
+      'c-linkFb': 'פייסבוק: יצירת קשר', 'c-linkFb2': 'פייסבוק: תחתית',
+      'c-linkIg': 'אינסטגרם: יצירת קשר', 'c-linkIg2': 'אינסטגרם: תחתית',
+      'promoCta': 'קופון: לחיצה על ההנחה',
+      'dealCtaLink': 'כפתור הצעה: חלון חבילה',
+      'siteShareBtn': 'שיתוף האתר'
+    };
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a, button');
+      if (!a) return;
+      var name = CLICK_NAMES[a.id];
+      if (!name && a.classList.contains('btn')) {
+        if (a.closest('.hero')) name = 'כפתור הצעה: ראש הדף';
+        else if (a.closest('.cta-band')) name = 'כפתור הצעה: פס האמצע';
+      }
+      if (name) window.moroTrack(name);
+    }, true);
+    var formStarted = false;
+    var contactFormEl = document.getElementById('contactForm');
+    if (contactFormEl) contactFormEl.addEventListener('focusin', function(){
+      if (formStarted) return;
+      formStarted = true;
+      window.moroTrack('טופס: התחלה');
+    });
+    if ('IntersectionObserver' in window) {
+      [['packages', 'גלילה: הגיע לחבילות'], ['testimonials', 'גלילה: הגיע להמלצות'], ['contactForm', 'גלילה: הגיע לטופס']].forEach(function(pair){
+        var el = document.getElementById(pair[0]);
+        if (!el) return;
+        var io = new IntersectionObserver(function(entries){
+          if (entries[0].isIntersecting) { window.moroTrack(pair[1]); io.disconnect(); }
+        }, { threshold: 0, rootMargin: '0px 0px -25% 0px' });
+        io.observe(el);
+      });
+    }
 
     loadSiteContent();
     loadDeals();
