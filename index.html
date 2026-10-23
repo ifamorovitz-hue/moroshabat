@@ -636,9 +636,21 @@
 (function(){
   var queue = [], started = false;
   try {
-    var nt = new URLSearchParams(location.search).get('notrack');
-    if (nt === '1') localStorage.setItem('moroshabatNoTrack', '1');
-    else if (nt === '0') localStorage.setItem('moroshabatNoTrack', '0');
+    var qs = new URLSearchParams(location.search), nt = qs.get('notrack');
+    if (nt === '1' || nt === '0') {
+      localStorage.setItem('moroshabatNoTrack', nt);
+      qs.delete('notrack');
+      var clean = location.pathname + (qs.toString() ? '?' + qs.toString() : '') + location.hash;
+      history.replaceState(null, '', clean);
+      document.addEventListener('DOMContentLoaded', function(){
+        var t = document.createElement('div');
+        t.setAttribute('role', 'status');
+        t.style.cssText = 'position:fixed;z-index:9999;left:50%;bottom:90px;transform:translateX(-50%);max-width:90vw;background:#163c43;color:#fff;padding:14px 22px;border-radius:14px;font:600 15px/1.5 Heebo,Arial,sans-serif;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.35)';
+        t.textContent = nt === '1' ? 'המכשיר הזה לא ייספר בסטטיסטיקה של האתר ✓' : 'המכשיר הזה ייספר שוב בסטטיסטיקה של האתר';
+        document.body.appendChild(t);
+        setTimeout(function(){ t.remove(); }, 6000);
+      });
+    }
   } catch(e){}
   function isAdminDevice(){
     try {
