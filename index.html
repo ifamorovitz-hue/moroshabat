@@ -3446,7 +3446,7 @@
       var q = Object.keys(params || {}).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
       return resolveShare().then(function(ctx){
         var url = shareBase() + '/api/websites/' + encodeURIComponent(ctx.websiteId) + path + (q ? '?' + q : '');
-        return fetch(url, { headers: { 'x-umami-share-token': ctx.token, 'Accept': 'application/json' } }).then(function(r){
+        return fetch(url, { headers: { 'x-umami-share-token': ctx.token, 'x-umami-share-context': '1', 'Accept': 'application/json' } }).then(function(r){
           if ((r.status === 401 || r.status === 403) && !retried) { shareCtx = null; return umamiGet(path, params, true); }
           if (r.status === 401 || r.status === 403) throw new Error('auth');
           if (!r.ok) throw new Error('http ' + r.status);
@@ -3517,6 +3517,7 @@
 
     function renderStats(res, days){
       var stats = res[0] || {}, series = res[1] || {}, evRows = res[2] || [], refs = res[3] || [], devs = res[4] || [], ctry = res[5] || [], active = res[6];
+      function prevOf(k){ return stats.comparison && stats.comparison[k] != null ? Number(stats.comparison[k]) : statPrev(stats[k]); }
       var visits = statVal(stats.visits), visitors = statVal(stats.visitors), views = statVal(stats.pageviews);
       var bounces = statVal(stats.bounces), totalTime = statVal(stats.totaltime);
       var ev = {};
@@ -3528,9 +3529,9 @@
       var activeNow = active ? (active.visitors != null ? active.visitors : (active.x != null ? active.x : 0)) : 0;
 
       var html = '<div class="stats-grid">' +
-        '<div class="stat-card"><div class="lbl">מבקרים</div><div class="val">' + fmtNum(visitors) + '</div>' + deltaHtml(visitors, statPrev(stats.visitors)) + '</div>' +
-        '<div class="stat-card"><div class="lbl">ביקורים</div><div class="val">' + fmtNum(visits) + '</div>' + deltaHtml(visits, statPrev(stats.visits)) + '</div>' +
-        '<div class="stat-card"><div class="lbl">צפיות בדף</div><div class="val">' + fmtNum(views) + '</div>' + deltaHtml(views, statPrev(stats.pageviews)) + '</div>' +
+        '<div class="stat-card"><div class="lbl">מבקרים</div><div class="val">' + fmtNum(visitors) + '</div>' + deltaHtml(visitors, prevOf('visitors')) + '</div>' +
+        '<div class="stat-card"><div class="lbl">ביקורים</div><div class="val">' + fmtNum(visits) + '</div>' + deltaHtml(visits, prevOf('visits')) + '</div>' +
+        '<div class="stat-card"><div class="lbl">צפיות בדף</div><div class="val">' + fmtNum(views) + '</div>' + deltaHtml(views, prevOf('pageviews')) + '</div>' +
         '<div class="stat-card"><div class="lbl">גולשים כרגע</div><div class="val">' + fmtNum(activeNow) + '</div><div class="delta">&nbsp;</div></div>' +
         '<div class="stat-card accent"><div class="lbl">פניות ליפעת</div><div class="val">' + fmtNum(leads) + '</div><div class="delta">טופס, וואטסאפ וטלפון</div></div>' +
         '<div class="stat-card accent"><div class="lbl">אחוז פנייה</div><div class="val">' + ratio(leads, visits) + '%</div><div class="delta">מכלל הביקורים</div></div>' +
