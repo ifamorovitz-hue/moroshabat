@@ -3045,7 +3045,7 @@
       if (/סוף שנה/.test(head)) return 'סוף שנה';
       return '';
     }
-    function inPlace(d){ return 'ב' + (d.charAt(0) === 'ו' ? 'ו' : '') + d; }
+    function inPlace(d){ return 'ב' + d; }
     function plainTitle(t){
       return window.moroStripEmoji(t).replace(/[,.:;!?"״׳–—]/g, ' ').replace(/[*#]+/g, '').replace(/\s{2,}/g, ' ').trim();
     }
