@@ -974,8 +974,7 @@
         <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
         <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
         <div id="c-introText" class="about-intro">
-          <p id="c-introText1">אני מציעה את חבילות החופשה הטובות ביותר מאז 2022.</p>
-          <p id="c-introText2">אני מבטיחה שכל טיול שתזמינו אצלי יהיה ייחודי ובלתי נשכח.</p>
+          <p id="c-introText1">אני מבטיחה שכל טיול שתזמינו אצלי יהיה ייחודי ובלתי נשכח.</p>
         </div>
         <ul class="about-why">
           <li><strong id="c-why1Title">ליווי אישי צמוד</strong><span id="c-why1Text">מהרגע שאתם מזמינים ועד שאתם חוזרים הביתה, יש לכם כתובת אחת.</span></li>
@@ -2152,9 +2151,7 @@
     function setHref(id, val){ var el = document.getElementById(id); if (el && val) el.setAttribute('href', val); }
     function setIntroText(val){
       if (val == null) return;
-      var parts = val.split('\n');
-      setText('c-introText1', parts[0] || '');
-      setText('c-introText2', parts.slice(1).join('\n') || '');
+      setHtmlNl('c-introText1', val);
     }
 
     var IMAGE_FIELD_MAP = [
