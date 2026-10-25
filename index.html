@@ -216,7 +216,10 @@
   .pkg-urgent{ position:absolute; z-index:2; bottom:12px; inset-inline-start:14px; background:#d93a2f; color:#fff; font-size:.8rem; font-weight:800; padding:6px 12px; border-radius:100px; }
   .pkg-tabs{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px; }
   .pkg-tab{ background:rgba(255,255,255,.1); color:var(--cream); border:1.5px solid rgba(255,255,255,.35); border-radius:999px; padding:9px 20px; font:700 .95rem/1 inherit; font-family:inherit; cursor:pointer; }
-  .pkg-tab .cnt{ opacity:.8; font-weight:600; margin-inline-start:6px; }
+  .pkg-tab .cnt{ background:rgba(255,255,255,.2); border-radius:99px; padding:2px 7px; font-size:.78em; font-weight:700; margin-inline-start:7px; }
+  .pkg-tab[aria-pressed="true"] .cnt{ background:rgba(22,60,67,.15); }
+  #pkgMoreBtn[hidden]{ display:none; }
+  .pkg-tab-lm{ border-color:#ff8f86; }
   .pkg-tab[aria-pressed="true"]{ background:var(--yellow); border-color:var(--yellow); color:var(--yellow-ink); }
   .pkg-more-wrap{ display:flex; justify-content:center; margin-top:34px; }
   .pkg-empty{ grid-column:1/-1; text-align:center; color:var(--muted-on-ink); padding:30px 0; }
@@ -224,6 +227,11 @@
   @media (max-width:960px){ .pkg-grid{ grid-template-columns:1fr 1fr; } }
   @media (max-width:620px){
     .pkg-grid{ grid-template-columns:1fr; gap:14px; }
+    .pkg-tabs{ flex-wrap:nowrap; gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+    .pkg-tab{ flex:0 0 auto; padding:8px 9px; font-size:.8rem; }
+    .pkg-tab .cnt{ margin-inline-start:4px; padding:1px 5px; font-size:.72em; }
+    .pkg-grid .pkg-urgent{ top:36px; bottom:auto; inset-inline-start:8px; max-width:calc(100% - 16px); font-size:.64rem; padding:3px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .lm-section{ display:none; }
     /* phone: one horizontal row per deal, photo on the start side, price at the end */
     .pkg-grid .pkg-card{ flex-direction:row; min-height:150px; border-radius:14px; }
     .pkg-grid .pkg-media{ flex:0 0 128px; width:128px; height:auto; min-height:150px; }
@@ -2026,37 +2034,44 @@
       renderDealsView();
     }
 
+    // On phones the "דקה 90" strip becomes a filter tab and its deals join the list as ordinary rows
+    var phoneMq = window.matchMedia ? window.matchMedia('(max-width:620px)') : { matches: false };
     function renderDealsView(){
-      var lm = pkgState.lm, regular = pkgState.regular;
+      var lm = pkgState.lm, regular = pkgState.regular, phone = phoneMq.matches;
       var lmSection = document.getElementById('lmSection'), lmStrip = document.getElementById('lmStrip');
       lmStrip.innerHTML = '';
-      lm.forEach(function(d){ lmStrip.appendChild(renderPkgCard(d, { urgent: true, noMove: true })); });
-      lmSection.hidden = !lm.length;
+      if (!phone) lm.forEach(function(d){ lmStrip.appendChild(renderPkgCard(d, { urgent: true, noMove: true })); });
+      lmSection.hidden = phone || !lm.length;
 
-      var counts = { all: regular.length, hotel: 0, cruise: 0 };
-      regular.forEach(function(d){ counts[dealKind(d)]++; });
+      var base = phone ? lm.concat(regular) : regular;
+      var counts = { all: base.length, lm: phone ? lm.length : 0, hotel: 0, cruise: 0 };
+      base.forEach(function(d){ counts[dealKind(d)]++; });
       if (pkgFilter !== 'all' && !counts[pkgFilter]) pkgFilter = 'all';
-      var tabs = [['all', 'הכל'], ['hotel', 'מלונות'], ['cruise', 'קרוזים']].filter(function(t){ return t[0] === 'all' || counts[t[0]]; });
+      var tabs = [['all', 'הכל'], ['lm', 'דקה 90'], ['hotel', 'מלונות'], ['cruise', 'קרוזים']].filter(function(t){ return t[0] === 'all' || counts[t[0]]; });
       var tabsEl = document.getElementById('pkgTabs');
       tabsEl.innerHTML = '';
       tabsEl.hidden = tabs.length < 2;
       tabs.forEach(function(t){
         var b = document.createElement('button');
-        b.type = 'button'; b.className = 'pkg-tab'; b.setAttribute('data-pkg-filter', t[0]);
+        b.type = 'button'; b.className = 'pkg-tab' + (t[0] === 'lm' ? ' pkg-tab-lm' : ''); b.setAttribute('data-pkg-filter', t[0]);
         b.setAttribute('aria-pressed', String(pkgFilter === t[0]));
         b.innerHTML = escapeHtml(t[1]) + '<span class="cnt">' + counts[t[0]] + '</span>';
         tabsEl.appendChild(b);
       });
 
-      var shownList = regular.filter(function(d){ return pkgFilter === 'all' || dealKind(d) === pkgFilter; });
+      var shownList = base.filter(function(d){ return pkgFilter === 'all' || (pkgFilter === 'lm' ? isLastMinute(d) : dealKind(d) === pkgFilter); });
       pkgGrid.innerHTML = '';
-      shownList.slice(0, pkgShown).forEach(function(d){ pkgGrid.appendChild(renderPkgCard(d)); });
+      shownList.slice(0, pkgShown).forEach(function(d){
+        var urgent = phone && isLastMinute(d);
+        pkgGrid.appendChild(renderPkgCard(d, urgent ? { urgent: true, noMove: true } : undefined));
+      });
       if (!shownList.length && !lm.length) pkgGrid.innerHTML = '<p class="pkg-empty">אין חבילות להצגה כרגע. כתבו לי ואבנה לכם חופשה אישית.</p>';
       var more = document.getElementById('pkgMoreBtn');
       var left = shownList.length - pkgShown;
       more.hidden = left <= 0;
       more.textContent = 'הצג עוד (' + Math.max(left, 0) + ')';
     }
+    (phoneMq.addEventListener ? phoneMq.addEventListener.bind(phoneMq, 'change') : function(){})(function(){ PKG_PAGE = phoneMq.matches ? 6 : 9; pkgShown = PKG_PAGE; renderDealsView(); });
     document.addEventListener('click', function(e){
       var tab = e.target.closest && e.target.closest('[data-pkg-filter]');
       if (tab) {
