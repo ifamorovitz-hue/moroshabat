@@ -204,6 +204,21 @@
   .packages-head p{ color:var(--muted-on-ink); max-width:40ch; margin-top:14px; }
 
   .pkg-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .lm-section{ margin-bottom:56px; }
+  .lm-head{ display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+  .lm-head h3{ font-size:1.5rem; color:var(--cream); }
+  .lm-head p{ color:var(--muted-on-ink); margin:0; }
+  .lm-pill{ display:inline-block; background:#d93a2f; color:#fff; border-radius:999px; padding:3px 14px; font-weight:800; font-size:1.05rem; margin-inline-end:8px; }
+  .lm-strip{ display:flex; gap:22px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 2px 16px; -webkit-overflow-scrolling:touch; }
+  .lm-strip .pkg-card{ flex:0 0 min(340px,82vw); scroll-snap-align:start; }
+  @media (min-width:961px){ .lm-strip .pkg-card{ flex-basis:calc((100% - 44px)/3); } }
+  .pkg-urgent{ position:absolute; z-index:2; bottom:12px; inset-inline-start:14px; background:#d93a2f; color:#fff; font-size:.8rem; font-weight:800; padding:6px 12px; border-radius:100px; }
+  .pkg-tabs{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px; }
+  .pkg-tab{ background:rgba(255,255,255,.1); color:var(--cream); border:1.5px solid rgba(255,255,255,.35); border-radius:999px; padding:9px 20px; font:700 .95rem/1 inherit; font-family:inherit; cursor:pointer; }
+  .pkg-tab .cnt{ opacity:.8; font-weight:600; margin-inline-start:6px; }
+  .pkg-tab[aria-pressed="true"]{ background:var(--yellow); border-color:var(--yellow); color:var(--yellow-ink); }
+  .pkg-more-wrap{ display:flex; justify-content:center; margin-top:34px; }
+  .pkg-empty{ grid-column:1/-1; text-align:center; color:var(--muted-on-ink); padding:30px 0; }
   .pkg-loading{ grid-column:1/-1; text-align:center; color:var(--muted-on-ink); padding:24px 0; }
   @media (max-width:960px){ .pkg-grid{ grid-template-columns:1fr 1fr; } }
   @media (max-width:620px){ .pkg-grid{ grid-template-columns:1fr; } }
@@ -774,9 +789,20 @@
         <button type="button" class="btn add-deal-btn stats-open-btn" id="ieStatsBtn">נתוני צפייה</button>
       </div>
 
+      <section class="lm-section" id="lmSection" aria-labelledby="lmTitle" hidden>
+        <div class="lm-head">
+          <h3 id="lmTitle"><span class="lm-pill">דקה 90</span> יוצאים בקרוב</h3>
+          <p>חופשות שיוצאות בימים הקרובים. כדאי להזדרז.</p>
+        </div>
+        <div class="lm-strip" id="lmStrip"></div>
+      </section>
+
+      <div class="pkg-tabs" id="pkgTabs" role="group" aria-label="סינון חבילות"></div>
+
       <div class="pkg-grid" id="pkgGrid">
         <p class="pkg-loading" id="pkgLoading">טוען חבילות…</p>
       </div>
+      <div class="pkg-more-wrap"><button type="button" class="btn" id="pkgMoreBtn" hidden>הצג עוד</button></div>
     </div>
   </section>
 
@@ -1621,6 +1647,23 @@
         <input type="text" id="ie_tag">
       </div>
     </div>
+    <div class="ie-row">
+      <div>
+        <label>סוג החופשה *</label>
+        <div class="ie-toggle-group">
+          <label class="ie-toggle-btn"><input type="radio" name="ieKind" value="hotel"><span>מלון</span></label>
+          <label class="ie-toggle-btn"><input type="radio" name="ieKind" value="cruise"><span>קרוז</span></label>
+        </div>
+      </div>
+      <div>
+        <label for="ie_lastMinute">דקה 90</label>
+        <select id="ie_lastMinute">
+          <option value="auto">אוטומטי (שבועות לפני היציאה)</option>
+          <option value="yes">תמיד להציג כדקה 90</option>
+          <option value="no">לא להציג כדקה 90</option>
+        </select>
+      </div>
+    </div>
     <label>תאריכים *</label>
     <button type="button" class="ie-date-btn" id="ieDateRangeBtn">בחירת טווח תאריכים</button>
     <div class="ie-cal-popover" id="ieCalPopover" hidden>
@@ -1874,7 +1917,8 @@
     var pkgLoading = document.getElementById('pkgLoading');
 
     var SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
-    function renderPkgCard(d){
+    function renderPkgCard(d, opts){
+      opts = opts || {};
       var article = document.createElement('article');
       article.className = 'pkg-card';
       article.innerHTML =
@@ -1895,6 +1939,11 @@
           '</div>' +
           '<a href="#" class="pkg-cta deal-open-link" data-deal="' + escapeHtml(d.id) + '">לפרטי החופשה &gt;</a>' +
         '</div>';
+      if (opts.urgent && urgentLabel(d)) {
+        var urgent = document.createElement('span');
+        urgent.className = 'pkg-urgent'; urgent.textContent = urgentLabel(d);
+        article.querySelector('.pkg-media').appendChild(urgent);
+      }
       var shareBtn = document.createElement('button');
       shareBtn.type = 'button'; shareBtn.className = 'pkg-share-btn';
       shareBtn.setAttribute('data-share-deal', d.id); shareBtn.setAttribute('aria-label', 'שיתוף החבילה: ' + d.title);
@@ -1905,12 +1954,33 @@
         var actions = document.createElement('div');
         actions.className = 'pkg-admin-actions';
         actions.innerHTML =
-          '<button type="button" class="pkg-move-btn" data-move-deal="' + escapeHtml(d.id) + '" aria-label="גרירה לשינוי סדר"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M2 12l3-3M2 12l3 3M22 12l-3-3M22 12l-3 3"/></svg></button>' +
+          (opts.noMove ? '' : '<button type="button" class="pkg-move-btn" data-move-deal="' + escapeHtml(d.id) + '" aria-label="גרירה לשינוי סדר"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M2 12l3-3M2 12l3 3M22 12l-3-3M22 12l-3 3"/></svg></button>') +
           '<button type="button" class="pkg-edit-btn" data-edit-deal="' + escapeHtml(d.id) + '" aria-label="עריכה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>' +
           '<button type="button" class="pkg-del-btn" data-del-deal="' + escapeHtml(d.id) + '" aria-label="מחיקה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg></button>';
         media.appendChild(actions);
       }
       return article;
+    }
+
+    var LM_DAYS = 21, PKG_PAGE = 9, pkgFilter = 'all', pkgShown = PKG_PAGE, pkgState = { regular: [], lm: [] };
+    var CRUISE_RE = /קרוז|הפלגה|שייט|אוניי|🚢/;
+    function dealKind(d){ return d.kind || (CRUISE_RE.test((d.tag || '') + ' ' + (d.title || '')) ? 'cruise' : 'hotel'); }
+    function daysUntil(d){
+      if (!d.dateFrom) return null;
+      var b = d.dateFrom.split('-');
+      return Math.round((new Date(+b[0], +b[1] - 1, +b[2]) - calToday) / 86400000);
+    }
+    function isLastMinute(d){
+      var mode = d.lastMinute || 'auto';
+      if (mode === 'no') return false;
+      if (mode === 'yes') return true;
+      var n = daysUntil(d);
+      return n !== null && n >= 0 && n <= LM_DAYS;
+    }
+    function urgentLabel(d){
+      var n = daysUntil(d);
+      if (n === null) return '';
+      return n <= 0 ? 'יוצא היום' : n === 1 ? 'יוצא מחר' : 'יוצא בעוד ' + n + ' ימים';
     }
 
     function renderDealsGrid(list){
@@ -1919,17 +1989,61 @@
       active.sort(function(a,b){ return (a.order||0) - (b.order||0); });
       DEALS = {};
       window.__shareDeals = DEALS;
-      pkgGrid.innerHTML = '';
       active.forEach(function(d){
         // Deals saved with structured dates get their display string
         // recomputed on every visit, so "this year" always reflects
         // today not the year the admin happened to save it in.
         if (d.dateFrom) d.dates = formatDateRange(d.dateFrom, d.dateTo, d.dateNote);
-        else d.dates = String(d.dates || '').replace(/\u2013/g, '-').replace(/\//g, '.');
+        else d.dates = String(d.dates || '').replace(/–/g, '-').replace(/\//g, '.');
         DEALS[d.id] = d;
-        pkgGrid.appendChild(renderPkgCard(d));
       });
+      var lm = active.filter(isLastMinute).sort(function(a, b){ return (daysUntil(a) == null ? 9999 : daysUntil(a)) - (daysUntil(b) == null ? 9999 : daysUntil(b)); });
+      var regular = active.filter(function(d){ return !isLastMinute(d); });
+      pkgState = { regular: regular, lm: lm };
+      renderDealsView();
     }
+
+    function renderDealsView(){
+      var lm = pkgState.lm, regular = pkgState.regular;
+      var lmSection = document.getElementById('lmSection'), lmStrip = document.getElementById('lmStrip');
+      lmStrip.innerHTML = '';
+      lm.forEach(function(d){ lmStrip.appendChild(renderPkgCard(d, { urgent: true, noMove: true })); });
+      lmSection.hidden = !lm.length;
+
+      var counts = { all: regular.length, hotel: 0, cruise: 0 };
+      regular.forEach(function(d){ counts[dealKind(d)]++; });
+      if (pkgFilter !== 'all' && !counts[pkgFilter]) pkgFilter = 'all';
+      var tabs = [['all', 'הכל'], ['hotel', 'מלונות'], ['cruise', 'קרוזים']].filter(function(t){ return t[0] === 'all' || counts[t[0]]; });
+      var tabsEl = document.getElementById('pkgTabs');
+      tabsEl.innerHTML = '';
+      tabsEl.hidden = tabs.length < 2;
+      tabs.forEach(function(t){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'pkg-tab'; b.setAttribute('data-pkg-filter', t[0]);
+        b.setAttribute('aria-pressed', String(pkgFilter === t[0]));
+        b.innerHTML = escapeHtml(t[1]) + '<span class="cnt">' + counts[t[0]] + '</span>';
+        tabsEl.appendChild(b);
+      });
+
+      var shownList = regular.filter(function(d){ return pkgFilter === 'all' || dealKind(d) === pkgFilter; });
+      pkgGrid.innerHTML = '';
+      shownList.slice(0, pkgShown).forEach(function(d){ pkgGrid.appendChild(renderPkgCard(d)); });
+      if (!shownList.length && !lm.length) pkgGrid.innerHTML = '<p class="pkg-empty">אין חבילות להצגה כרגע. כתבו לי ואבנה לכם חופשה אישית.</p>';
+      var more = document.getElementById('pkgMoreBtn');
+      var left = shownList.length - pkgShown;
+      more.hidden = left <= 0;
+      more.textContent = 'הצג עוד (' + Math.max(left, 0) + ')';
+    }
+    document.addEventListener('click', function(e){
+      var tab = e.target.closest && e.target.closest('[data-pkg-filter]');
+      if (tab) {
+        pkgFilter = tab.getAttribute('data-pkg-filter'); pkgShown = PKG_PAGE;
+        window.moroTrack('סינון חבילות: ' + tab.textContent.replace(/\d+$/, ''));
+        renderDealsView();
+        return;
+      }
+      if (e.target.closest && e.target.closest('#pkgMoreBtn')) { pkgShown += PKG_PAGE; window.moroTrack('הצג עוד חבילות'); renderDealsView(); }
+    });
 
     function loadDeals(){
       // Relative fetch works normally on the live site; if this page was
@@ -3001,6 +3115,8 @@
       else if (/סופ.?ש|סוף שבוע/.test(all)) out.tag = 'סופ"ש';
       else if (/מבצע/.test(all)) out.tag = 'מבצע';
       else out.tag = 'חבילת נופש';
+      out.kind = CRUISE_RE.test(text) ? 'cruise' : 'hotel';
+      out.lastMinute = /דקה\s*90/.test(text) ? 'yes' : 'auto';
 
       // Marketing copy built from the detected facts
       var ROOM_WORDS = [[/prem?i?er\s+room/ig, 'חדר פרימייר'], [/king\s+room/ig, 'חדר קינג'], [/sea\s*view/ig, 'נוף לים'], [/balcony/ig, 'מרפסת'], [/exclusive\s+access/ig, 'גישה בלעדית'], [/infeniti|infinity/ig, 'בריכת אינפיניטי']];
@@ -3121,7 +3237,7 @@
       var r = parseDealText(text);
       ieEl('ieParseOverlay').hidden = true;
       var prefill = {
-        title: r.title, tag: r.tag, dateFrom: r.dateFrom, dateTo: r.dateTo,
+        title: r.title, tag: r.tag, kind: r.kind, lastMinute: r.lastMinute, dateFrom: r.dateFrom, dateTo: r.dateTo,
         price: r.price ? formatPrice(r.price, r.currency) : '', priceNote: r.priceNote,
         cardDesc: r.cardDesc, desc: r.desc, note: r.note, priceTiers: r.tiers
       };
@@ -3147,6 +3263,9 @@
       ieEl('ieDealTitle').textContent = dealId ? 'עריכת חבילה' : 'הוספת חבילה חדשה';
       ieEl('ie_title').value = d.title || '';
       ieEl('ie_tag').value = d.tag || '';
+      var kindNow = dealKind(d);
+      document.querySelectorAll('input[name="ieKind"]').forEach(function(r){ r.checked = (r.value === kindNow); });
+      ieEl('ie_lastMinute').value = d.lastMinute || 'auto';
       selDateFrom = d.dateFrom || null;
       selDateTo = d.dateTo || null;
       updateIeDateRangeLabel();
@@ -3267,6 +3386,9 @@
 
       var d = existing || { id: genDealId() };
       d.title = title; d.tag = tag; d.meta = nightsLabel(nightsBetween(dateFrom, dateTo));
+      var kindEl = document.querySelector('input[name="ieKind"]:checked');
+      d.kind = kindEl ? kindEl.value : 'hotel';
+      d.lastMinute = ieEl('ie_lastMinute').value;
       d.dateFrom = dateFrom; d.dateTo = dateTo;
       d.dateNote = '';
       d.dates = formatDateRange(dateFrom, dateTo, d.dateNote);
@@ -3371,13 +3493,14 @@
       document.body.classList.remove('dragging-deal');
       dragCard = null;
       var ids = Array.prototype.map.call(pkgGrid.querySelectorAll('[data-edit-deal]'), function(b){ return b.getAttribute('data-edit-deal'); });
-      var current = dealsCache.data.filter(function(d){ return d.active !== false; }).sort(function(a, b){ return (a.order || 0) - (b.order || 0); }).map(function(d){ return d.id; });
-      var shown = current.filter(function(id){ return ids.indexOf(id) >= 0; });
-      if (shown.join() === ids.join()) return;
-      var rest = dealsCache.data.filter(function(d){ return ids.indexOf(d.id) < 0; }).sort(function(a, b){ return (a.order || 0) - (b.order || 0); });
+      var all = dealsCache.data.slice().sort(function(a, b){ return (a.order || 0) - (b.order || 0); });
+      var inView = {}; ids.forEach(function(id){ inView[id] = true; });
+      var before = all.filter(function(d){ return inView[d.id]; }).map(function(d){ return d.id; });
+      if (before.join() === ids.join()) return;
       var byId = {};
       dealsCache.data.forEach(function(d){ byId[d.id] = d; });
-      var list = ids.map(function(id){ return byId[id]; }).concat(rest);
+      var queue = ids.slice();
+      var list = all.map(function(d){ return inView[d.id] ? byId[queue.shift()] : d; });
       var oldOrders = dealsCache.data.map(function(d){ return d.order; });
       list.forEach(function(d, i){ d.order = i + 1; });
       saveDealsToRepo(list, 'שינוי סדר חבילות').catch(function(err){
