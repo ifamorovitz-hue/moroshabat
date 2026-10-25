@@ -246,8 +246,12 @@
   .pkg-body{ display:flex; flex-direction:column; gap:8px; padding:20px 22px 22px; flex:1; }
   .pkg-body h3{ color:var(--text); font-size:1.15rem; font-weight:800; }
   .pkg-meta{ color:var(--muted); font-size:.8rem; font-weight:700; }
-  .pkg-desc{ color:var(--muted); font-size:.86rem; line-height:1.55; }
-  @media (max-width:620px){ .pkg-desc{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; } }
+  .pkg-body h3{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.3; }
+  .pkg-incl{ display:flex; flex-wrap:wrap; gap:5px; margin:2px 0 0; padding:0; list-style:none; }
+  .pkg-incl li{ background:var(--mint); color:var(--teal-dark); font-size:.72rem; font-weight:700; padding:4px 8px; border-radius:99px; white-space:nowrap; }
+  .pkg-incl li::before{ content:'✓'; margin-inline-end:5px; font-weight:800; }
+  .pkg-from{ color:var(--muted); font-size:.76rem; font-weight:600; }
+  .pkg-desc{ color:var(--muted); font-size:.86rem; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .pkg-price-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:auto; padding-top:8px; }
   .pkg-price-wrap{ display:flex; align-items:baseline; gap:6px; }
   .pkg-price{ color:var(--teal-dark); font-size:1.2rem; font-weight:800; }
@@ -692,6 +696,15 @@
     name = String(name).slice(0, 50);
     if (window.umami && typeof window.umami.track === 'function') window.umami.track(name);
     else if (started) queue.push(name);
+  };
+  var EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}\u{20E3}]/gu;
+  window.moroStripEmoji = function(str){
+    return String(str == null ? '' : str).replace(EMOJI_RE, '').replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+\n/g, '\n').trim();
+  };
+  window.moroCleanTitle = function(t){
+    t = window.moroStripEmoji(t);
+    t = t.replace(/^\s*דקה\s*90\s*[!:.\-–]*\s*/, '').replace(/^[\s!.:\-–]+/, '').replace(/[\s!]*!+\s*$/, '!').trim();
+    return t;
   };
   window.moroInitAnalytics = function(id){
     if (started || !id || isAdminDevice()) return;
@@ -1209,7 +1222,7 @@
   var current = null, lastFocus = null;
   function dealUrl(id){ return location.origin + location.pathname + '?deal=' + encodeURIComponent(id); }
   function dealText(d){
-    var bits = [d.title];
+    var bits = [window.moroCleanTitle(d.title) || d.title];
     if (d.dates) bits.push(d.dates);
     if (d.price) bits.push('החל מ-' + d.price + (d.priceNote ? ' ' + d.priceNote : ''));
     return bits.join(' | ');
@@ -1876,21 +1889,44 @@
     var pkgLoading = document.getElementById('pkgLoading');
 
     var SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+    var BOILER_RE = /חבילה מסודרת ומפנקת הכוללת[^.]*\.\s*כל מה שצריך כדי לצאת לחופשה בראש שקט\.?/;
+    function cardBlurb(d){
+      var t = window.moroStripEmoji(d.cardDesc || '');
+      var cut = t.replace(BOILER_RE, '').replace(/\s{2,}/g, ' ').trim();
+      if (cut.length >= 25) return cut;
+      return cardIncludes(d).length ? '' : t;
+    }
+    function cardIncludes(d){
+      var t = window.moroStripEmoji([d.title, d.cardDesc, d.desc].join(' \n '));
+      var out = [];
+      if (dealKind(d) === 'cruise' || /הפלגה|קרוז/.test(t)) out.push('הפלגה');
+      if (/טיסות?\s+ישירות|טיסה\s+ישירה/.test(t)) out.push('טיסות ישירות'); else if (/טיסות?\b/.test(t)) out.push('טיסות');
+      if (/מלון|לינה/.test(t)) out.push('מלון');
+      if (/ארוחת\s+בוקר|ארוחות\s+בוקר|א\.\s?בוקר/.test(t)) out.push('ארוחת בוקר');
+      if (/הכל\s+כלול|פנסיון/.test(t)) out.push('הכל כלול');
+      if (/מזוודה/.test(t)) out.push('מזוודה');
+      if (/העברות/.test(t)) out.push('העברות');
+      return out.slice(0, 4);
+    }
     function renderPkgCard(d, opts){
       opts = opts || {};
       var article = document.createElement('article');
       article.className = 'pkg-card';
+      var shownTitle = window.moroCleanTitle(d.title) || d.title;
+      var incl = cardIncludes(d);
       article.innerHTML =
         '<div class="pkg-media">' +
-          '<img src="' + escapeHtml(d.image) + '" alt="' + escapeHtml(d.imageAlt || d.title) + '">' +
-          '<span class="pkg-tag">' + escapeHtml(d.tag) + '</span>' +
+          '<img src="' + escapeHtml(d.image) + '" alt="' + escapeHtml(d.imageAlt || shownTitle) + '" loading="lazy">' +
+          '<span class="pkg-tag">' + escapeHtml(window.moroStripEmoji(d.tag)) + '</span>' +
         '</div>' +
         '<div class="pkg-body">' +
-          '<h3>' + escapeHtml(d.title) + '</h3>' +
+          '<h3>' + escapeHtml(shownTitle) + '</h3>' +
           '<p class="pkg-meta">' + escapeHtml(d.meta) + '</p>' +
-          '<p class="pkg-desc">' + escapeHtmlNl(d.cardDesc) + '</p>' +
+          (incl.length ? '<ul class="pkg-incl" aria-label="מה כלול">' + incl.map(function(x){ return '<li>' + escapeHtml(x) + '</li>'; }).join('') + '</ul>' : '') +
+          (cardBlurb(d) ? '<p class="pkg-desc">' + escapeHtmlNl(cardBlurb(d)) + '</p>' : '') +
           '<div class="pkg-price-row">' +
             '<span class="pkg-price-wrap">' +
+              '<span class="pkg-from">החל מ-</span>' +
               '<span class="pkg-price">' + escapeHtml(d.price) + '</span>' +
               '<span class="pkg-price-note">' + escapeHtml(d.priceNote) + '</span>' +
             '</span>' +
@@ -1905,7 +1941,7 @@
       }
       var shareBtn = document.createElement('button');
       shareBtn.type = 'button'; shareBtn.className = 'pkg-share-btn';
-      shareBtn.setAttribute('data-share-deal', d.id); shareBtn.setAttribute('aria-label', 'שיתוף החבילה: ' + d.title);
+      shareBtn.setAttribute('data-share-deal', d.id); shareBtn.setAttribute('aria-label', 'שיתוף החבילה: ' + shownTitle);
       shareBtn.innerHTML = SHARE_ICON;
       article.querySelector('.pkg-media').appendChild(shareBtn);
       if (editModeActive) {
@@ -2030,7 +2066,7 @@
 
       var body = '';
       body += '<span class="deal-modal-tag">' + escapeHtml(d.tag) + '</span>';
-      body += '<h3>' + escapeHtml(d.title) + '</h3>';
+      body += '<h3>' + escapeHtml(window.moroCleanTitle(d.title) || d.title) + '</h3>';
       body += '<p class="deal-modal-dates"><bdi dir="ltr">' + escapeHtml(d.dates) + '</bdi></p>';
       body += '<p class="deal-modal-desc">' + escapeHtmlNl(d.desc) + '</p>';
 
@@ -2057,7 +2093,7 @@
       body += '<button type="button" class="deal-share-btn" data-share-deal="' + escapeHtml(d.id) + '">' + SHARE_ICON + 'שיתוף</button>';
 
       dealModalImg.src = d.image;
-      dealModalImg.alt = d.title;
+      dealModalImg.alt = window.moroCleanTitle(d.title) || d.title;
       dealModalBody.innerHTML = body;
     }
 
