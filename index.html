@@ -2998,6 +2998,116 @@
       if (y == null) y = guessYear(m, d); else { y = +y; if (y < 100) y += 2000; }
       return { d: d, m: m, y: y };
     }
+    // ---------- Automatic short title (rules: destination first, up to 45 chars, no emoji, no , . : ! ?) ----------
+    var TITLE_MAX = 45;
+    var MONTH_NAMES_HE = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    var COUNTRY_LEVEL = ['יוון','איטליה','ספרד','תאילנד','יפן','הודו','טורקיה','גאורגיה','ארמניה','פורטוגל','מרוקו','מצרים','ירדן','קרואטיה','מונטנגרו','אלבניה','פולין','רומניה','בולגריה','נורבגיה','איסלנד','אירלנד','שוויץ','קריביים','בהאמס','סיישל','מאוריציוס','מלדיביים','קפריסין','וייטנאם','האיים הקנריים'];
+    var NON_DEST = ['סקי'];
+    var CRUISE_REGIONS = [[/קריביים/, 'בקריביים'], [/הים התיכון/, 'בים התיכון'], [/האיים הקנריים/, 'באיים הקנריים'], [/נורבגיה|פיורד/, 'בנורבגיה']];
+    function escRe(x){ return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    function findDestKeys(text){
+      var found = [];
+      DEST_QUERIES.forEach(function(pair){
+        var key = pair[0];
+        if (NON_DEST.indexOf(key) >= 0) return;
+        var m = new RegExp('(^|[^א-ת])[בלמהושכ]{0,2}' + escRe(key) + '(?![א-ת])').exec(text);
+        if (m && !found.some(function(f){ return f.key === key; })) found.push({ key: key, idx: m.index + m[1].length });
+      });
+      found.sort(function(a, b){ return a.idx - b.idx; });
+      return found;
+    }
+    function topDest(text){
+      var best = null, bestN = 0;
+      DEST_QUERIES.forEach(function(pair){
+        var key = pair[0];
+        if (NON_DEST.indexOf(key) >= 0) return;
+        var n = (text.match(new RegExp('(^|[^א-ת])[בלמהושכ]{0,2}' + escRe(key) + '(?![א-ת])', 'g')) || []).length;
+        if (n > bestN) { best = key; bestN = n; }
+      });
+      return best;
+    }
+    function detectHook(head){
+      var hanukkah = /חנוכ/.test(head), xmas = /חג המולד|כריסמס|קריסמס/.test(head);
+      if (hanukkah && xmas) return 'חנוכה וחג המולד';
+      if (hanukkah) return 'חנוכה';
+      if (/בלאק פריידי/.test(head)) return /שופינג/.test(head) ? 'שופינג בלאק פריידי' : 'בלאק פריידי';
+      if (xmas) return /שווקי/.test(head) ? 'שווקי חג המולד' : 'חג המולד';
+      if (/סוכות/.test(head)) return 'סוכות';
+      if (/פסח/.test(head)) return 'פסח';
+      if (/ראש השנה/.test(head)) return 'ראש השנה';
+      if (/סילבסטר/.test(head)) return 'סילבסטר';
+      if (/סוף שנה/.test(head)) return 'סוף שנה';
+      return '';
+    }
+    function inPlace(d){ return 'ב' + (d.charAt(0) === 'ו' ? 'ו' : '') + d; }
+    function plainTitle(t){
+      return window.moroStripEmoji(t).replace(/[,.:;!?"״׳–—]/g, ' ').replace(/[*#]+/g, '').replace(/\s{2,}/g, ' ').trim();
+    }
+    function cutTitle(t){
+      if (t.length <= TITLE_MAX) return t;
+      var cut = t.slice(0, TITLE_MAX).replace(/\s+\S*$/, '');
+      return cut || t.slice(0, TITLE_MAX);
+    }
+    function shipName(text){
+      var re = /([A-Z][A-Za-z']+\s+of\s+the\s+Seas|Norwegian\s+(?!Cruise)[A-Z][a-z]+|MSC\s+[A-Z][A-Za-z]+|Costa\s+[A-Z][a-z]+|Celebrity\s+[A-Z][a-z]+|Icon of the Seas)/;
+      var m = re.exec(text);
+      return m ? m[1].replace(/\s+/g, ' ') : '';
+    }
+    function pickTitle(options){
+      for (var i = 0; i < options.length; i++) {
+        var t = plainTitle(options[i]);
+        if (t && t.length <= TITLE_MAX) return t;
+      }
+      return '';
+    }
+    function generateDealTitle(text, info){
+      var lines = text.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
+      var first = plainTitle(lines[0] || '');
+      var head = lines.slice(0, 3).join(' ');
+      var year = info.dateFrom ? parseInt(info.dateFrom.slice(0, 4), 10) : null;
+      var month = info.dateFrom ? MONTH_NAMES_HE[parseInt(info.dateFrom.slice(5, 7), 10) - 1] : '';
+      var hook = detectHook(head);
+      var hookY = (/סוכות|פסח|ראש השנה/.test(hook) && year && year !== calToday.getFullYear()) ? hook + ' ' + year : hook;
+      var title = '', destFound = true;
+
+      if (info.kind === 'cruise') {
+        var body = lines.slice(1).join('\n');
+        var ship = shipName(text);
+        var ports = findDestKeys(body).filter(function(f){ return COUNTRY_LEVEL.indexOf(f.key) < 0; });
+        var port = ports.length ? 'מ' + ports[0].key : '';
+        var reg = CRUISE_REGIONS.filter(function(r){ return r[0].test(text); })[0];
+        var region = reg ? reg[1] : '';
+        title = pickTitle([
+          hookY && port ? hookY + ' בהפלגה ' + port : '',
+          hookY && region ? hookY + ' ' + region + ' בהפלגה' : '',
+          ship && port ? 'הפלגה ' + port + ' על סיפון ה-' + ship : '',
+          ship && region ? 'הפלגה ' + region + ' על סיפון ה-' + ship : '',
+          ship && port ? 'הפלגה ' + port + ' ' + ship : '',
+          port && region ? 'הפלגה ' + region + ' ' + port : '',
+          port && month ? 'הפלגה ' + port + ' ' + inPlace(month) : '',
+          port ? 'הפלגה ' + port : '',
+          ship ? 'הפלגה על סיפון ה-' + ship : '',
+          region ? 'הפלגה ' + region : ''
+        ]);
+        destFound = !!(port || ship || region);
+      } else {
+        var ds = findDestKeys(first).slice(0, 2).map(function(f){ return f.key; });
+        if (!ds.length) { var td = topDest(text); if (td) ds = [td]; }
+        destFound = ds.length > 0;
+        if (destFound) {
+          var bare = ds.join(' ו'), at = ds.map(inPlace).join(' ו');
+          title = pickTitle([
+            hookY ? hookY + ' ' + at : '',
+            hook ? hook + ' ' + at : '',
+            month ? bare + ' ' + inPlace(month) : '',
+            'חופשה ' + at
+          ]);
+        }
+      }
+      if (!title) title = cutTitle(first);
+      return { title: title, destFound: destFound };
+    }
+
     function parseDealText(text){
       var out = { title: '', tag: '', dateFrom: '', dateTo: '', price: '', currency: '', priceNote: '', cardDesc: '', desc: '', note: '', tiers: [] };
       var lines = text.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
@@ -3109,6 +3219,11 @@
       else out.tag = 'חבילת נופש';
       out.kind = CRUISE_RE.test(text) ? 'cruise' : 'hotel';
       out.lastMinute = /דקה\s*90/.test(text) ? 'yes' : 'auto';
+      var gen = generateDealTitle(text, { kind: out.kind, dateFrom: out.dateFrom });
+      out.titleOriginal = out.title;
+      out.titleAuto = !!gen.title && gen.title !== out.title;
+      out.titleNeedsDest = !gen.destFound;
+      if (gen.title) out.title = gen.title;
 
       // Marketing copy built from the detected facts
       var ROOM_WORDS = [[/prem?i?er\s+room/ig, 'חדר פרימייר'], [/king\s+room/ig, 'חדר קינג'], [/sea\s*view/ig, 'נוף לים'], [/balcony/ig, 'מרפסת'], [/exclusive\s+access/ig, 'גישה בלעדית'], [/infeniti|infinity/ig, 'בריכת אינפיניטי']];
@@ -3163,7 +3278,7 @@
       return out;
     }
     // ---------- Auto destination photo (Openverse, CC0 / public domain only) ----------
-    var DEST_QUERIES = [["אתונה","Athens Greece"],["סנטוריני","Santorini"],["כרתים","Crete Greece"],["רודוס","Rhodes Greece"],["יוון","Greece islands"],["דובאי","Dubai skyline"],["אבו דאבי","Abu Dhabi"],["רומא","Rome Italy"],["ונציה","Venice Italy"],["פירנצה","Florence Italy"],["מילאנו","Milan"],["נאפולי","Naples Italy"],["סיציליה","Sicily"],["איטליה","Italy landscape"],["ברצלונה","Barcelona"],["מדריד","Madrid"],["מיורקה","Mallorca"],["ספרד","Spain"],["פריז","Paris"],["לונדון","London"],["אמסטרדם","Amsterdam"],["ברלין","Berlin"],["פראג","Prague"],["בודפשט","Budapest"],["וינה","Vienna Austria"],["זלצבורג","Salzburg"],["שוויץ","Switzerland Alps"],["קפריסין","Cyprus"],["איסטנבול","Istanbul"],["אנטליה","Antalya"],["טורקיה","Turkey"],["באקו","Baku Azerbaijan"],["טביליסי","Tbilisi Georgia"],["גאורגיה","Georgia Caucasus"],["ארמניה","Armenia"],["מלדיביים","Maldives"],["סיישל","Seychelles"],["מאוריציוס","Mauritius"],["פוקט","Phuket Thailand"],["בנגקוק","Bangkok"],["תאילנד","Thailand beach"],["באלי","Bali"],["יפן","Japan"],["טוקיו","Tokyo"],["סינגפור","Singapore"],["וייטנאם","Vietnam"],["הודו","India"],["ניו יורק","New York City"],["מיאמי","Miami"],["קנקון","Cancun"],["בהאמס","Bahamas"],["קריביים","Caribbean beach"],["ליסבון","Lisbon"],["פורטוגל","Portugal"],["מרוקו","Morocco"],["שארם","Sharm el Sheikh"],["מצרים","Egypt"],["פטרה","Petra Jordan"],["ירדן","Jordan"],["דוברובניק","Dubrovnik"],["קרואטיה","Croatia"],["מונטנגרו","Montenegro"],["אלבניה","Albania"],["קרקוב","Krakow"],["פולין","Poland"],["רומניה","Romania"],["בולגריה","Bulgaria"],["נורבגיה","Norway fjord"],["איסלנד","Iceland"],["קופנהגן","Copenhagen"],["אירלנד","Ireland"],["סקי","ski resort snow"],["אילת","Eilat"]];
+    var DEST_QUERIES = [["אתונה","Athens Greece"],["סנטוריני","Santorini"],["כרתים","Crete Greece"],["רודוס","Rhodes Greece"],["יוון","Greece islands"],["דובאי","Dubai skyline"],["אבו דאבי","Abu Dhabi"],["רומא","Rome Italy"],["ונציה","Venice Italy"],["פירנצה","Florence Italy"],["מילאנו","Milan"],["נאפולי","Naples Italy"],["סיציליה","Sicily"],["איטליה","Italy landscape"],["ברצלונה","Barcelona"],["מדריד","Madrid"],["מיורקה","Mallorca"],["ספרד","Spain"],["פריז","Paris"],["לונדון","London"],["אמסטרדם","Amsterdam"],["ברלין","Berlin"],["פראג","Prague"],["בודפשט","Budapest"],["וינה","Vienna Austria"],["זלצבורג","Salzburg"],["שוויץ","Switzerland Alps"],["קפריסין","Cyprus"],["איסטנבול","Istanbul"],["אנטליה","Antalya"],["טורקיה","Turkey"],["באקו","Baku Azerbaijan"],["טביליסי","Tbilisi Georgia"],["גאורגיה","Georgia Caucasus"],["ארמניה","Armenia"],["מלדיביים","Maldives"],["סיישל","Seychelles"],["מאוריציוס","Mauritius"],["פוקט","Phuket Thailand"],["בנגקוק","Bangkok"],["תאילנד","Thailand beach"],["באלי","Bali"],["יפן","Japan"],["טוקיו","Tokyo"],["סינגפור","Singapore"],["וייטנאם","Vietnam"],["הודו","India"],["ניו יורק","New York City"],["מיאמי","Miami"],["קנקון","Cancun"],["בהאמס","Bahamas"],["קריביים","Caribbean beach"],["ליסבון","Lisbon"],["פורטוגל","Portugal"],["מרוקו","Morocco"],["שארם","Sharm el Sheikh"],["מצרים","Egypt"],["פטרה","Petra Jordan"],["ירדן","Jordan"],["דוברובניק","Dubrovnik"],["קרואטיה","Croatia"],["מונטנגרו","Montenegro"],["אלבניה","Albania"],["קרקוב","Krakow"],["פולין","Poland"],["רומניה","Romania"],["בולגריה","Bulgaria"],["נורבגיה","Norway fjord"],["איסלנד","Iceland"],["קופנהגן","Copenhagen"],["אירלנד","Ireland"],["סקי","ski resort snow"],["אילת","Eilat"],["ורשה","Warsaw"],["בוקרשט","Bucharest"],["זנזיבר","Zanzibar"],["סלוניקי","Thessaloniki"],["קרלובי וארי","Karlovy Vary"],["מיקונוס","Mykonos"],["מדיירה","Madeira"],["האיים הקנריים","Canary Islands"],["קוזומל","Cozumel"],["ספליט","Split Croatia"],["ניס","Nice France"],["מרסיי","Marseille"]];
     function destinationQuery(title, text, tag){
       var hays = [title, text];
       for (var h = 0; h < hays.length; h++) {
@@ -3234,7 +3349,11 @@
         cardDesc: r.cardDesc, desc: r.desc, note: r.note, priceTiers: r.tiers
       };
       openDealEditor(null, prefill);
-      autoPickImage(r.title, text, r.tag, r.dateFrom ? '' : ' לא זוהו תאריכים בטקסט, יש לבחור אותם בלוח.');
+      var notes = '';
+      if (r.titleNeedsDest) notes += ' לא זוהה יעד בטקסט, כדאי לכתוב את שם היעד בכותרת.';
+      else if (r.titleAuto) notes += ' הכותרת נוצרה אוטומטית' + (r.titleOriginal ? ' (הכותרת שכתבת: ' + plainTitle(r.titleOriginal) + ')' : '') + '. אפשר לערוך אותה.';
+      if (!r.dateFrom) notes += ' לא זוהו תאריכים בטקסט, יש לבחור אותם בלוח.';
+      autoPickImage(r.title, text, r.tag, notes);
     });
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && !ieEl('ieParseOverlay').hidden) ieEl('ieParseOverlay').hidden = true;
