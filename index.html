@@ -703,7 +703,7 @@
   };
   window.moroCleanTitle = function(t){
     t = window.moroStripEmoji(t);
-    t = t.replace(/^\s*דקה\s*90\s*[!:.\-–]*\s*/, '').replace(/^[\s!.:\-–]+/, '').replace(/[\s!]*!+\s*$/, '!').trim();
+    t = t.replace(/ה-(?=[A-Za-z])/g, 'ה\u2011').replace(/^\s*דקה\s*90\s*[!:.\-–]*\s*/, '').replace(/^[\s!.:\-–]+/, '').replace(/[\s!]*!+\s*$/, '!').trim();
     return t;
   };
   window.moroInitAnalytics = function(id){
