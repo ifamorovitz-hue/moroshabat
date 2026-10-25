@@ -175,7 +175,8 @@
   .trust-row li{ display:flex; align-items:center; gap:8px; }
   @media (max-width:560px){ .trust-row{ gap:8px 10px; font-size:.78rem; flex-wrap:nowrap; justify-content:center; } .trust-row li{ gap:5px; white-space:nowrap; } .trust-row li::before{ width:16px; height:16px; font-size:.62rem; } }
   .trust-row li::before{ content:'✓'; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--yellow,#f6ed7d); color:#241d00; font-size:.72rem; font-weight:800; }
-  .hero-copy h1{ font-size:clamp(2.3rem,4vw + 1.1rem,4.2rem); color:var(--cream); line-height:1.14; max-width:16ch; }
+  .hero-sub{ color:#fff; font-size:clamp(1rem,.6vw + .95rem,1.25rem); margin:16px 0 0; line-height:1.6; text-shadow:0 1px 8px rgba(0,0,0,.45); max-width:34rem; }
+  .hero-copy h1{ font-size:clamp(2rem,3.4vw + 1rem,3.7rem); color:var(--cream); line-height:1.16; max-width:none; }
   .hero-actions{ margin-top:34px; }
 
   /* ---------- Statement band ---------- */
@@ -246,6 +247,7 @@
   .pkg-body h3{ color:var(--text); font-size:1.15rem; font-weight:800; }
   .pkg-meta{ color:var(--muted); font-size:.8rem; font-weight:700; }
   .pkg-desc{ color:var(--muted); font-size:.86rem; line-height:1.55; }
+  @media (max-width:620px){ .pkg-desc{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; } }
   .pkg-price-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:auto; padding-top:8px; }
   .pkg-price-wrap{ display:flex; align-items:baseline; gap:6px; }
   .pkg-price{ color:var(--teal-dark); font-size:1.2rem; font-weight:800; }
@@ -268,18 +270,23 @@
   .why-card p{ margin-top:10px; color:#fff; font-size:.9rem; }
 
   /* ---------- Testimonials ---------- */
-  .how{ background:var(--paper); padding-block:100px; }
-  .how-head{ text-align:center; max-width:640px; margin:0 auto 48px; }
+  .how{ background:var(--paper); padding-block:56px; }
+  .how-head{ text-align:center; max-width:640px; margin:0 auto 28px; }
   .how-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
-  .how-head p{ margin-top:14px; color:var(--muted); }
-  .how-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .how-head p{ margin-top:8px; color:var(--muted); }
+  .how-head h2{ font-size:clamp(1.5rem,1.8vw + 1rem,2rem) !important; }
+  .how-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
   @media (max-width:960px){ .how-grid{ grid-template-columns:1fr 1fr; } }
-  @media (max-width:560px){ .how-grid{ grid-template-columns:1fr; } }
-  .how-step{ background:var(--mint); border-radius:var(--radius); padding:28px 24px; }
-  .how-step .num{ display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:50%; background:var(--teal-dark); color:#fff; font-weight:800; margin-bottom:18px; }
-  .how-step h3{ font-size:1.08rem; }
-  .how-step p{ margin-top:10px; color:var(--muted); font-size:.9rem; }
-  .community{ background:linear-gradient(180deg,#fff7ec 0%,#e6eeea 100%); padding-block:100px; }
+  @media (max-width:560px){ .how-grid{ grid-template-columns:1fr; gap:10px; } .how-step{ display:grid; grid-template-columns:auto 1fr; column-gap:14px; align-items:center; } .how-step .num{ grid-row:1 / span 2; margin-bottom:0 !important; } .how-step p{ margin-top:2px !important; } }
+  .how-step{ background:var(--mint); border-radius:var(--radius); padding:16px 18px; }
+  .how-step .num{ display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:var(--teal-dark); color:#fff; font-weight:800; margin-bottom:10px; }
+  .how-step h3{ font-size:1rem; }
+  .how-step p{ margin-top:6px; color:var(--muted); font-size:.85rem; }
+  .community{ background:linear-gradient(180deg,#fff7ec 0%,#e6eeea 100%); padding-block:56px; }
+  .community .polaroids{ display:none; }
+  .community-features{ margin:20px 0 !important; gap:16px 22px !important; }
+  @media (max-width:900px){ .community-visual{ display:none !important; } }
+  @media (max-width:560px){ .community-features{ grid-template-columns:1fr 1fr !important; gap:12px !important; } .community .cf p{ display:none; } .community .cf h3{ font-size:.92rem; } .community .cf-icon{ width:38px; height:38px; margin-bottom:6px; } }
   .community-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:center; }
   @media (max-width:900px){ .community-grid{ grid-template-columns:1fr; gap:44px; } }
   .community-copy h2{ font-size:clamp(1.9rem,3vw + 1rem,2.9rem); margin-top:8px; }
@@ -313,7 +320,9 @@
   .polaroids img{ width:92px; height:78px; object-fit:cover; background:#fff; padding:5px 5px 14px; border-radius:4px; box-shadow:0 8px 18px -8px rgba(0,0,0,.4); transform:rotate(-4deg); }
   .polaroids img:nth-child(2){ transform:rotate(3deg); }
   .polaroids img:nth-child(3){ transform:rotate(-2deg); }
-  .testimonials{ background:var(--mint); padding-block:100px; }
+  .testimonials{ background:var(--mint); padding-block:64px; }
+  .review-columns:not(.expanded) .rv-extra{ display:none; }
+  .reviews-more{ display:flex; justify-content:center; margin-top:26px; }
   .testimonials-head{ text-align:center; max-width:640px; margin:0 auto; }
   .testimonials-head h2{ font-size:clamp(1.9rem,2.8vw + 1rem,2.6rem); }
   .testimonials-head p{ margin-top:14px; color:var(--muted); }
@@ -346,7 +355,12 @@
   .cta-band-copy h2{ color:var(--cream); font-size:clamp(1.9rem,3vw + 1rem,3rem); max-width:16ch; }
 
   /* ---------- About ---------- */
-  .about{ padding-block:100px; }
+  .about{ padding-block:72px; }
+  .about-intro p{ margin-top:12px; }
+  .about-why{ list-style:none; margin:24px 0 0; padding:0; display:grid; gap:12px; }
+  .about-why li{ position:relative; padding-inline-start:30px; color:var(--muted); font-size:.95rem; line-height:1.55; }
+  .about-why li::before{ content:'✓'; position:absolute; inset-inline-start:0; top:2px; width:20px; height:20px; border-radius:50%; background:var(--teal-dark); color:#fff; font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .about-why strong{ display:block; color:var(--ink); font-size:1rem; }
   .about-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:center; }
   .about img{ width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:var(--radius); box-shadow:var(--shadow); }
   .about-copy .eyebrow{ background:var(--teal); color:var(--cream); }
@@ -710,7 +724,6 @@
     </a>
     <nav class="nav-links" aria-label="ניווט ראשי">
       <a href="#packages">חבילות</a>
-      <a href="#why">למה איתי</a>
       <a href="#how">איך זה עובד</a>
       <a href="#about">אודות</a>
       <a href="#contactForm">יצירת קשר</a>
@@ -723,7 +736,6 @@
   </div>
   <div class="wrap nav-mobile-panel" id="navMobilePanel">
     <a href="#packages">חבילות</a>
-    <a href="#why">למה איתי</a>
       <a href="#how">איך זה עובד</a>
     <a href="#about">אודות</a>
     <a href="#contactForm">יצירת קשר</a>
@@ -738,7 +750,8 @@
       <source src="hero-1.mp4" type="video/mp4">
     </video>
     <div class="hero-copy">
-      <h1 id="c-heroTitle">בחרו את החופשה הבאה שלכם</h1>
+      <h1 id="c-statementTitle">הפרטים הקטנים עושים<br>את החופשות הגדולות</h1>
+      <p class="hero-sub" id="c-statementSub">חופשה שמתוכננת בדיוק בשבילכם,<br>מהפרט הראשון ועד החזרה הביתה.</p>
       <div class="hero-actions">
         <a href="#contactForm" class="btn">קבלו הצעה לחופשה <span class="btn-arrow">←</span></a>
       </div>
@@ -750,31 +763,7 @@
     </div>
   </section>
 
-  <!-- ---------- STATEMENT ---------- -->
-  <section class="statement">
-    <div class="wrap">
-      <h2 id="c-statementTitle">הפרטים הקטנים עושים<br>את החופשות הגדולות</h2>
-      <p class="statement-sub" id="c-statementSub">חופשה שמתוכננת בדיוק בשבילכם,<br>מהפרט הראשון ועד החזרה הביתה.</p>
-    </div>
-  </section>
 
-  <!-- ---------- INTRO / BRAND (teal) ---------- -->
-  <section class="intro">
-    <div class="wrap intro-grid">
-      <div>
-        <h2 id="c-introTitle">טיילו בעולם<br>עם <span class="hi">MOROSHABAT</span></h2>
-        <div id="c-introText">
-          <p id="c-introText1">סוכנות הנסיעות MOROSHABAT מציעה את חבילות החופשה הטובות ביותר מאז 2021.</p>
-          <p id="c-introText2">אנחנו מבטיחים שכל טיול שתזמינו איתנו יהיה ייחודי ובלתי נשכח.</p>
-        </div>
-      </div>
-      <div class="intro-photos">
-        <div class="img-slot ip-main"><img id="c-introImage1" src="pkg-temple.jpg" alt="יעד תרבותי במזרח אסיה"></div>
-        <div class="img-slot"><img id="c-introImage2" src="pkg-hike.jpg" alt="טרק בהרים"></div>
-        <div class="img-slot"><img id="c-introImage3" src="pkg-beach.jpg" alt="חוף טרופי"></div>
-      </div>
-    </div>
-  </section>
 
   <!-- ---------- PACKAGES (dark green) ---------- -->
   <section class="packages" id="packages">
@@ -782,7 +771,7 @@
       <div class="packages-head">
         <div>
           <span class="eyebrow">החבילות שלנו</span>
-          <h2 id="c-packagesTitle">מסעות נבחרים לעונה הקרובה</h2>
+          <h2 id="c-heroTitle">בחרו את החופשה הבאה שלכם</h2>
         </div>
         <p id="c-packagesSubtitle">מבחר מצומצם מתוך המסלולים שאני מתכננת כרגע כל חבילה ניתנת להתאמה מלאה: תאריכים, רמת מלון ותקציב.</p>
         <button type="button" class="btn add-deal-btn" id="ieAddDealBtn">+ הוספת חבילה</button>
@@ -806,38 +795,6 @@
     </div>
   </section>
 
-  <!-- ---------- WHY (teal, card style) ---------- -->
-  <section class="why" id="why">
-    <div class="wrap">
-      <div class="why-head">
-        <span class="eyebrow on-ink">למה איתי</span>
-        <h2 id="c-whyTitle">שירות שמרגישים, לא רק קוראים עליו</h2>
-        <p id="c-whySubtitle">ארבעה דברים שמלווים כל טיול שאני מתכננת.</p>
-      </div>
-      <div class="why-grid">
-        <div class="why-card">
-          <span class="num">01</span>
-          <h3 id="c-why1Title">ליווי אישי צמוד</h3>
-          <p id="c-why1Text">מהרגע שאתם מזמינים ועד שאתם חוזרים הביתה, יש לכם כתובת אחת.</p>
-        </div>
-        <div class="why-card">
-          <span class="num">02</span>
-          <h3 id="c-why2Title">קשרים בתעשייה</h3>
-          <p id="c-why2Text">גישה למחירים, שדרוגים וזמינות שלא תמיד נגישים בהזמנה עצמאית.</p>
-        </div>
-        <div class="why-card">
-          <span class="num">03</span>
-          <h3 id="c-why3Title">התאמה מדויקת</h3>
-          <p id="c-why3Text">כל מסלול נבנה מאפס סביב הטעם, הקצב והתקציב שלכם.</p>
-        </div>
-        <div class="why-card">
-          <span class="num">04</span>
-          <h3 id="c-why4Title">שקיפות מלאה</h3>
-          <p id="c-why4Text">מחיר סופי וברור מראש. בלי עמלות נסתרות ובלי הפתעות בסוף.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ---------- HOW IT WORKS ---------- -->
   <section class="how" id="how">
@@ -882,7 +839,7 @@
         <p class="testimonials-source"><a href="https://www.bizreviews.co.il/provider/ifat-morovitz" target="_blank" rel="noopener">לכל חוות הדעת ב-bizreviews ←</a></p>
       </div>
 
-      <div class="review-columns">
+      <div class="review-columns" id="reviewColumns">
         <article class="review-card">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -895,7 +852,7 @@
           <div class="review-meta"><strong>מלי</strong><span>דביר שפיר · 22.01.2026</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -931,7 +888,7 @@
           <div class="review-meta"><strong>חיים בנבנישתי</strong><span>יהוד · 13.08.2026</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -943,7 +900,7 @@
           <div class="review-meta"><strong>שירה נעמי פנחס</strong><span>נתניה · 11.08.2025</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -955,7 +912,7 @@
           <div class="review-meta"><strong>אתי אסרס</strong><span>אשדוד · 03.06.2025</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -967,7 +924,7 @@
           <div class="review-meta"><strong>זיוה</strong><span>ירושלים · 04.06.2025</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -979,7 +936,7 @@
           <div class="review-meta"><strong>לאה</strong><span>ירושלים · 04.06.2025</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -991,7 +948,7 @@
           <div class="review-meta"><strong>ארמוזה עופר שרגא</strong><span>14.04.2025</span></div>
         </article>
 
-        <article class="review-card">
+        <article class="review-card rv-extra">
           <div class="review-stars">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.6z"/></svg>
@@ -1004,7 +961,8 @@
         </article>
       </div>
     </div>
-  </section>
+      <div class="reviews-more"><button type="button" class="btn" id="reviewsMoreBtn">עוד המלצות</button></div>
+    </section>
 
   <!-- ---------- ABOUT ---------- -->
   <section class="about" id="about">
@@ -1015,6 +973,16 @@
         <h2 id="c-aboutTitle" style="font-size:1.9rem;margin-bottom:20px;">כמה מילים עליי</h2>
         <p id="c-aboutText1">שלום, אני יפעת סוכנת נסיעות VIP, מתכננת מסעות עבור זוגות, משפחות וחברות שרוצות טיול שמרגיש מדויק להם לא עוד חבילה מהמדף.</p>
         <p id="c-aboutText2">גדלתי על מפות ולוחות טיסה, ועד היום אין דבר שמרגש אותי יותר מלתכנן את הרגע שבו מישהו נוחת ביעד שחלם עליו.</p>
+        <div id="c-introText" class="about-intro">
+          <p id="c-introText1">סוכנות הנסיעות MOROSHABAT מציעה את חבילות החופשה הטובות ביותר מאז 2021.</p>
+          <p id="c-introText2">אנחנו מבטיחים שכל טיול שתזמינו איתנו יהיה ייחודי ובלתי נשכח.</p>
+        </div>
+        <ul class="about-why">
+          <li><strong id="c-why1Title">ליווי אישי צמוד</strong><span id="c-why1Text">מהרגע שאתם מזמינים ועד שאתם חוזרים הביתה, יש לכם כתובת אחת.</span></li>
+          <li><strong id="c-why2Title">קשרים בתעשייה</strong><span id="c-why2Text">גישה למחירים, שדרוגים וזמינות שלא תמיד נגישים בהזמנה עצמאית.</span></li>
+          <li><strong id="c-why3Title">התאמה מדויקת</strong><span id="c-why3Text">כל מסלול נבנה מאפס סביב הטעם, הקצב והתקציב שלכם.</span></li>
+          <li><strong id="c-why4Title">שקיפות מלאה</strong><span id="c-why4Text">מחיר סופי וברור מראש. בלי עמלות נסתרות ובלי הפתעות בסוף.</span></li>
+        </ul>
         <p class="credentials" id="c-aboutCredentials">בעלת סוכנות הנסיעות moroshabat · מתמחה במסעות מותאמים אישית ובירח דבש · מלווה אישית בכל טיול, גם ברגע האחרון.</p>
       </div>
     </div>
@@ -1061,14 +1029,6 @@
     </div>
   </section>
 
-  <!-- ---------- CTA BAND ---------- -->
-  <section class="cta-band">
-    <img src="pkg-pool.jpg" alt="יעד נופש">
-    <div class="cta-band-copy">
-      <h2>מוכנים להזמין את<br>הטיול הבא שלכם?</h2>
-      <a href="#contactForm" class="btn">ספרו לי על החופשה שלכם <span class="btn-arrow">←</span></a>
-    </div>
-  </section>
 
 
 
@@ -1962,7 +1922,7 @@
       return article;
     }
 
-    var LM_DAYS = 21, PKG_PAGE = 9, pkgFilter = 'all', pkgShown = PKG_PAGE, pkgState = { regular: [], lm: [] };
+    var LM_DAYS = 21, PKG_PAGE = (window.matchMedia && window.matchMedia('(max-width:620px)').matches) ? 6 : 9, pkgFilter = 'all', pkgShown = PKG_PAGE, pkgState = { regular: [], lm: [] };
     var CRUISE_RE = /קרוז|הפלגה|שייט|אוניי|🚢/;
     function dealKind(d){ return d.kind || (CRUISE_RE.test((d.tag || '') + ' ' + (d.title || '')) ? 'cruise' : 'hotel'); }
     function daysUntil(d){
@@ -2618,7 +2578,7 @@
 
     // ---------- Content text pencils ----------
     var CONTENT_FIELD_MAP = [
-      { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת ראשית (הבאנר העליון)' },
+      { id: 'c-heroTitle', key: 'heroTitle', label: 'כותרת מדור החבילות' },
       { id: 'c-trust0', key: 'trust0', label: 'סרגל אמון פריט ראשון' },
       { id: 'c-trust1', key: 'trust1', label: 'סרגל אמון פריט שני' },
       { id: 'c-trust2', key: 'trust2', label: 'סרגל אמון פריט שלישי' },
@@ -3833,6 +3793,12 @@
       }
       if (name) window.moroTrack(name);
     }, true);
+    var reviewsMoreBtn = document.getElementById('reviewsMoreBtn');
+    if (reviewsMoreBtn) reviewsMoreBtn.addEventListener('click', function(){
+      document.getElementById('reviewColumns').classList.add('expanded');
+      reviewsMoreBtn.parentNode.hidden = true;
+      window.moroTrack('המלצות: עוד המלצות');
+    });
     var formStarted = false;
     var contactFormEl = document.getElementById('contactForm');
     if (contactFormEl) contactFormEl.addEventListener('focusin', function(){
