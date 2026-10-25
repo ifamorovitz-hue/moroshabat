@@ -2958,6 +2958,12 @@
       var a = fromIso.split('-'), b = toIso.split('-');
       return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
     }
+    function baggageClaimProblem(card, detail){
+      if (/מזוודה/.test(card || '') && !/מזוודה/.test(detail || '')) {
+        return 'בתקציר הכרטיס כתוב "מזוודה", אבל בתיאור המלא לא כתוב שיש מזוודה. אם הדיל כולל רק תיק גב, יש למחוק את המילה "מזוודה" מהתקציר.';
+      }
+      return '';
+    }
     function nightsLabel(n){ return n === 0 ? 'יום אחד' : n === 1 ? 'לילה אחד' : n + ' לילות'; }
     function parsePrice(price){
       var num = (/[\d.,]+/.exec(price || '') || [''])[0].replace(/,/g, '');
@@ -3494,6 +3500,8 @@
       if (!cardDesc) missing.push('תיאור קצר');
       if (!hasImage) missing.push('תמונה');
       if (missing.length) { ieShowStatus('ieDealStatus', 'error', 'חסרים שדות חובה: ' + missing.join(', ')); return; }
+      var bagProblem = baggageClaimProblem(cardDesc, ieEl('ie_desc').value);
+      if (bagProblem) { ieShowStatus('ieDealStatus', 'error', bagProblem); return; }
 
       var d = existing || { id: genDealId() };
       d.title = title; d.tag = tag; d.meta = nightsLabel(nightsBetween(dateFrom, dateTo));
