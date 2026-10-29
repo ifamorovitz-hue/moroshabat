@@ -2,7 +2,7 @@
   {
     "id": "bahamas",
     "active": true,
-    "order": 33,
+    "order": 34,
     "tag": "קרוז",
     "title": "בהאמס על סיפון ה-Norwegian Joy",
     "image": "pkg-beach.jpg",
@@ -50,7 +50,7 @@
   {
     "id": "rccl-med",
     "active": true,
-    "order": 34,
+    "order": 35,
     "tag": "קרוז",
     "title": "סוכות 2027 על סיפון ה-Legend of the Seas",
     "image": "uploads/1790376603684-pasted.jpg",
@@ -108,7 +108,7 @@
   {
     "id": "norwegian-epic",
     "active": true,
-    "order": 35,
+    "order": 36,
     "tag": "קרוז",
     "title": "מברצלונה לרומא על סיפון ה-Norwegian Epic",
     "image": "uploads/1790376318575-pasted.jpg",
@@ -141,7 +141,7 @@
   {
     "id": "baku-dec13",
     "active": true,
-    "order": 36,
+    "order": 37,
     "tag": "מבצע",
     "title": "שווקי חג המולד בבאקו",
     "image": "pkg-baku.webp",
@@ -165,7 +165,7 @@
   {
     "id": "baku-dec10",
     "active": true,
-    "order": 37,
+    "order": 38,
     "tag": "סופ״ש",
     "title": "סוף שבוע בבאקו באמצע דצמבר",
     "image": "pkg-baku.webp",
@@ -207,7 +207,7 @@
       "Address Sky view Down Town Dubai: החל מ 6,239 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790364533259-destination.jpg",
-    "order": 32
+    "order": 33
   },
   {
     "id": "deal-muhd7bnfn6ml",
@@ -227,7 +227,7 @@
     "imageAlt": "סוכות בפראג",
     "priceTiers": [],
     "image": "uploads/1790376843759-1552036-prague-1119791_1920.jpg",
-    "order": 31
+    "order": 32
   },
   {
     "id": "deal-muhdbz3auxbl",
@@ -247,7 +247,7 @@
     "imageAlt": "קורסיקה איטליה וקרואטיה בהפלגה מברצלונה",
     "priceTiers": [],
     "image": "uploads/1790375981857-codex-image-26-2026-01_38_57.png",
-    "order": 30
+    "order": 31
   },
   {
     "id": "deal-muhdfq2j6vir",
@@ -269,7 +269,7 @@
       "The Stanley: החל מ 4,853 ש\"ח לאדם בחדר זוגי"
     ],
     "image": "uploads/1790365573819-destination.jpg",
-    "order": 29
+    "order": 30
   },
   {
     "id": "deal-muip7v1g0p9r",
@@ -289,7 +289,7 @@
     "imageAlt": "חנוכה בדובאי באטלנטיס או בגרנד הייאט",
     "priceTiers": [],
     "image": "uploads/1790445828581-destination.jpg",
-    "order": 28
+    "order": 29
   },
   {
     "id": "deal-mujq3byddkjo",
@@ -309,7 +309,7 @@
     "imageAlt": "חנוכה בבודפשט לכל המשפחה",
     "priceTiers": [],
     "image": "uploads/1790507763014-destination.jpg",
-    "order": 27
+    "order": 28
   },
   {
     "id": "deal-mulalnyyx7nv",
@@ -329,7 +329,7 @@
     "imageAlt": "🍁✨ מסיימים את החגים בקרלובי וארי – חופשת ספא ויוקרה קלאסית! 🇨🇿🧖‍♀️",
     "priceTiers": [],
     "image": "uploads/1790602676891-destination.jpg",
-    "order": 26
+    "order": 27
   },
   {
     "id": "deal-mumlxwjwwibc",
@@ -349,7 +349,7 @@
     "imageAlt": "🏛️🇬🇷 ספונטניים? סופ\"ש מושלם ואורבני באתונה! 🇬🇷✨",
     "priceTiers": [],
     "image": "uploads/1790682189837-destination.jpg",
-    "order": 25
+    "order": 26
   },
   {
     "id": "deal-muocdsut6wd5",
@@ -369,7 +369,7 @@
     "imageAlt": "שווקי חג המולד בפראג ובווינה",
     "priceTiers": [],
     "image": "uploads/1790787067735-img.jpg",
-    "order": 24
+    "order": 25
   },
   {
     "id": "deal-muoddu7b7951",
@@ -389,7 +389,7 @@
     "imageAlt": "סנטוריני ומיקונוס בהפלגה מברצלונה",
     "priceTiers": [],
     "image": "uploads/1792922723602-pasted.jpg",
-    "order": 23
+    "order": 24
   },
   {
     "id": "deal-mupqi0agcoan",
@@ -412,7 +412,7 @@
       "מחיר: החל מ-8,992 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1790871244792-savoy-seychelles-resort-spa.jpg",
-    "order": 22
+    "order": 23
   },
   {
     "id": "deal-muqx7gn9w4le",
@@ -434,7 +434,7 @@
       "Royal Zanzibar Beach Resort: החל מ 8,330 ש\"ח לאדם בחדר"
     ],
     "image": "uploads/1790942976262-destination.jpg",
-    "order": 21
+    "order": 22
   },
   {
     "id": "deal-musgmav6eape",
@@ -459,7 +459,7 @@
       "חדר מרפסת (זוג + 2 ילדים): החל מ-3,700$"
     ],
     "image": "uploads/1792921813481-pasted.jpg",
-    "order": 20
+    "order": 21
   },
   {
     "id": "deal-muwm8qx9x54v",
@@ -479,7 +479,7 @@
     "imageAlt": "שופינג בלאק פריידי באתונה",
     "priceTiers": [],
     "image": "uploads/1791287357518-destination.jpg",
-    "order": 19
+    "order": 20
   },
   {
     "id": "deal-muwmc7tg1sj1",
@@ -502,7 +502,7 @@
       "מחיר: החל מ-3,769 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791287519380-destination.jpg",
-    "order": 18
+    "order": 19
   },
   {
     "id": "deal-mux0qj9vlthb",
@@ -524,7 +524,7 @@
       "מחיר: החל מ-3,938 ₪ לאדם בחדר זוגי."
     ],
     "image": "uploads/1791312159824-img.jpeg",
-    "order": 17
+    "order": 18
   },
   {
     "id": "deal-muzc1usoj40g",
@@ -544,7 +544,7 @@
     "imageAlt": "🚨 דקה 90! סופ\"ש ראשון עד חמישי בסלוניקי הקסומה! 🚨",
     "priceTiers": [],
     "image": "uploads/1791451638313-destination.jpg",
-    "order": 16
+    "order": 17
   },
   {
     "id": "deal-mv14321u9vo7",
@@ -564,7 +564,7 @@
     "imageAlt": "האיים הקנריים ומדיירה בהפלגה מליסבון ללונדון",
     "priceTiers": [],
     "image": "uploads/1792243917366-pasted.jpg",
-    "order": 15
+    "order": 16
   },
   {
     "id": "deal-mv1647lw9o50",
@@ -584,7 +584,7 @@
     "imageAlt": "זלצבורג בחורף במלון 4 כוכבים",
     "priceTiers": [],
     "image": "uploads/1792231964346-pasted.jpg",
-    "order": 14
+    "order": 15
   },
   {
     "id": "deal-mv3smiqjw5ki",
@@ -604,7 +604,7 @@
     "imageAlt": "שופינג בלאק פריידי בבוקרשט",
     "priceTiers": [],
     "image": "uploads/1791721341020-destination.jpg",
-    "order": 13
+    "order": 14
   },
   {
     "id": "deal-mv6tkisom9xt",
@@ -624,7 +624,7 @@
     "imageAlt": "🏛️ ספונטניים? סופ\"ש קסום באתונה במרחק נגיעה! 🇬🇷✈️",
     "priceTiers": [],
     "image": "uploads/1791904325928-destination.jpg",
-    "order": 12
+    "order": 13
   },
   {
     "id": "deal-mv6tmhdkt60k",
@@ -644,7 +644,7 @@
     "imageAlt": "✨ דצמבר – בלי לחשוב פעמיים! ✨",
     "priceTiers": [],
     "image": "uploads/1791904894970-img.jpg",
-    "order": 11
+    "order": 12
   },
   {
     "id": "deal-mv815qxvdij6",
@@ -664,7 +664,7 @@
     "imageAlt": "🇦🇹 סופ\"ש הבא אתם בוינה הקסומה! ✈️🥨",
     "priceTiers": [],
     "image": "uploads/1791977539748-destination.jpg",
-    "order": 10
+    "order": 11
   },
   {
     "id": "deal-mva0diee3h9i",
@@ -684,7 +684,7 @@
     "imageAlt": "פסח בקריביים על ה-Wonder of the Seas",
     "priceTiers": [],
     "image": "uploads/1792231757981-pasted.jpg",
-    "order": 9
+    "order": 10
   },
   {
     "id": "deal-mvb03cimn6tc",
@@ -704,7 +704,7 @@
     "imageAlt": "סוכות 2027 בים התיכון המערבי",
     "priceTiers": [],
     "image": "uploads/1792232125749-pasted.jpg",
-    "order": 8
+    "order": 9
   },
   {
     "id": "deal-mvb3b9aj9lfo",
@@ -724,7 +724,7 @@
     "imageAlt": "🏝️☀️ סופ\"ש הבא אתם בזנזיבר – למי מתאים לברוח לגן עדן? 🏖️🍹",
     "priceTiers": [],
     "image": "uploads/1792232391568-pasted.jpg",
-    "order": 7
+    "order": 8
   },
   {
     "id": "deal-mvf7cf3thfja",
@@ -744,7 +744,7 @@
     "imageAlt": "סתיו בזלצבורג",
     "priceTiers": [],
     "image": "uploads/1792411191930-pasted.jpg",
-    "order": 6
+    "order": 7
   },
   {
     "id": "deal-mvi0verlvksz",
@@ -764,7 +764,7 @@
     "imageAlt": "רומא באורות חג המולד",
     "priceTiers": [],
     "image": "uploads/1792581719170-destination.jpg",
-    "order": 5
+    "order": 6
   },
   {
     "id": "deal-mvi3qgt5gyae",
@@ -784,7 +784,7 @@
     "imageAlt": "סוף שנה בהפלגה ממיאמי לקוזומל ולבהאמס",
     "priceTiers": [],
     "image": "uploads/1792586527386-destination.jpg",
-    "order": 4
+    "order": 5
   },
   {
     "id": "deal-mvi94ql2s854",
@@ -804,7 +804,7 @@
     "imageAlt": "הקריביים המזרחיים על ה-Norwegian Aqua החדשה",
     "priceTiers": [],
     "image": "uploads/1792595591319-pasted.jpg",
-    "order": 3
+    "order": 4
   },
   {
     "id": "deal-mvnqp9gaqcoy",
@@ -824,7 +824,7 @@
     "imageAlt": "נובמבר בסגנון מלכותי בוינה",
     "priceTiers": [],
     "image": "uploads/1792927433242-pasted.jpg",
-    "order": 2
+    "order": 3
   },
   {
     "id": "deal-mvqziomvq19i",
@@ -846,6 +846,28 @@
     "imageAlt": "באקו בנובמבר",
     "priceTiers": [],
     "image": "uploads/1793123641400-pasted.jpg",
+    "order": 2
+  },
+  {
+    "id": "deal-mvthvq274llw",
+    "title": "הפלגה ממיאמי על סיפון ה-Norwegian Star",
+    "tag": "קרוז",
+    "meta": "14 לילות",
+    "kind": "cruise",
+    "lastMinute": "auto",
+    "dateFrom": "2026-11-20",
+    "dateTo": "2026-12-04",
+    "dateNote": "",
+    "dates": "20.11-04.12",
+    "price": "$1,700",
+    "priceNote": "לזוג",
+    "cardDesc": "חוויה בלתי נשכחת של 14 לילות מאירופה ועד מיאמי",
+    "desc": "הפלגה ממיאמי על סיפון ה-Norwegian Star: חופשה מסודרת ומפנקת, שבה הכול מתוכנן עבורכם ביד אישית.\n\nאונייה: Norwegian Star\nמשך ההפלגה: 14 לילות\nמסלול ההפלגה:\nלונדון (סאות'האמפטון), אנגליה - יציאה לדרך\nלה האבר (פריז), צרפת\nיום בים\nלה קורוניה, ספרד\nפורטו (לייקסואס), פורטוגל\nיום בים\nפונטה דלגדה, האיים האזוריים\n6 ימים בים - זמן להירגע וליהנות מכל מגוון המתקנים, המסעדות והמופעים באונייה\nגרייט סטירופ קיי, בהאמס - האי הפרטי של נורוויג'ן\nמיאמי, פלורידה\nמחירים מיוחדים:\nלהשלמה, כתמיד, ניתן להזמין טיסות ומלונות לפי הצורך.\n\nרוצים לשדרג, לשנות תאריכים או לבנות משהו אחר? אני כאן כדי להתאים את החבילה בדיוק אליכם.",
+    "note": "",
+    "active": true,
+    "imageAlt": "הפלגה ממיאמי על סיפון ה-Norwegian Star",
+    "priceTiers": [],
+    "image": "uploads/1793275415217-pasted.jpg",
     "order": 1
   }
 ]
