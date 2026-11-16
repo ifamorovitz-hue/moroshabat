@@ -1807,7 +1807,7 @@
         ];
         if (budget) lines.push('תקציב משוער: ' + Number(budget).toLocaleString('en-US') + ' ₪ ' + (form.budgetFor.value || ''));
         if (message) lines.push('עוד פרטים: ' + message);
-        sendBtn.href = 'https://wa.me/+972528403104?text=' + encodeURIComponent(lines.join('\n'));
+        sendBtn.href = 'https://wa.me/+' + (window.moroWaNumber || '972528403104') + '?text=' + encodeURIComponent(lines.join('\n'));
         window.moroTrack('טופס: נשלח');
 
         form.reset();
@@ -2288,6 +2288,8 @@
 
       ['c-linkPhone', 'c-linkPhone2'].forEach(function(id){ setHref(id, c.linkPhoneHref); setText(id, c.linkPhoneText); });
       ['c-linkWaDirect', 'c-linkWaDirect2', 'c-linkWaDirect3'].forEach(function(id){ setHref(id, c.linkWaDirectHref); });
+      var waNum = /wa\.me\/\+?(\d+)/.exec(c.linkWaDirectHref || '');
+      if (waNum) window.moroWaNumber = waNum[1]; // the contact form sends to this number
       setHref('c-linkWaGroup', c.linkWaGroupHref);
       setHref('c-linkWaGroup2', c.linkWaGroupHref);
       if (c.linkWaDirectHref) setHref('c-talkBtn', c.linkWaDirectHref.split('?')[0] + '?text=' + encodeURIComponent('היי יפעת, התעניינתי בחבילות שבאתר ואשמח לפרטים נוספים 🙂'));
@@ -2869,7 +2871,7 @@
       ieEl('ieLinkFieldLabel').textContent = f.label;
       if (f.kind === 'phone') {
         ieEl('ieLinkValue').value = (contentCache && contentCache.data.linkPhoneText) || '';
-        ieEl('ieLinkHint').textContent = 'מקלידים את המספר כמו שרוצים שיוצג (למשל 052-8403104) קישור החיוג נבנה אוטומטית.';
+        ieEl('ieLinkHint').textContent = 'מקלידים את המספר כמו שרוצים שיוצג (למשל 052-8403104). הוא יתעדכן בכל האתר: חיוג, וואטסאפ, טופס יצירת הקשר ועמודי התקנון, הפרטיות והנגישות.';
       } else {
         ieEl('ieLinkValue').value = (contentCache && contentCache.data[f.key]) || '';
         ieEl('ieLinkHint').textContent = 'הקישור המלא (https://...).';
@@ -2887,9 +2889,16 @@
       ieShowStatus('ieLinkStatus', 'info', 'שומר…');
       var updated = Object.assign({}, contentCache.data);
       if (currentLinkField.kind === 'phone') {
+        // Israeli number: 052-1234567 / +972 52 123 4567 -> international digits for WhatsApp
+        var digits = val.replace(/\D/g, '');
+        var intl = digits.indexOf('972') === 0 ? digits : (digits.charAt(0) === '0' ? '972' + digits.slice(1) : '');
+        if (!/^972\d{8,9}$/.test(intl)) { ieShowStatus('ieLinkStatus', 'error', 'מספר לא תקין. יש להקליד מספר ישראלי, למשל 052-8403104.'); return; }
+        var waQuery = ((contentCache.data.linkWaDirectHref || '').split('?')[1]) || 'text=' + encodeURIComponent('אהלן');
         updated.linkPhoneText = val;
-        updated.linkPhoneHref = 'tel:' + val.replace(/\D/g, '');
+        updated.linkPhoneHref = 'tel:0' + intl.slice(3);
+        updated.linkWaDirectHref = 'https://wa.me/+' + intl + '?' + waQuery;
       } else {
+        if (!/^https?:\/\/\S+$/i.test(val)) { ieShowStatus('ieLinkStatus', 'error', 'הקישור צריך להתחיל ב-https://'); return; }
         updated[currentLinkField.key] = val;
       }
       var body = b64EncodeUnicode(JSON.stringify(updated, null, 2));

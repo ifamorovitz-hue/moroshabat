@@ -65,5 +65,20 @@
   <h2>יצירת קשר</h2>
   <p>לשאלות בנוגע לפרטיות אפשר לפנות אליי בטלפון <a href="tel:0528403104"><bdi dir="ltr">052-8403104</bdi></a> או ב<a href="https://wa.me/972528403104" rel="noopener">וואטסאפ</a>.</p>
 </main>
+<script>
+// phone and WhatsApp number follow the site content (edited by Yifat in edit mode)
+(function(){
+  fetch('data/site-content.json', { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(c){
+    if (!c) return;
+    var m = /wa\.me\/\+?(\d+)/.exec(c.linkWaDirectHref || '');
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      if (c.linkPhoneHref) a.href = c.linkPhoneHref;
+      var b = a.querySelector('bdi');
+      if (b && c.linkPhoneText) b.textContent = c.linkPhoneText;
+    });
+    if (m) document.querySelectorAll('a[href^="https://wa.me/"]').forEach(function(a){ a.href = 'https://wa.me/' + m[1]; });
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
